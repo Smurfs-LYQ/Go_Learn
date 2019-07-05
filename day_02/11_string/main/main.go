@@ -9,6 +9,8 @@ func Reverse(s string) {
 	var res string
 	for i := len(s); i > 0; i-- {
 		res = res + s[i-1:i]
+		// 注意:使用切片读取字符串中的单个字符的时候返回值为那个字符对应的Unicode码
+		// res = res + fmt.Sprintf("%c", s[i-1])
 	}
 	fmt.Println(res)
 }

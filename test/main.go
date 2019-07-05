@@ -3,10 +3,8 @@ package main
 import "fmt"
 
 func main() {
-	// 测试float32和float64的精度
-	var a float64 = 10
-	var b float32 = 10
+	str1 := "hello world"
 
-	fmt.Println(a / 3)
-	fmt.Println(b / 3)
+	fmt.Println(fmt.Println(str1[4]))
+	fmt.Println(fmt.Sprintf("%c\n", str1[4]))
 }
