@@ -14,5 +14,6 @@ func main() {
 	// two.Switch_demo_1()
 	// two.Switch_demo_2()
 
-	thr.For_demo_1()
+	// thr.For_demo_1()
+	thr.For_demo_2()
 }
