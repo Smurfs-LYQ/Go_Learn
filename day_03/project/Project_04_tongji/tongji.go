@@ -13,8 +13,8 @@ func detection(one int, two []int) bool {
 
 // 输入一行字符，分别统计出其中英文字母、空格、数字和其他字符的个数
 func Project_tongji() {
-	var str string
-	fmt.Scanln(&str)
+	var str string = "123 hello"
+	// fmt.Scanln(&str)
 
 	letter_res := 0
 	space_res := 0
@@ -31,15 +31,27 @@ func Project_tongji() {
 	num := []int{49, 50, 51, 52, 53, 54, 55, 56, 57}
 
 	for i := 0; i < len(str); i++ {
-		if detection(int(str[i]), letter) {
+		switch {
+		case detection(int(str[i]), letter) == true:
 			letter_res += 1
-		} else if detection(int(str[i]), space) {
+		case detection(int(str[i]), space) == true:
 			space_res += 1
-		} else if detection(int(str[i]), num) {
+		case detection(int(str[i]), num) == true:
 			num_res += 1
-		} else {
+		default:
 			outher_res += 1
 		}
+		/*
+			if detection(int(str[i]), letter) {
+				letter_res += 1
+			} else if detection(int(str[i]), space) {
+				space_res += 1
+			} else if detection(int(str[i]), num) {
+				num_res += 1
+			} else {
+				outher_res += 1
+			}
+		*/
 	}
 
 	fmt.Println("字母总数：", letter_res)

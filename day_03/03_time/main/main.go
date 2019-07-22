@@ -5,7 +5,6 @@ import (
 	"time"
 )
 
-
 // 检测程序允许耗时
 func one() {
 	time.Sleep(time.Millisecond * 100)
@@ -14,15 +13,15 @@ func one() {
 
 func main() {
 	/*
-	time包的一些常亮
-		const (
-			Nanosecond Duration = 1				// 纳秒
-			Microsecond = 1000 * Nanosecond		// 微妙
-			Millisecond = 1000 * Microsecond	// 毫秒
-			Second      = 1000 * Millisecond	// 秒
-			Minute      = 60   * Second			// 分
-			Hour        = 60   * Minute			// 小时
-		)
+		time包的一些常亮
+			const (
+				Nanosecond Duration = 1				// 纳秒
+				Microsecond = 1000 * Nanosecond		// 微妙
+				Millisecond = 1000 * Microsecond	// 毫秒
+				Second      = 1000 * Millisecond	// 秒
+				Minute      = 60   * Second			// 分
+				Hour        = 60   * Minute			// 小时
+			)
 	*/
 
 	// 获取当前时间
@@ -41,7 +40,7 @@ func main() {
 	fmt.Println(time.Now().Year())
 
 	// 格式化
-	// Golang诞生时间:2006/02/1 15:04:
+	// Golang诞生时间:2006/02/1 15:05:
 	now := time.Now()
 
 	fmt.Println(now.Format("02/1/2006 15:04:05"))
@@ -51,8 +50,7 @@ func main() {
 	start := time.Now().UnixNano()
 	one()
 	end := time.Now().UnixNano()
-	fmt.Println((end - start)/1000)
-
+	fmt.Println((end - start) / 1000)
 
 	// 获取当前时间戳(秒)
 	fmt.Println(time.Now().Unix())

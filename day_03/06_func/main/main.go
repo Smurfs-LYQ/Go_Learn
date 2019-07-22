@@ -13,8 +13,8 @@ func add(a, b int) int {
 	return a + b
 }
 
-func operator(op add_func, a, b int) int {
-	return op(a, b)
+func operator(one add_func, a, b int) int {
+	return one(a, b)
 }
 
 func main() {
