@@ -1,7 +1,12 @@
 package Project_04_tongji
 
-import "fmt"
+import (
+	"bufio"
+	"fmt"
+	"os"
+)
 
+/*
 func detection(one int, two []int) bool {
 	for _, v := range two {
 		if one == v {
@@ -41,23 +46,58 @@ func Project_tongji() {
 		default:
 			outher_res += 1
 		}
-		/*
-			if detection(int(str[i]), letter) {
-				letter_res += 1
-			} else if detection(int(str[i]), space) {
-				space_res += 1
-			} else if detection(int(str[i]), num) {
-				num_res += 1
-			} else {
-				outher_res += 1
-			}
-		*/
+		// if detection(int(str[i]), letter) {
+		// 	letter_res += 1
+		// } else if detection(int(str[i]), space) {
+		// 	space_res += 1
+		// } else if detection(int(str[i]), num) {
+		// 	num_res += 1
+		// } else {
+		// 	outher_res += 1
+		// }
 	}
 
 	fmt.Println("字母总数：", letter_res)
 	fmt.Println("空格总数：", space_res)
 	fmt.Println("数字总数：", num_res)
 	fmt.Println("其他总数：", outher_res)
+}
+*/
+
+func detection(result string) (letter_res, space_res, num_res, outher_res int) {
+	str := []rune(result)
+	for _, v := range str {
+		switch {
+		case v >= 'a' && v <= 'z':
+			fallthrough
+		case v >= 'A' && v <= 'Z':
+			letter_res++
+		case v == 32:
+			space_res++
+		case v >= '0' && v <= '9':
+			num_res++
+		default:
+			outher_res++
+		}
+	}
+	return
+}
+
+func Project_tongji() {
+	// 从终端读取一行的内容
+	reader := bufio.NewReader(os.Stdin) // bufio是带缓冲区的IO, NewReader是初始化一个读的实例, os.Stdin代表的是从标准的终端输入读取
+	result, _, err := reader.ReadLine() // 这个是在读的实例中选择读一行的方法
+
+	if err != nil {
+		fmt.Println("read from console err: ", err)
+		return
+	}
+
+	lr, sr, nr, or := detection(string(result))
+	fmt.Println("字母总数：", lr)
+	fmt.Println("空格总数：", sr)
+	fmt.Println("数字总数：", nr)
+	fmt.Println("其他总数：", or)
 }
 
 /*
