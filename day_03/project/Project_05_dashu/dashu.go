@@ -6,7 +6,6 @@ import (
 )
 
 func res(num1, num2 string) (result string) {
-
 	index1 := len(num1) - 1
 	index2 := len(num2) - 1
 	left := 0
