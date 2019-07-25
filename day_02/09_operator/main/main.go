@@ -12,13 +12,17 @@ func init() {
 }
 
 func main() {
+	// 生成10个100以内的随机数
 	for i := 0; i < 10; i++ {
+		// 生成100以内的随机数
 		fmt.Println(rand.Intn(100))
 	}
 
 	fmt.Println("###########")
 
+	// 生成10个随机复数
 	for i := 0; i < 10; i++ {
+		// 生成随机复数
 		fmt.Println(rand.Float32())
 	}
 }
