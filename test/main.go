@@ -1,17 +1,13 @@
 package main
 
-import (
-	"fmt"
-	"math/rand"
-	"time"
-)
+import "fmt"
 
-func init() {
-	rand.Seed(time.Now().Unix())
+func test(one ...int) {
+	for _, v := range one {
+		fmt.Println(v)
+	}
 }
 
 func main() {
-	fmt.Println(rand.Intn(100))
-
-	fmt.Println(rand.Float32())
+	test(1, 2, 3, 4, 5)
 }

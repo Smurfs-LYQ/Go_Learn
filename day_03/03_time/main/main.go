@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-// 检测程序允许耗时
+// 检测程序运行耗时
 func one() {
 	time.Sleep(time.Millisecond * 100)
 	fmt.Println("123")
@@ -13,7 +13,7 @@ func one() {
 
 func main() {
 	/*
-		time包的一些常亮
+		time包的一些常量
 			const (
 				Nanosecond Duration = 1				// 纳秒
 				Microsecond = 1000 * Nanosecond		// 微妙
@@ -40,7 +40,7 @@ func main() {
 	fmt.Println(time.Now().Year())
 
 	// 格式化
-	// Golang诞生时间:2006/02/1 15:05:
+	// Golang诞生时间:2006/02/1 15:04:05
 	now := time.Now()
 
 	fmt.Println(now.Format("02/1/2006 15:04:05"))
