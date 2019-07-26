@@ -41,7 +41,7 @@ func main() {
 	one = "hello"
 	fmt.Println(strings.ToUpper(one))
 
-	// 去掉字符串收尾的空白字符
+	// 去掉字符串首尾的空白字符
 	one = " Hello World "
 	fmt.Println(strings.TrimSpace(one))
 
@@ -57,7 +57,7 @@ func main() {
 	one = "#Hello World#"
 	fmt.Println(strings.TrimRight(one, "#"))
 
-	// 返回指定字符串空格分割的所有子串的slice(类似于数组)
+	// 返回指定字符串通过空格分割的所有子串的slice(类似于数组)
 	one = "Hello World Hello Golang"
 	fmt.Println(strings.Fields(one))
 

@@ -40,7 +40,7 @@ func main() {
 	fmt.Println(time.Now().Year())
 
 	// 格式化
-	// Golang诞生时间:2006/02/1 15:04:05
+	// Golang诞生时间:2006/01/02 15:04:05
 	now := time.Now()
 
 	fmt.Println(now.Format("02/1/2006 15:04:05"))
