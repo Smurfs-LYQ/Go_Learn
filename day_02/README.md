@@ -17,6 +17,7 @@
    * const只能修饰boolean、number(int相关类型,浮点类型,complex)和string
 2. iota
     * 它的主要作用是从0开始逐1递增，04_const 中有实例
+    * 注意只能在全局变量中用
 3. 值类型和引用类型
     * 值类型：
       ```
