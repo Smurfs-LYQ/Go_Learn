@@ -20,7 +20,7 @@ func testSlice() {
 	// 通过make来创建切片
 	/*
 		var slice []type = make([]type, len)
-		slice := make{[]type, map}
+		slice := make{[]type, cap}
 		slice := make([]type, len, cap)
 	*/
 	var T2 []int = make([]int, 3) // 使用var声明一个切片
