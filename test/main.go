@@ -3,13 +3,8 @@ package main
 import "fmt"
 
 func main() {
-	a := map[int]string{
-		1: "one",
-		2: "two",
-		3: "thr",
-	}
-
-	for key, val := range a {
-		fmt.Println(key, val)
-	}
+	one := []int{1, 2, 3, 4, 5}
+	fmt.Println(one)
+	one[0], one[4] = one[4], one[0]
+	fmt.Println(one)
 }
