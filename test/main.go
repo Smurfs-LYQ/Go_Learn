@@ -3,7 +3,7 @@ package main
 import "fmt"
 
 func do(values []int) {
-	if len(values) <= 1 {
+	if len(values) < 1 {
 		return
 	}
 
@@ -14,12 +14,13 @@ func do(values []int) {
 			right--
 		} else {
 			values[head], values[left] = values[left], values[head]
-			head++
 			left++
+			head++
 		}
 	}
 
-	fmt.Println(values)
+	fmt.Println(values, values[:head], values[head:])
+	// fmt.Println(val)
 	do(values[:head])
 	do(values[head+1:])
 }
