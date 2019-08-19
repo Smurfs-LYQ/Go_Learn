@@ -2,27 +2,25 @@ package main
 
 import "fmt"
 
-func do(values []int) {
-	if len(values) < 1 {
+func do(val []int) {
+	if len(val) < 1 {
 		return
 	}
 
-	val, head, left, right := values[0], 0, 1, len(values)-1
+	one, head, left, right := val[0], 0, 1, len(val)-1
 	for head < right {
-		if val < values[left] {
-			values[left], values[right] = values[right], values[left]
+		if one < val[left] {
+			val[left], val[right] = val[right], val[left]
 			right--
 		} else {
-			values[head], values[left] = values[left], values[head]
-			left++
+			val[head], val[left] = val[left], val[head]
 			head++
+			left++
 		}
 	}
 
-	fmt.Println(values, values[:head], values[head:])
-	// fmt.Println(val)
-	do(values[:head])
-	do(values[head+1:])
+	do(val[:head])
+	do(val[head+1:])
 }
 
 func main() {

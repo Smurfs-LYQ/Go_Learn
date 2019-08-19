@@ -42,7 +42,7 @@
             查看一个元素的类型, 并将它放到变量one中
             one = fmt.Sprintf("%T", 123)
         ```
-    * fmt.Canf :
+    * fmt.Scanf :
         ```
         他的功能类似于python中的input, 可以获取用户输入在终端中的内容
         例如:

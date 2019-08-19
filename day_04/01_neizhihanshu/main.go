@@ -38,6 +38,7 @@ func main() {
 
 	// close 主要用来关闭channel
 	// one_1
+
 	// len 用来求长度，比如：string、array、slice、map、channel
 	one = "hello golang"
 	fmt.Println(len(one))
