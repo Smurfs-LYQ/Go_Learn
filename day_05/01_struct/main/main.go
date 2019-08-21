@@ -20,6 +20,8 @@ type T1 struct {
 	Age  int
 }
 
+type Test_1 T1 // 给 结构体 或 数据类型 设置别名
+
 func main() {
 	// struct定义的三种形式
 	// var one T1

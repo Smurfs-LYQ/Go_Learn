@@ -43,9 +43,9 @@ func main() {
 	// Golang诞生时间:2006/01/02 15:04:05
 	now := time.Now()
 
-	fmt.Println(now.Format("02/1/2006 15:04:05"))
-	fmt.Println(now.Format("2006/02/1 15:04:05"))
-	fmt.Println(now.Format("2006/02/1"))
+	fmt.Println(now.Format("02/1/2006 15:04:05")) // 日月年 时分秒
+	fmt.Println(now.Format("2006/02/1 15:04:05")) // 年日月 时分秒
+	fmt.Println(now.Format("2006/1/02"))          // 年月日
 
 	start := time.Now().UnixNano()
 	one()
