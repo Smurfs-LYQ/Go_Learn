@@ -19,7 +19,7 @@ type Cart struct {
 }
 
 type Train struct {
-	Cart  // 匿名字段 Cart结构体
+	Cart  // 匿名Cart结构体 相当于继承操作
 	int   // 匿名字段 int数据类型
 	start time.Time
 }
@@ -29,7 +29,7 @@ func main() {
 	// 访问匿名函数的方法有两种
 
 	// No.1
-	T1.Name = "Auti" // 直接调用匿名字段Cart结构体中的字段
+	T1.Name = "Auti" // 直接调用匿名Cart结构体中的字段
 	T1.start = time.Now()
 	// T1.start = time.Now().Format("2006/02/01 15:04:05")
 
