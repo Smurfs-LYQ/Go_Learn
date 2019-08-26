@@ -1,20 +1,30 @@
 package main
 
-import "fmt"
-
-type T1 struct {
-	Name string
-	Age  int
-}
-
-func (obj T1) String() string {
-	str := fmt.Sprintf("name=[%s] age=[%d]", obj.Name, obj.Age)
-	return str
-}
+import (
+	"bufio"
+	"fmt"
+	"log"
+	"os"
+)
 
 func main() {
-	var one T1
-	one.Name = "test_1"
-	one.Age = 18
-	fmt.Printf("%s\n", one)
+	file, err := os.Open("books.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	scanner.Split(bufio.ScanLines)
+	/*
+		ScanLines (默认)
+		ScanWords
+		ScanRunes (遍历UTF-8字符非常有用)
+		ScanBytes
+	*/
+
+	//是否有下一行
+	for scanner.Scan() {
+		fmt.Println("read string:", scanner.Text())
+	}
 }
