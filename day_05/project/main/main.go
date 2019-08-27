@@ -15,25 +15,33 @@ import (
 */
 
 func main() {
-	color := []int{31, 32, 33, 34, 35}
-	for k, v := range []string{"书籍录入", "书籍查询", "学生信息管理", "借书", "书籍管理"} {
-		fmt.Printf("%c[0;40;%dm%d. %s%c[0m\n", 0x1B, color[k], k, v, 0x1B)
+	fmt.Println()
+	color := []int{31, 32, 33, 34, 35, 36}
+	for k, v := range []string{"书籍录入", "书籍查询", "学生信息管理", "借书", "书籍管理", "退出"} {
+		fmt.Printf("%c[0;0;%dm%d. %s%c[0m\n", 0x1B, color[k], k, v, 0x1B)
 	}
 
-	fmt.Printf("\n%c[0;36m%s%c[0m", 0x1B, "要做什么: ", 0x1B)
+	fmt.Printf("\n%c[0;37m%s%c[0m", 0x1B, "要做什么: ", 0x1B)
 	var one int
 	fmt.Scanf("%d\r\n", &one)
 
 	switch one {
 	case 0:
 		work.Add_Book()
+		main()
 	case 1:
 		work.Search_Book()
+		main()
 	case 2:
 		work.Student_Manage()
+		main()
 	case 3:
 		work.Borrow_Book()
+		main()
 	case 4:
 		work.Book_Manage()
+		main()
+	case 5:
+		return
 	}
 }

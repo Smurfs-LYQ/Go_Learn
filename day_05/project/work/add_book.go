@@ -1,39 +1,63 @@
 package work
 
+// import "fmt"
 import (
 	"fmt"
-	"os"
-	"strings"
 )
 
+// import "fmt"
+
 // 添加书籍
+// 书籍结构体
+type Books struct {
+	Name   string `json:"name"`   // 书名
+	Count  int    `json:"count"`  // 副本数
+	Writer string `json:"writer"` // 作者
+	Time   string `json:"time"`   // 出版日期
+}
+
+var one Books = Books{
+	Name:   "test1",
+	Count:  12,
+	Writer: "Smurfs",
+	Time:   "2019/3/2",
+}
+var two Books = Books{
+	Name:   "test2",
+	Count:  42,
+	Writer: "Smurfs",
+	Time:   "2019/8/2",
+}
+var thr Books = Books{
+	Name:   "test4",
+	Count:  5,
+	Writer: "test",
+	Time:   "2019/3/1",
+}
+var Books_list = []*Books{&one, &two, &thr}
 
 func Add_Book() {
-	// fmt.Println("添加书籍")
-	list := []string{"书名", "副本数", "作者", "出版日期"}
-	var res_list []string
-	for _, v := range list {
-		var res string
-	Label1:
-		fmt.Printf("请输入%s: ", v)
-		fmt.Scanf("%s\n", &res)
-		// 如果输入为空返回重新输入
-		if res == "" {
-			goto Label1
-		}
-		res_list = append(res_list, res)
+	fmt.Println("添加书籍")
+	var name string
+	fmt.Printf("请输入书名: ")
+	fmt.Scanf("%s\n", &name)
+	var count int
+	fmt.Printf("请输入副本数: ")
+	fmt.Scanf("%d\n", &count)
+	var writer string
+	fmt.Printf("请输入作者: ")
+	fmt.Scanf("%s\n", &writer)
+	var time string
+	fmt.Printf("请输入出版日期: ")
+	fmt.Scanf("%s\n", &time)
+
+	var book = &Books{
+		Name:   name,
+		Count:  count,
+		Writer: writer,
+		Time:   time,
 	}
 
-	fmt.Println(res_list)
-
-	fileName := "../data/books.txt"
-	file, err := os.OpenFile(fileName, os.O_CREATE|os.O_RDWR, 0766)
-	if err != nil {
-		fmt.Println("error", err)
-		os.Exit(1)
-	}
-	defer file.Close()
-
-	file.Seek(0, 2) // 最后增加
-	file.WriteString(strings.Join(res_list, "#_#") + "\r\n")
+	Books_list = append(Books_list, book)
+	fmt.Println(*book)
 }
