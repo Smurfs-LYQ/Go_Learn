@@ -11,8 +11,8 @@ type Student struct {
 }
 
 type Stu_Books struct {
-	*Books
-	num int
+	user_book *Books
+	num       int
 }
 
 var stu1 Student = Student{
@@ -69,7 +69,21 @@ func Student_Manage() {
 		Add_Student()
 	case 2:
 		for _, v := range Student_List {
-			fmt.Println(*v)
+			// fmt.Println(*v)
+			fmt.Println("姓名: ", v.Name)
+			fmt.Println("年级：", v.Class)
+			fmt.Println("I D: ", v.ID)
+			fmt.Println("性别: ", v.Sex)
+			for _, v := range v.Book {
+				var book = *v.user_book
+				fmt.Println("所借书籍: ")
+				fmt.Printf("\t书名: %s\n", book.Name)
+				fmt.Printf("\t作者: %s\n", book.Writer)
+				fmt.Printf("\t出版日期: %s\n", book.Time)
+				fmt.Printf("\t数量: %d\n", v.num)
+				fmt.Println("------------------")
+			}
+			fmt.Println("##################")
 		}
 	default:
 		return

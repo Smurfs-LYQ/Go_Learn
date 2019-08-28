@@ -47,15 +47,22 @@ Label3:
 	fmt.Scanf("%d\n", &book_num)
 
 	if book.Count < book_num {
+		if book.Count == 0 {
+			fmt.Println("这本书没有库存了")
+			return
+		}
 		fmt.Printf("没呢么多，只有%d本\n", book.Count)
 		goto Label3
 	}
 
+	fmt.Println(*book)
+
 	// 操作用户信息和书的信息
 	var stu_book Stu_Books = Stu_Books{
-		&book,
-		num: book_num,
+		user_book: book,
+		num:       book_num,
 	}
 	book.Count -= book_num
-	// stu.Book
+
+	stu.Book = append(stu.Book, &stu_book)
 }
