@@ -1,15 +1,8 @@
 package main
 
-import "fmt"
-
-type T1 struct {
-	Name string
-}
-
 func main() {
-	var one *T1 = T1{
-		Name "asdf",
-	}
+	x, y := 1, 2
+	x, y = y+3, x+2
 
-	fmt.Println()
+	println(x, y)
 }
