@@ -1,8 +1,11 @@
 package main
 
-func main() {
-	x, y := 1, 2
-	x, y = y+3, x+2
+import (
+	"fmt"
+	"os"
+)
 
-	println(x, y)
+func main() {
+	fmt.Println(len(os.Args))
+	fmt.Println(os.Args[1:])
 }
