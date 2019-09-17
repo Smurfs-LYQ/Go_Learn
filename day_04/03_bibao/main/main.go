@@ -6,7 +6,7 @@ import (
 
 // 闭包: 一个函数和与其相关的引用环境组合而成的实体
 /*
-func Adder() func(int) int { // 定义一个函数Adder, 其返回值还是一个函数(这里定义的是这个函数的格式, 类似于type的作用)
+func Adder() func(int) int { // 定义一个函数Adder, 其返回值还是一个函数(这里定义的是这个函数的格式, 类似于type(类型)的作用)
 	var x int
 	return func(delta int) int { // 返回Adder函数的返回值(一个匿名函数)
 		x += delta

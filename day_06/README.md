@@ -10,6 +10,8 @@
 	* 函数类型又叫函数签名
 	* 函数类型变量是一种引用类型，默认值是nil
 3. 匿名函数
+4. 命名类型和未命名类型
+5. 强制类型转换
 
 #### <center>笔记</center>
 1. > 接口
@@ -33,5 +35,22 @@
 		var t int 				   var t int
 		var x interface{} 		   var x interface{}
 		x = t 					   x = t
-		y = x.(int)	// 转成int	    y, ok = x.(int) // 转成int, 带检查
+		y = x.(int)	// 转成int	   y, ok = x.(int) // 转成int, 带检查
+		```
+5. > 命名类型和未命名类型
+	* 使用type声明的是命名类型
+		* 例如:
+		```
+		type T1 struct {
+			Name string
+			Age int
+		}
+		```
+	* 使用类型字面量声明的是未命名类型
+		* 例如:
+		```
+		a := struct {
+			Name string
+			Age int
+		}{"Smurfs", 18}
 		```

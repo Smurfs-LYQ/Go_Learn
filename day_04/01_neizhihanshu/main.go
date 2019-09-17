@@ -12,17 +12,17 @@ func initConfig() (err error) {
 
 // panic和recover测试用
 func test_painc() {
-	/*
-		// 这是一个有问题的函数
-		defer func() {
-			if err := recover(); err != nil {
-				fmt.Println("问题: 整数被除零")
-			}
-		}()
-		b := 0
-		a := 100 / b
-		fmt.Println(a)
-	*/
+	// 这是一个有问题的函数
+	defer func() {
+		if err := recover(); err != nil {
+			// fmt.Println("问题: 整数被除零")
+			println(err)
+		}
+	}()
+
+	// b := 0
+	// a := 100 / b
+	// fmt.Println(a)
 
 	err := initConfig()
 	if err != nil {
