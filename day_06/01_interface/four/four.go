@@ -11,6 +11,7 @@ type Student struct {
 	Sex  string
 }
 
+// 空接口可以接受任何类型的数据
 func T1(a interface{}) {
 	b, ok := a.(int) // 将 b 转换为int类型，OK为转换的结果，返回bool值
 	if ok == false {

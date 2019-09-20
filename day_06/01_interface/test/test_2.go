@@ -52,6 +52,14 @@ func Put(node *LinkNode) {
 	}
 }
 
+func (link *Link) Trans() {
+	p := link.Head
+	for p != nil {
+		fmt.Println(p.Data)
+		p = p.Next
+	}
+}
+
 func main() {
 	list := Link{}
 	for i := 0; i < 5; i++ {
@@ -61,5 +69,6 @@ func main() {
 			list.InsertTail(fmt.Sprintf("链表-%d", i))
 		}
 	}
-	Put(list.Head)
+	// Put(list.Head)
+	list.Trans()
 }
