@@ -53,3 +53,15 @@
 		x = t 					   x = t
 		y = x.(int)	// 转成int	   y, ok = x.(int) // 转成int, 带检查
 		```
+6. > 反射
+	* 概念: 可以在运行时动态获取变量的相关信息
+	* 包: import("reflect")
+	* 函数:
+		1. reflect.TypeOf()
+			* 获取变量的类型，返回reflect.Type类型
+		2. reflect.ValueOf()
+			* 获取变量的值，返回reflect.Value类型
+		3. reflect.Value.Kind()
+			* 获取变量的类别，返回一个常量
+		4. reflect.Value.Interface()
+			* 转换成interface{}类型
