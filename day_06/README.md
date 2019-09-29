@@ -60,7 +60,7 @@
 		1. reflect.TypeOf()
 			* 获取变量的类型，返回reflect.Type类型
 		2. reflect.ValueOf()
-			* 获取变量的值，返回reflect.Value类型
+			* 获取变量的值，并将变量转换为reflect.Value类型
 		3. reflect.Value.Kind()
 			* 获取变量的类别，返回一个常量
 		4. reflect.Value.Interface()
