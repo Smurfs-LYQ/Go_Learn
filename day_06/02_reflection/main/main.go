@@ -7,21 +7,23 @@ import (
 )
 
 type T1 struct {
-	Name string
+	Name string `json:"name"`
 	Age  int
 }
 
-func (s T1) Set(name string, age int) {
+func (s *T1) Set(name string, age int) (string, int) {
 	s.Name = name
 	s.Age = age
 
-	fmt.Println("设置完成")
+	return s.Name, s.Age
 }
 
-func (s T1) Get() {
-	fmt.Println("-----Start-----")
-	fmt.Println(s)
-	fmt.Println("------End------")
+func (s *T1) Get() *T1 {
+	return s
+}
+
+func (s T1) Test_T1() {
+	fmt.Println("测试方法Test_T1")
 }
 
 func test(b interface{}) {
@@ -67,25 +69,50 @@ func project_2(b interface{}) {
 func project_3(b interface{}) {
 	// 获取变量的值，并将变量转换为reflect.value类型
 	this := reflect.ValueOf(b)
+	fmt.Println(this)
 
 	// 注意case后面跟的值前面的reflect是因为变量被reflect.ValueOf转换成了reflect包中的类型
-	switch this.Kind() {
+	switch this.Elem().Kind() {
 	case reflect.Struct:
 		// 通过反射操作结构体
 		// 获取结构体字段的数量
-		fmt.Println("元素的数量: ", this.NumField())
+		fmt.Println("元素的数量: ", this.Elem().NumField()) // 这里加Elem的原因是因为this是一个"结构体指针", 通过Elem获取到"结构体指针"的"结构体", 然后通过NumField获取字段数量, 如果this不是"结构体指针"就不需要Elem了
 
 		// 获取结构体方法的数量
-		fmt.Println("方法的数量: ", this.NumMethod())
+		fmt.Println("方法的数量: ", this.NumMethod()) // 如果this为"结构体指针"那么他可以获取到此结构体所有首字母大写的方法, 如果this为"结构体"那么他就只能获取到所有首字母大写的非指针型方法
 
-		// 调用结构体中的第二个方法,
-		var params []reflect.Value
-		this.Method(0).Call(params) // 这里的1代表的是结构体中的第二个方法, 0代表第一个方法, 以此类推
+		// 调用结构体中的字段
+		for i := 0; i < this.Elem().NumField(); i++ {
+			fmt.Println(i, this.Elem().Field(i))
+		}
+
+		// 修改结构体中字段的值
+		this.Elem().Field(0).SetString("修改测试") // 还有SetInt等...
+
+		// 调用结构体中的第一个方法, 带参数
+		setNameMethod_one := this.MethodByName("Set")                                   // 设置调用方法的名字
+		args_one := []reflect.Value{reflect.ValueOf("Smurfs的格格巫"), reflect.ValueOf(21)} // 创建参数列表
+		res_one := setNameMethod_one.Call(args_one)                                     // 调用方法, 并传入参数, 注意Call方法的返回值是一个"reflect.Value类型的slice"
+		fmt.Printf("%v %T\n", res_one[0], res_one)
+
+		// 调用结构体中的第二个方法, 不带参数
+		setNameMethod_two := this.MethodByName("Get")
+		args_two := make([]reflect.Value, 0)
+		res_two := setNameMethod_two.Call(args_two)
+		fmt.Println(res_two[0])
 	case reflect.Int:
 		fmt.Println("type is Int")
 	default:
 		fmt.Println("other")
 	}
+}
+
+func project_4(b interface{}) {
+	tye := reflect.TypeOf(b)
+
+	// json包中的Marshal方法就是通过反射实现的 // 如果这个json这个地方不明白去看一下day_05/05_tag
+	tag := tye.Elem().Field(0).Tag.Get("json")
+	fmt.Println(tag)
 }
 
 func main() {
@@ -103,5 +130,6 @@ func main() {
 	var a T1 = T1{
 		Name: "Smurfs",
 		Age:  21}
-	project_3(a)
+	//project_3(&a)
+	project_4(&a)
 }

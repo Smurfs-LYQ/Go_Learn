@@ -6,7 +6,7 @@ import (
 )
 
 /*
-// 我们可以为struct中的每个字段，写上一个tag。这个tag可以通过反射的机制获取到，最常用的场景就是json序列化和反序列化
+// 我们可以为struct中的每个字段，写上一个tag。这个tag可以通过"反射"的机制获取到，最常用的场景就是json序列化和反序列化
 
 type T1 struct {
 	Name string "this is name field" // 数据类型后面双引号部分的内容就是这个字段的tag
