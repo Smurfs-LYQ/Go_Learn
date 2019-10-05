@@ -22,6 +22,7 @@ func T1(a interface{}) {
 	fmt.Println(b)
 }
 
+// 因为空接口可以接受任何类型的数据，而且这里还加了...所以可以接受任意数量任意类型的参数，并保存到对应的变量slice中
 func T2(items ...interface{}) {
 	for k, v := range items {
 		switch v.(type) { // 这里面的type是关键词，这里是用来判断v的类型的

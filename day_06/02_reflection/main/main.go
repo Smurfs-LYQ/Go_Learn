@@ -81,9 +81,9 @@ func project_3(b interface{}) {
 		// 获取结构体方法的数量
 		fmt.Println("方法的数量: ", this.NumMethod()) // 如果this为"结构体指针"那么他可以获取到此结构体所有首字母大写的方法, 如果this为"结构体"那么他就只能获取到所有首字母大写的非指针型方法
 
-		// 调用结构体中的字段
+		// 调用结构体中的字段的值
 		for i := 0; i < this.Elem().NumField(); i++ {
-			fmt.Println(i, this.Elem().Field(i))
+			fmt.Println(i, this.Elem().Field(i)) // Field(中间的数字代表的是第几个字段，从第0个开始)
 		}
 
 		// 修改结构体中字段的值
