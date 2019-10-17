@@ -15,8 +15,6 @@ func InetAtoN(ip string) int64 {
 
 // InetNtoA 将整数转换成IP
 func InetNtoA(ip int64) string {
-	fmt.Println(ip)
-	fmt.Printf("%T %v\n", ip>>24, ip>>24)
 	return fmt.Sprintf("%d.%d.%d.%d",
 		byte(ip>>24), byte(ip>>16), byte(ip>>8), byte(ip))
 }

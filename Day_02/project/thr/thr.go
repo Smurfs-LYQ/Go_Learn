@@ -8,7 +8,7 @@ func Thr() {
 
 	for k1, v1 := range arr {
 
-		for i := k1; i < len(arr); i++ {
+		for i := k1 + 1; i < len(arr); i++ {
 			if v1+arr[i] == 8 {
 				fmt.Printf("(%d, %d) => (%d + %d)\n", k1, i, v1, arr[i])
 			}

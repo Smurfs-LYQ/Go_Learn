@@ -3,8 +3,6 @@ package main
 import "fmt"
 
 func main() {
-	// fmt.Println("数组")
-
 	// 声明一个数组
 	var arr1 [5]int
 	// 初始化
@@ -31,5 +29,30 @@ func main() {
 	// 使用for range循环遍历数组
 	for k, v := range arr4 {
 		fmt.Println(k, v)
+	}
+
+	fmt.Println("-----------------------多维数组-----------------------")
+
+	// 多维数组
+	arr_1 := [3][2]int{
+		{1, 2},
+		{3, 4},
+		{5, 6},
+	}
+	fmt.Println(arr_1)
+
+	arr_2 := [...][2]int{
+		{1, 2},
+		{3, 4},
+	}
+	fmt.Println(arr_2)
+
+	// 多维数组的遍历
+	for k, v1 := range arr_1 {
+		fmt.Printf("第%d行:\t", k)
+		for _, v2 := range v1 {
+			fmt.Printf("%d \t", v2)
+		}
+		fmt.Println()
 	}
 }
