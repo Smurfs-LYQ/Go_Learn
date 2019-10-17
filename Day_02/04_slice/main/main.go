@@ -53,4 +53,16 @@ func main() {
 	copy(fiv, two)
 	fmt.Println(two, fiv)
 
+	// 从切片中删除重复的元素"2"
+	var six = []int{1, 2, 2, 3, 4, 5}
+	fmt.Println(six)
+	// 因为切片是引用类型，所以修改的就是其本身，使用append将需要保留的元素提取出来重新保存到该变量中
+	six = append(six[:2], six[3:]...) // 这里的...操作的意思是将 six[3:] 中的元素挨个拆开，然后挨个放入six中
+	fmt.Println(six)
+
+	var a = []int{1, 2, 3, 4, 5, 6, 7}
+	b := a[2:5]
+	fmt.Println(a[2:5])
+	c := b[:5]
+	fmt.Println(c)
 }
