@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"sort"
+)
 
 func main() {
 	// 声明一个切片
@@ -14,6 +17,7 @@ func main() {
 	// 基于数组定义切片
 	var arr = [5]string{"one", "two", "thr", "fou", "fiv"}
 	fmt.Printf("%T %s\n", arr, arr)
+
 	// 对数组进行切片
 	var thr = arr[1:3]
 	fmt.Printf("%T %s\n", thr, thr)
@@ -22,6 +26,10 @@ func main() {
 	fmt.Println(len(thr))
 	// 检测切片的容量 (底层数组最大能放多少元素)))
 	fmt.Println(cap(thr)) // 切片的容量是从切片开始切数组的位置一直到数组的最后。因为arr的总长度是5，而thr的内存地址是根据arr索引为1的位置记录的，所以thr的容量为5-1=4
+
+	// 通过make函数构造切片
+	T1 := make([]int, 3, 5) // 创建的类型, 长度, 容量(如果不填，默认和长度一致)
+	fmt.Println(T1)
 
 	// 切片元素增加，切片容量的变化规律
 	/*
@@ -60,9 +68,25 @@ func main() {
 	six = append(six[:2], six[3:]...) // 这里的...操作的意思是将 six[3:] 中的元素挨个拆开，然后挨个放入six中
 	fmt.Println(six)
 
+	// 变量c输出什么
 	var a = []int{1, 2, 3, 4, 5, 6, 7}
 	b := a[2:5]
 	fmt.Println(a[2:5])
 	c := b[:5]
 	fmt.Println(c)
+
+	// test1输出什么
+	var test1 = make([]int, 5, 10)
+	fmt.Printf("%d, %p\n", test1, test1)
+	for i := 0; i < 10; i++ {
+		test1 = append(test1, i)
+	}
+	fmt.Printf("%d, %p\n", test1, test1)
+
+	// 使用内置sort包给数组test2排序
+	var test2 = [...]int{3, 2, 1}
+	// test2[:]得到的是一个切片，指向了底层的数组a
+	sort.Ints(test2[:])
+	fmt.Println(test2)
+	fmt.Printf("%T\n", test2)
 }
