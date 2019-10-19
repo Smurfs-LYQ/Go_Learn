@@ -8,6 +8,9 @@
 6. 函数
 7. defer 延迟调用
 8. 函数进阶-变量作用域
+9. 匿名函数
+10. 闭包
+11. panic/recover
 
 #### <center>笔记</center>
 1. > 数组
@@ -186,11 +189,12 @@
 	- Go语言中的 `defer` 语句会将其后面跟随的语句进行延迟处理。在 `defer` 归属的函数即将返回时，将延迟处理的语句按 `defer` 定义的逆序进行执行，也就是说，先被 `defer` 的语句最后执行，最后 `defer` 的语句，最先被执行。
 	- 示例
 		```
-		fmt.Println("Start...") // 执行顺序 1
-		defer fmt.Println(1)    // 执行顺序 5
-		defer fmt.Println(2)    // 执行顺序 4
-		defer fmt.Println(3)    // 执行顺序 3
-		fmt.Println("Done...")  // 执行顺序 2
+		fmt.Println("Start...") // 代码执行顺序 1 程序执行顺序 1
+		defer fmt.Println(1)    // 代码执行顺序 2 程序执行顺序 5
+		// panic("stop") // 测试代码执行顺序
+		defer fmt.Println(2)    // 代码执行顺序 3 程序执行顺序 4
+		defer fmt.Println(3)    // 代码执行顺序 4 程序执行顺序 3
+		fmt.Println("Done...")  // 代码执行顺序 5 程序执行顺序 2
 		```
 	- 由于 `defer` 语句延迟调用的特性，所以 `defer` 语句能非常方便的处理资源释放问题。比如: 资源清理、文件关闭、解锁及记录时间等。
 8. > 变量的作用域
@@ -214,4 +218,62 @@
 		```
 	- `注意事项`
     	- 当在同一个包内`全局变量`和`局部变量`重名时，优先调用`局部变量`
-9. 
+9. > 匿名函数
+	- 匿名函数就是没有函数名的函数，多用于实现回调函数和闭包
+	- 匿名函数的定义
+		```
+		func (参数)(返回值) {
+			函数体
+		}
+		```
+	- 示例
+		```
+		func main() {
+			// 匿名函数定义完加 () 直接执行
+			func (x, y int) {
+				fmt.Println(x + y)
+			}(1, 2)
+
+			// 将匿名函数赋值给变量
+			T1 := func (x, y int) {
+				fmt.Println(x - y)
+			}
+			T1(2, 1)
+		}
+		```
+10. > 闭包
+	- 闭包是指一个函数和其相关的引用环境组合而成的实体(闭包=函数+引用环境)。
+	- 示例
+		```
+		// 定义一个函数，接收一个string类型的变量，返回值是一个匿名函数
+		func T1(name string) func() {
+			return func() {
+				fmt.Println("hello", name)
+			}
+		}
+
+		func main() {
+			/*
+				Test_1就是一个闭包
+				这个Test_1接收了T1返回的匿名函数
+					因为匿名函数调用了他引用环境T1中的name变量(此闭包=该匿名函数+外层函数T1中的name变量)
+			*/
+			Test_1 := T1("Smurfs")
+			Test_1() // 相当于执行了T1函数中的匿名函数
+		}
+		```
+11. > 内置函数  
+	
+	| 函数名 | 作用 |
+	|:------|:----|
+	| close | 主要用来关闭channel |
+	| len | 用来求长度，比如string、array、slice、map、channel |
+	| new | 用来分配内存，主要用来分配值类型，比如int、struct。返回的是指针 |
+	| make | 用来分配内存，主要用来分配引用类型，比如chan、map、slice |
+	| append | 用来追加元素到数组、slice中 |
+	| panic和recover | 用来做错误处理 |
+12. panic/recover
+	- Go语言中目前(Go1.13)是没有异常机制的，但是使用 `panic/recover` 模式来处理错误。
+	- `panic` 可以在任何地方引发。
+	- `recover` 只有在 `defer` 调用的函数中有效(**defer**一定要在**panic**语句之前定义)。并且只在程序可能出现异常之后才会调用(抛出错误，但是代码继续向下执行)
+13. 
