@@ -4,7 +4,9 @@ import (
 	// "Go_Learn/Day_02/Project/one"
 	// "Go_Learn/Day_02/Project/two"
 	// "Go_Learn/Day_02/Project/thr"
-	"Go_Learn/Day_02/Project/fou"
+	// "Go_Learn/Day_02/Project/fou"
+	// "Go_Learn/Day_02/project/fiv"
+	"Go_Learn/Day_02/project/six"
 )
 
 func main() {
@@ -14,5 +16,9 @@ func main() {
 
 	// thr.Thr()
 
-	fou.Fou()
+	// fou.Fou()
+
+	// fiv.Fiv()
+
+	six.Six()
 }
