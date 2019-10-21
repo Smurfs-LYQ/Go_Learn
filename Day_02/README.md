@@ -272,7 +272,7 @@
 	| make | 用来分配内存，主要用来分配引用类型，比如chan、map、slice |
 	| append | 用来追加元素到数组、slice中 |
 	| panic和recover | 用来做错误处理 |
-12. panic/recover
+12. > panic函数 和 recover函数
 	- Go语言中目前(Go1.13)是没有异常机制的，但是使用 `panic/recover` 模式来处理错误。
 	- `panic` 可以在任何地方引发。
 	- `recover` 只有在 `defer` 调用的函数中有效(**defer**一定要在**panic**语句之前定义)。并且只在程序可能出现异常之后才会调用(抛出错误，但是代码继续向下执行)
