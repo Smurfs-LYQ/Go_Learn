@@ -14,4 +14,9 @@ func main() {
 	a2[1] = 20
 	fmt.Println(a2)
 	fmt.Println(b2)
+
+	var a3 = [...]int{}
+	a3 = new([...]int, 3, 3)
+	a3[0] = 1
+	fmt.Println(a3)
 }
