@@ -1,4 +1,4 @@
-package student
+package student_2
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 
 /*
 学生管理系统
-	字段: 姓名 年龄 ID 班级
+	字段: 姓名 年龄 学号 班级
 	1. 增加学生
 	2. 修改学生
 	3. 删除学生
@@ -16,6 +16,9 @@ import (
 */
 
 func Do() {
+	var stu Student
+	var student_man Student_Manage
+
 	for {
 		var do int
 
@@ -28,17 +31,17 @@ func Do() {
 		fmt.Printf("请输入操作选项: ")
 		fmt.Scanln(&do)
 
-		var student_obj student
-
 		switch do {
 		case 1:
-			student_obj.Add()
+			id, name, age, class := Input()
+			res := stu.NewStudent(id, name, age, class)
+			student_man.Add(res)
 		case 2:
-			Set()
+			student_man.Set()
 		case 3:
-			Del()
+			student_man.Del()
 		case 4:
-			Show()
+			student_man.Show()
 		case 5:
 			os.Exit(0)
 		default:
