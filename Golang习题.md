@@ -55,3 +55,59 @@ for i := 0; i < 10; i++ {
 fmt.Println(a)
 ```
 4. "hou do you do"中每个单词出现的次数
+```
+str := "how do you do"
+var a = make(map[string]int, 3)
+for _, v := range strings.Split(str, " ") {
+	_, ok := a[v]
+	if ok {
+		a[v]++
+	} else {
+		a[v] = 1
+	}
+}
+fmt.Println(a)
+```
+5. defer经典面试题
+```
+package main
+
+import "fmt"
+
+func f1() int {
+	x := 5
+	defer func() {
+		x++
+	}()
+	return x
+}
+
+func f2() (x int) {
+	defer func() {
+		x++
+	}()
+	return 5
+}
+
+func f3() (y int) {
+	x := 5
+	defer func() {
+		x++
+	}()
+	return x
+}
+
+func f4() (x int) {
+	defer func(x int) {
+		x++
+	}(x)
+	return 5
+}
+
+func main() {
+	fmt.Println(f1())
+	fmt.Println(f2())
+	fmt.Println(f3())
+	fmt.Println(f4())
+}
+```
