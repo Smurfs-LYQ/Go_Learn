@@ -3,6 +3,7 @@
 1. defer经典案例
 2. Go语言中的包
 3. init初始化函数
+4. time包
 
 #### <center>笔记</center>
 1. > return原理和defer执行时机
@@ -67,4 +68,85 @@
     	- 全局声明(例如定义变量或常量)
     	- init()
     	- main()
-4. 
+4. > time包
+	- 时间类型
+	- `time.Time` 类型表示时间
+		```
+		func timeDemo() {
+			now := time.Now() // 获取当前时间
+			fmt.Printf("%T\n%v\n", now, now)
+
+			fmt.Println(now.Year())   // 年
+			fmt.Println(now.Month())  // 月
+			fmt.Println(now.Day())    // 日
+			fmt.Println(now.Hour())   // 小时
+			fmt.Println(now.Minute()) // 分钟
+			fmt.Println(now.Second()) // 秒
+		}
+		```
+	- 时间戳
+		```
+		// 时间戳是自1970年1月1日(08:00:00GMT)至当前时间的总毫秒数。它也被称为Unix时间戳(UnixTimestamp)。
+
+		func timestampDemo1() {
+			now := time.Now()           // 获取当前时间
+			fmt.Println(now.Unix())     // 时间戳
+			fmt.Println(now.UnixNano()) // 纳秒时间戳
+		}
+		```
+	- 使用 `time.Unix()` 函数将时间戳转为时间格式。
+		```
+		func timestampDemo2() {
+			now := time.Now()                   // 获取当前时间
+			UnixTimestamp := now.Unix()         // 获取当前时间戳
+			time := time.Unix(UnixTimestamp, 0) // 将当前时间戳转换为时间格式
+			fmt.Println(time)
+			fmt.Println(time.Year())   // 年
+			fmt.Println(time.Month())  // 月
+			fmt.Println(time.Day())    // 日
+			fmt.Println(time.Hour())   // 时
+			fmt.Println(time.Minute()) // 分
+			fmt.Println(time.Second()) // 秒
+			
+			fmt.Printf("%4d-%2d-%0d %02d:%02d:%02d\n", time.Year(), time.Month(), time.Day(), time.Hour(), time.Minute(), time.Second())
+		}
+		```
+	- 定时器
+	- 使用 `time.Tick(时间间隔)` 来设置定时器。
+		```
+		func tickDemo() {
+			ticker := time.Tick(time.Second) // 定义一个1秒间隔的定时器
+			for i := range ticker {
+				fmt.Println(i) // 每秒都会执行的任务
+			}
+		}
+		```
+		- 时间间隔
+			```
+			// Duration类型代表两个时间点之间经过的时间，以纳秒为单位。可表示的最长时间段大约290年。定义的时间间隔常量如下:
+			const (
+				Nanosecond  Duration = 1					// 纳秒
+				Microsecond			 = 1000 * Nanosecond	// 微妙
+				Millisecond			 = 1000 * Microsecond	// 毫秒
+				Second				 = 1000 * Millisecond	// 秒
+				Minute				 = 60 * Second			// 分钟
+				Hour				 = 60 * Minute			// 小时
+			)
+			// 例如: `time.Duration` 表示1纳秒，`time.Second` 表示1秒。
+			```
+	- 时间格式化
+    	- 时间类型有一个自带的方法 `Format` 进行格式化，需要注意的是Go语言中格式化时间模板不是常见的 `Y-m-d H:M:S` 而是使用Go的诞生时间2006年1月2号15点04分(记忆口诀为20061234)。
+			```
+			func formatDemo() {
+				fmt.Println("################时间格式化################")
+				now := time.Now()
+				// 格式化的模板为Go的出生时间2006年1月2号15点04分
+				fmt.Println(now.Format("2006-01-02 15:04"))
+				fmt.Println(now.Format("2006/01/02 15:04"))
+				fmt.Println(now.Format("15:04 2006/01/02"))
+				fmt.Println(now.Format("2006/01/02"))
+				
+				fmt.Println(now.Format("2006-01-02 15:04:05.000")) // 05表示秒 .000表示毫秒
+			}
+			```
+5. 
