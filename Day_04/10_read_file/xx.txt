@@ -1,0 +1,6 @@
+hello world
+hello golang
+hello python
+hello php
+hello java
+hello c
