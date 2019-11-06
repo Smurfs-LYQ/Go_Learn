@@ -2,10 +2,9 @@ package main
 
 import (
 	"fmt"
-	"os"
+	"runtime"
 )
 
 func main() {
-	res, err := os.Stat("./Test")
-	fmt.Println(res.Size()/1024/1024, err)
+	fmt.Println(runtime.NumCpu()))
 }
