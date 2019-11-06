@@ -6,5 +6,5 @@ import (
 )
 
 func main() {
-	fmt.Println(runtime.NumCpu()))
+	fmt.Println(runtime.NumCPU())
 }
