@@ -297,7 +297,14 @@
   	- `Write` 和 `WriteString`
   	- `bufio.NewWriter`
   	- `ioutil.WriteFile`
-14. fmt.Fprintf()
+14. > os.Stat()
+	- 作用: 获取文件的信息
+	- 参数
+    	- 文件的路径
+  	- 返回值
+    	- 文件信息的结构体 FileInfo
+    	- 错误信息
+15. > fmt.Fprintf()
 	- 这是一个写入文件用的格式化参数
 	- 参数:
     	-  io.Writer 		一个可以写入的文件类型对象
@@ -306,8 +313,8 @@
 	- 返回值:
     	- 写入的字节数
     	- 错误信息
-15. runtime 包
+16. > runtime 包
 	- 他可以获取到程序在执行的时候环境的互操作，如正在执行的Go函数。
-16. path 包
+17. > path 包
 	- 这个包是专门用来操作路径信息的。
-17. 
+18. 

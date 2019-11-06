@@ -3,14 +3,19 @@ package main
 import (
 	"Go_Learn/Day_04/logs_demo/mylog"
 	"fmt"
+	"time"
 )
 
 func main() {
+Begin:
+	str := "这是一条测试日志"
 	log := mylog.NewFileLoger("../logs/", "test.log")
-	// log.Debug("[%v] [%v] %s\n", time.Now().Format("2006-01-02 15:04:05.000"), "Debug", "这是一条测试日志")
-	log.Debug("[%s] %s\n", "Debug", "这是一条测试日志")
 
-	// log.Info("这是一条info的日志")
-
-	fmt.Println("写入完成")
+	for {
+		if !log.Debug("[%s] [%s]\n", "Debug", str) {
+			fmt.Println("重新开始")
+			goto Begin
+		}
+		time.Sleep(time.Second * 1)
+	}
 }
