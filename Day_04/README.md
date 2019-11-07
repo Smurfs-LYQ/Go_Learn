@@ -158,6 +158,48 @@
 				fmt.Println(now.Format("2006-01-02 15:04:05.000")) // 05表示秒 .000表示毫秒
 			}
 			```
+		- 如果想格式化为12小时方式，需指定 `PM`，并且小时由`15`改为`03`
+			```
+			func formatDemo() {
+				// 格式化为12小时制格式
+				fmt.Println(now.Format("2006-01-02 03:04:05.000 PM Mon Jan"))
+				// PM  代表12小时制格式
+				// Mon 代表周几
+				// Jan 代表几月
+			}
+			```
+  	- 时间加时间间隔
+    	- 我们在日常的编码过程中可能会遇到要求 时间+时间间隔 的要求，Go语言的时间对象提供了一个Add方法
+  			```
+			func (t Time) Add(d Duration) Time
+  			```
+    	- 参数:
+        	- Duration time包的时间间隔常量
+  	- 两个时间相减
+    	- 求两个时间之间的差值,Go语言的时间对象提供了一个Sub方法
+  			```
+			func (t Time) Sub(u Time) Duration
+			```
+        	- 参数
+            	- 两个时间相减的另一个时间对象
+        	- 返回值
+            	- 返回一个时间段t-u。如果结果超出了Duration可以表示的最大值/最小值，将返回最大值/最小值。要获取时间点t-d(d为Duration)，可以使用t.Add(-d)
+  	- 时间比较
+    	- Equal
+			```
+			func (t Time) Equal(u Time) bool
+			```
+        	- 判断两个时间是否相同，会考虑时区的影响，因此不同时区标准的时间也可以正确比较。本方法和用t==u不同，这种方法还会比较地点和时区信息
+    	- Before
+			```
+			func (t Time) Before(u Time) bool
+			```
+        	- 如果t代表的时间点在u之前，则返回真；否则返回假
+    	- After
+			```
+			func (t Time) After(u Time) bool
+			```
+        	- 如果t代表的时间点在u之后，则返回真；否则返回假
 5. > Go语言基础之接口
 	- 接口`(interface)`定义了一个对象的行为规范，只定义规范不实现，由具体的对象来实现规范的细节。
 	- 接口介绍

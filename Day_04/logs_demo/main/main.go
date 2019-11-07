@@ -16,6 +16,9 @@ Begin:
 			fmt.Println("重新开始")
 			goto Begin
 		}
-		time.Sleep(time.Second * 1)
+		// 睡眠1秒
+		// time.Sleep(time.Second)
+		// 定时器，每间隔1秒执行一次，相比Sleep效率更高
+		time.Tick(time.Second)
 	}
 }

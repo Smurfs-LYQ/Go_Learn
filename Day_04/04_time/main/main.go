@@ -59,6 +59,50 @@ func time5() {
 	fmt.Println(now.Format("2006/01/02"))
 
 	fmt.Println(now.Format("2006-01-02 15:04:05.000")) // 05表示秒 .000表示毫秒
+
+	// 格式化为12小时制格式
+	fmt.Println(now.Format("2006-01-02 03:04:05.000 PM Mon Jan"))
+}
+
+func time6() {
+	// 定义一个时间对象
+	now := time.Now()
+	// 调用time对象的Add方法，获得当前时间加1小时后的时间
+	later := now.Add(time.Hour)
+	fmt.Println(now)
+	fmt.Println(later)
+}
+
+func time7() {
+	// 设置第一个时间对象
+	one := time.Now()
+	// 设置第二个时间对象, 通过第一个时间对象加1小时获得
+	two := one.Add(time.Hour)
+
+	// 第二个时间对象调用Sub方法，减第一个时间对象，查看相差的时间
+	res := two.Sub(one)
+	fmt.Println(res)
+}
+
+func time8() {
+	one := time.Now()
+	two := one
+
+	fmt.Println(one.Equal(two))
+}
+
+func time9() {
+	one := time.Now()
+	two := time.Now()
+
+	fmt.Println(one.Before(two))
+}
+
+func time10() {
+	one := time.Now()
+	two := time.Now()
+
+	fmt.Println(one.After(two))
 }
 
 func main() {
@@ -70,5 +114,15 @@ func main() {
 
 	// time4()
 
-	time5()
+	// time5()
+
+	// time6()
+
+	// time7()
+
+	time8()
+
+	time9()
+
+	time10()
 }

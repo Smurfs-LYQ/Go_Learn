@@ -19,6 +19,3 @@ const (
 	ERROR
 	FATEL
 )
-
-// func Log() {
-// }
