@@ -1,0 +1,58 @@
+package mylogger
+
+import (
+	"fmt"
+	"time"
+)
+
+// ConsoleLogger 是一个终端日志结构体
+type ConsoleLogger struct {
+	level Level
+}
+
+// NewConsoleLogger 终端日志结构体构造函数
+func NewConsoleLogger(level string) *ConsoleLogger {
+	return &ConsoleLogger{
+		getLevelInt(level),
+	}
+}
+
+// log 公用的记录日志的功能封装成一个单独的方法
+func (c *ConsoleLogger) log(level Level, format string, args ...interface{}) {
+	if c.level > level {
+		return
+	}
+	str := fmt.Sprintf(format, args...)
+	// 日志格式: [时间] [文件:行号] [函数名] [日志级别] 日志信息
+	// 获取文件名 行号 函数名
+	filename, line, funcname := GetCallerInfo(3)
+	fmt.Printf("[%s] [%s:%d] [%s] [%s] [%s]\n", time.Now().Format("2006-01-02 15:04:05.000"), filename, line, funcname, getLevelStr(level), str)
+}
+
+// Debug 方法
+func (c *ConsoleLogger) Debug(format string, args ...interface{}) {
+	c.log(DebugLevel, format, args...)
+}
+
+// Info 方法
+func (c *ConsoleLogger) Info(format string, args ...interface{}) {
+	c.log(InfoLevel, format, args...)
+
+}
+
+// Warning 方法
+func (c *ConsoleLogger) Warning(format string, args ...interface{}) {
+	c.log(WarningLevel, format, args...)
+
+}
+
+// Error 方法
+func (c *ConsoleLogger) Error(format string, args ...interface{}) {
+	c.log(ErrorLevel, format, args...)
+
+}
+
+// Fatel 方法
+func (c *ConsoleLogger) Fatel(format string, args ...interface{}) {
+	c.log(FatelLevel, format, args...)
+}

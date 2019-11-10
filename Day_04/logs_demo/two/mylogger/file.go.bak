@@ -1,0 +1,96 @@
+package mylogger
+
+import (
+	"fmt"
+	"os"
+	"path"
+	"time"
+)
+
+// 这是往文件中写日志的代码
+
+// FileLogger 日志文件的结构体
+type FileLogger struct {
+	level    Level    // 日志级别
+	fileName string   // 日志文件名
+	filePath string   // 日志文件地址
+	file     *os.File // 成功日志文件对象
+	errfile  *os.File // 错误日志文件对象
+}
+
+// NewFileLogger FileLogger结构体的构造函数
+func NewFileLogger(levelstr, filename, filepath string) *FileLogger {
+	f := &FileLogger{
+		level:    getLevelInt(levelstr),
+		fileName: filename,
+		filePath: filepath,
+	}
+	f.initFile() // 根据上面的文件路径和文件名打开日志文件，把文件句柄赋值给结构体对应的字段
+	return f
+}
+
+// initFile 打开文件方法
+func (f *FileLogger) initFile() {
+	// 合并日志文件地址和名称
+	logFile := path.Join(f.filePath, f.fileName) // path包中自动拼接文件地址和名称的函数
+
+	// 打开成功日志文件
+	file, err := os.OpenFile(logFile, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0664)
+	if err != nil {
+		panic(fmt.Errorf("文件%s打开失败, 错误原因: %v", logFile, err)) // fmt.Errorf 可以格式化输出并且返回error类型的参数
+	}
+	f.file = file
+
+	// 打开错误日志文件
+	errLogFile := path.Join(f.filePath, fmt.Sprintf("err%s", f.fileName))
+	errFile, err := os.OpenFile(errLogFile, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0664)
+	if err != nil {
+		panic(fmt.Errorf("文件%s打开失败, 错误原因: %v", errLogFile, err))
+	}
+	f.errfile = errFile
+}
+
+// log 写入日志执行参数
+func (f *FileLogger) log(level Level, format string, args ...interface{}) {
+	// 如果日志文件对象设置的日志等级高于当前调用者的日志等级，则返回不进行下面的操作
+	if f.level > level {
+		return
+	}
+	str := fmt.Sprintf(format, args...) // 格式化日志信息，得到用户要记录的日志
+	// 日志格式: [时间] [文件:行号] [函数名] [日志级别] [信息]
+	fileName, line, funcName := GetCallerInfo(3)
+	str = fmt.Sprintf("[%s] [%s:%d] [%s] [%s] [%s]", time.Now().Format("2006-01-02 15:04:05.000"), fileName, line, funcName, getLevelStr(level), str)
+	fmt.Fprintln(f.file, str) // 利用fmt包将日志信息str写入到f.file中。他和fmt.Fprintf的区别在于它自带换行，但是它不能格式化
+	// 如果是error或者fatel级别的日志另外要再记录到 f.errFile对象中
+	if level >= ErrorLevel {
+		fmt.Fprintln(f.errfile, str)
+	}
+}
+
+// Debug 方法
+func (f *FileLogger) Debug(format string, args ...interface{}) {
+	f.log(DebugLevel, format, args...)
+}
+
+// Info 方法
+func (f *FileLogger) Info(format string, args ...interface{}) {
+	f.log(InfoLevel, format, args...)
+
+}
+
+// Warning 方法
+func (f *FileLogger) Warning(format string, args ...interface{}) {
+	f.log(WarningLevel, format, args...)
+
+}
+
+// Error 方法
+func (f *FileLogger) Error(format string, args ...interface{}) {
+	f.log(ErrorLevel, format, args...)
+
+}
+
+// Fatel 方法
+func (f *FileLogger) Fatel(format string, args ...interface{}) {
+	f.log(FatelLevel, format, args...)
+}
