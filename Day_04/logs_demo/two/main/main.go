@@ -1,6 +1,9 @@
 package main
 
-import "Go_Learn/Day_04/logs_demo/two/mylogger"
+import (
+	"Go_Learn/Day_04/logs_demo/two/mylogger"
+	"time"
+)
 
 var logger mylogger.Mylog
 
@@ -13,10 +16,14 @@ func main() {
 	// logger := mylogger.NewConsoleLogger("debug")
 	// logger := mylogger.NewConsoleLogger("info")
 
-	logger = mylogger.NewFileLogSize("dubug", "golang.log", "../logs")
+	// logger = mylogger.NewFileLogSize("dubug", "golang.log", "../logs")
+	// defer logger.Die()
+
+	logger = mylogger.NewFileLogTime("dubug", "golang.log", "../logs", 3)
 	defer logger.Die()
 
 	for {
+		time.Sleep(time.Minute)
 		logger.Debug("%s", "测试日志")
 		logger.Info("%s", "测试日志")
 		logger.Warning("%s", "测试日志")
