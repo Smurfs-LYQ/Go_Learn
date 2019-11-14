@@ -3,6 +3,7 @@
 1. 反射-TypeOf
 2. 反射-ValueOf
 3. 反射-Elem
+4. 反射-IsNil 和 IsValid
 
 
 #### <center>笔记</center>
@@ -17,7 +18,9 @@
 	- 优点
     	- 让代码更灵活
 	- 缺点
-    	- 执行效率低	 
+    	- 基于反射的代码特别的脆弱，非常容易panic，而且编译期间也无法检测反射的错误
+    	- 大量使用反射的代码难以理解
+    	- 反射的性能低下，给予反射实现的代码通常比正常代码运行速度慢一到两个数量级
 2. > reflect包
  	- 在Go语言的反射机制中，**任何接口值都是由** `一个具体类型` 和 `具体类型的值` 两部分组成的。在Go语言中反射的相关功能由内置的reflect包提供，任何接口值在反射中都可以理解为由 `reflect.Type` 和 `reflect.Value` 两部分组成，并且reflect包提供了 `reflect.TypeOf` 和 `reflect.ValueOf` 两个函数来获取人以对象的Value和Type。
  	- **TypeOf**
@@ -139,3 +142,34 @@
 			func (v Value) IsValid() bool
 			```
 			- `IsValid()` 返回v是否持有一个值。如果v是Value零值会返回假，此时v除了IsValid、String、Kind之外的方法都会导致panic。
+3. > 结构体反射
+	- **与结构体相关的方法**
+	- 任意值通过 `reflect.TypeOf()` 获得反射对象信息后，如果它的类型是结构体，可以通过反射值对象( `reflect.Type` )的 `NumField()` 和 `Field()` 方法获得结构体成员的详细信息。
+	- `reflect.Type` 中与获取结构体成员相关的方法如下表所示。
+
+		|   方法   			|  说明  |
+		|   ---   		   |  ---  |
+		| Field(i int) StructField | 根据索引，返回索引对应的结构体字段的信息 |
+		| NumField() int | 返回结构体成员字段数量 |
+		| FieldByNAme(name string)(StructField, bool) | 根据给定字符串返回字符串对应的结构体字段的信息 |
+		| FieldByIndex(index []int) StructField | 多层成员访问时，根据[]int提供的每个结构体的字段索引，返回字段的信息 |
+		| FieldByNameFunc(match func(string) bool) (StructField,bool) | 根据传入的匹配函数匹配需要的字段 |
+		| NumMethod() int | 返回该类型的方法集中方法的数目 |
+		| Method(int) Method | 返回该类型方法集中的第i个方法 |
+		| MethodByName(string) (Method,bool) | 根据方法名返回该类型方法集中的方法 |
+	- StructField类型
+    	- `StructField` 类型用来描述结构体中的一个字段的信息
+    	- `StructField` 的定义如下:
+			```
+			type StructField struct {
+				// Name是字段的名字。PkgPath是非导出字段的包路径，对导出字段该字段为" "。
+				Name 	  string
+				PkgPath   string
+				Type 	  Type		// 字段的类型
+				Tag  	  StructTag // 字段的标签
+				Offset 	  uintptr	// 字段在结构体中的字节偏移量
+				Index 	  []int 	// 用于Type.FieldByIndex时的索引切片
+				Anonymous bool		// 是否匿名字段
+			}
+			```
+      	- 结构体反射
