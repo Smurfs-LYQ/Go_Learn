@@ -24,11 +24,11 @@ func main() {
 
 	for {
 		time.Sleep(time.Minute)
-		logger.Debug("%s", "测试日志")
-		logger.Info("%s", "测试日志")
-		logger.Warning("%s", "测试日志")
-		logger.Error("%s", "测试日志")
-		logger.Fatel("%s", "测试日志")
+		logger.Debug("%s", "Debug日志")
+		logger.Info("%s", "Info日志")
+		logger.Warning("%s", "Warning日志")
+		logger.Error("%s", "Error日志")
+		logger.Fatel("%s", "Fatel日志")
 	}
 
 }

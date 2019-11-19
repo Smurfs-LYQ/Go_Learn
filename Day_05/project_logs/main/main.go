@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"Go_Learn/Day_05/project_logs/mylog"
 	"io/ioutil"
 	"reflect"
 	"strconv"
@@ -74,5 +74,13 @@ func main() {
 	filepath := "../init/logs.conf"
 	var c Config
 	NewConfig(filepath, &c)
-	fmt.Println(c)
+
+	logger := mylog.NewFilelog("debug", c.Filename, c.Filepath, c.Maxsize)
+	for {
+		logger.Debug("%s", "Debug日志")
+		logger.Info("%s", "Info日志")
+		logger.Warning("%s", "Warning日志")
+		logger.Error("%s", "Error日志")
+		logger.Fatel("%s", "Fatel日志")
+	}
 }

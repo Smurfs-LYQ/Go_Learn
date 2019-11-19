@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"runtime"
+	"path"
 )
 
 func main() {
-	fmt.Println(runtime.NumCPU())
+	fmt.Println(path.Join("./asd", "one.log"))
 }
