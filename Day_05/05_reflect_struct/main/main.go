@@ -21,10 +21,6 @@ func (s student) GetStudent() {
 	fmt.Printf("分数: %d\n", s.Score)
 }
 
-func reflectStructFunc(name string, score int) {
-
-}
-
 func main() {
 	stu1 := student{
 		Name:  "Smurfs",
@@ -58,8 +54,8 @@ func main() {
 		// 通过反射调用方法，传递的参数必须是 []reflect.Value 类型
 		var args = []reflect.Value{}          // 定义一个用于存放参数的reflect.Value类型的切片
 		if t.Method(i).Name == "SetStudent" { // 获取方法名，并判断此方法是不是需要参数的方法
-			args = append(args, reflect.ValueOf("Smurfs")) // 将参数转换为reflect.Value类型并将其追加到args切片中
-			args = append(args, reflect.ValueOf(99))
+			args = append(args, reflect.ValueOf("Smurfs的格格巫")) // 将参数转换为reflect.Value类型并将其追加到args切片中
+			args = append(args, reflect.ValueOf(18))
 		}
 		v.Method(i).Call(args) // 调用参数并传入参数。及时对应的方法没有设置形参，也需要传一个空的reflect.Value的切片进去
 		fmt.Println()
