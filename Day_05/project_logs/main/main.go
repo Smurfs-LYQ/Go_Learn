@@ -70,12 +70,16 @@ func NewConfig(filename string, result interface{}) {
 	}
 }
 
+var logger mylog.Mylogger
+
 func main() {
 	filepath := "../init/logs.conf"
 	var c Config
 	NewConfig(filepath, &c)
 
-	logger := mylog.NewFilelog("debug", c.Filename, c.Filepath, c.Maxsize)
+	logger = mylog.NewFilelog("debug", c.Filename, c.Filepath, c.Maxsize)
+	defer logger.Die()
+
 	for {
 		logger.Debug("%s", "Debug日志")
 		logger.Info("%s", "Info日志")

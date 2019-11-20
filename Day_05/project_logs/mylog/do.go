@@ -94,6 +94,11 @@ func GetCallerInfo(skip int) (filename, funcname string, line int) {
 	return
 }
 
+// Die 程序结束关闭文件
+func (f *Filelog) Die() {
+	f.file.Close()
+}
+
 // log 日志写入文件操作
 func (f *Filelog) log(level Level, format string, args ...interface{}) {
 	if f.level > level {
