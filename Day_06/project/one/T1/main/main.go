@@ -13,15 +13,10 @@ import (
 
 // 1个生产者 10个消费者
 
-func init() {
-	rand.Seed(time.Now().Unix())
-}
-
 var wg sync.WaitGroup
 
 // Prodocer 生产者
 func Prodocer(ch chan int) {
-	// defer wg.Done()
 	for i := 0; i < 10; i++ {
 		ch <- rand.Intn(1000)
 	}
@@ -41,6 +36,8 @@ func Customer(ch chan int) {
 }
 
 func main() {
+	rand.Seed(time.Now().Unix())
+
 	wg.Add(10)
 	var ch1 = make(chan int)
 	go Prodocer(ch1)
