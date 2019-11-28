@@ -101,5 +101,6 @@ func main() {
 	for i := 0; i < 5; i++ {
 		go Consumer(T1chan, T2chan)
 	}
+
 	printResult(T2chan)
 }
