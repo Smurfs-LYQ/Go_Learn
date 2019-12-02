@@ -7,6 +7,7 @@
 5. channel-取值时判断通道是否关闭
 6. channel-select多路复用
 7. channel-单向通道
+8. 并发控制与锁
 
 #### <center>笔记</center>
 1. > 并发和并行的区别
