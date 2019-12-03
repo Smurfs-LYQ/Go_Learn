@@ -7,7 +7,8 @@
 5. channel-取值时判断通道是否关闭
 6. channel-select多路复用
 7. channel-单向通道
-8. 并发控制与锁
+8. 并发控制与锁-互斥锁
+9. 并发控制与锁-读写锁
 
 #### <center>笔记</center>
 1. > 并发和并行的区别
@@ -188,4 +189,60 @@
 
 		}
 		```
-10. > 并发控制与锁
+10. > 并发控制
+	- 有时候Go代码中可能会存在多个 `goroutine` 同时操作一个资源(临界区)，这种情况会发生 `竞态问题` (数据竞态)。类比显示生活中的例子有十字路口被各个方向的汽车竞争等。举个例子。
+		```
+		var x int64
+		var wg sync.WaitGroup
+
+		func add() {
+			for i := 0; i < 1000; i++ {
+				x++
+			}
+			wg.Done()
+		}
+
+		func main() {
+			wg.Add(2)
+			go add()
+			go add()
+			wg.Wait()
+			fmt.Println(x)
+		}
+		```
+	- 上面代码中开启了两个 `goroutine` 去累加变量x的值，这两个 `goroutine` 在访问和修改 `x` 变量的时候回存在数据竞争，导致最后的结果与期待的不符
+11. > 锁
+	- 互斥锁
+		- 互斥锁是一种常用的控制共享资源访问的方法，它能够保证同时只有一个 `goroutine` 可以访问共享资源。Go语言中使用 `sync` 包的 `Mutex` 类型来实现互斥锁。使用互斥锁来修复上面的代码问题:
+			```
+			var x int64
+			var wg sync.WaitGroup
+			var lock sync.Mutex
+
+			func add() {
+				for i := 0; i < 1000; i++ {
+					// 加锁
+					lock.Lock()
+
+					x++
+
+					// 解锁
+					lock.Unlock()
+				}
+				wg.Done()
+			}
+
+			func main() {
+				wg.Add(2)
+				go add()
+				go add()
+				wg.Wait()
+				fmt.Println(x)
+			}
+			```
+		- 使用互斥锁能够保证同一时间有且只有一个 `goroutine` 进入临界区，其它的 `goroutine` 则在等待锁；当互斥锁释放后，等待的 `goroutine` 才可以获取锁进入临界区，多个 `goroutine` 同时等待一个锁时，唤醒的策略是随机的。
+  	- 读写互斥锁
+    	- 互斥锁是完全互斥的，但是当我们并发的去读取一个资源不涉及资源修改的时候是没有必要加锁的，这种场景下读写锁是更好的一种选择。读写锁使用 `sync` 包中 `RWMutex` 类型。
+    	- 读写锁分为两种: `读锁`和`写锁`。当一个 `goroutine` 获取读锁之后，其他的 `goroutine` 如果是获取读锁会继续获得锁，如果是获取写锁就会等待；当一个 `goroutine` 获取读写锁之后，其他的 `goroutine` 无论是获取读锁还是写锁都会等待。
+    	- 读比写多的时候使用读写锁 能够提高性能
+12. 
