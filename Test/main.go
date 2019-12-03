@@ -2,9 +2,23 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
+	"sync"
 )
 
+func T1(a int) {
+	fmt.Println(a)
+}
+
+// 闭包
+func closer(x int) func() {
+	return func() {
+		T1(x)
+	}
+}
+
+var onlyOnce sync.Once
+
 func main() {
-	fmt.Println(rand.Int63())
+	T1 := closer(10)
+	onlyOnce.Do(T1)
 }

@@ -9,6 +9,7 @@
 7. channel-单向通道
 8. 并发控制与锁-互斥锁
 9. 并发控制与锁-读写锁
+10. sync.Once
 
 #### <center>笔记</center>
 1. > 并发和并行的区别
@@ -213,7 +214,7 @@
 	- 上面代码中开启了两个 `goroutine` 去累加变量x的值，这两个 `goroutine` 在访问和修改 `x` 变量的时候回存在数据竞争，导致最后的结果与期待的不符
 11. > 锁
 	- 互斥锁
-		- 互斥锁是一种常用的控制共享资源访问的方法，它能够保证同时只有一个 `goroutine` 可以访问共享资源。Go语言中使用 `sync` 包的 `Mutex` 类型来实现互斥锁。使用互斥锁来修复上面的代码问题:
+		- 互斥锁是一种常用的控制共享资源访问的方法，它能够保证同时只有一个 `goroutine` 可以访问共享资源(比如全局变量)。Go语言中使用 `sync` 包的 `Mutex` 类型来实现互斥锁。使用互斥锁来修复上面的代码问题:
 			```
 			var x int64
 			var wg sync.WaitGroup
@@ -245,4 +246,64 @@
     	- 互斥锁是完全互斥的，但是当我们并发的去读取一个资源不涉及资源修改的时候是没有必要加锁的，这种场景下读写锁是更好的一种选择。读写锁使用 `sync` 包中 `RWMutex` 类型。
     	- 读写锁分为两种: `读锁`和`写锁`。当一个 `goroutine` 获取读锁之后，其他的 `goroutine` 如果是获取读锁会继续获得锁，如果是获取写锁就会等待；当一个 `goroutine` 获取读写锁之后，其他的 `goroutine` 无论是获取读锁还是写锁都会等待。
     	- 读比写多的时候使用读写锁 能够提高性能
-12. 
+12. > sync.Once
+	- 延迟一个开销很大的初始化操作到真正用到它的时候再执行是一个很好的实践。因为预先初始化一个变量(比如在init函数中完成初始化)会增加程序的启动延时，而且有可能实际执行过程中的这个变量没有用上，那这个初始化操作就不是必须做的，举个例子:
+		```
+		var icons map[string]image.Image
+
+		func loadIcons() {
+			icons = map[string]image.Image{
+				"left":  loadIcon("left.png"),
+				"up":	 loadIcon("up.png"),
+				"rigit": loadIcon("right.png"),
+				"down":	 loadIcon("down.png"),
+			}
+		}
+
+		// Icon 被多个goroutine调用时不是并发安全的
+		func Icon(name string) image.Image {
+			if icons == nil {
+				loadIcons()
+			}
+			return icons[name]
+		}
+		```
+	- 多个 `goroutine` 并发调用Icon函数时不是并发安全的，现代的编译器和CPU可能会在保证每个 `goroutine` 都满足串行一致的基础上自由地重新编排访问内存的顺序。loadIcons函数可能会被重排为以下结果:
+		```
+		func loadIcons() {
+			icons = make(map[string]image.Image)
+			icons["left"]  = loadIcon("left.png")
+			icons["up"]	   = loadIcon("up.png")
+			icons["rigit"] = loadIcon("right.png")
+			icons["down"]  = loadIcon("down.png")
+		}
+		```
+	- 在这种情况下就会出现即使判断了 `icons` 不是nil也不意味着变量初始化完成了。考虑到这种情况，我们能想到的办法就是添加 `互斥锁`，保证初始化 `icons` 的时候不会被其他的 `goroutine` 操作，但是这样做又会引发性能问题。Go语言中的 `sync` 包中提供了一个针对一次性初始化问题的解决方案 - `sync.Once`。
+	- `sync.Once` 只有一个Do方法，其签名如下:
+		```
+		func (o *Once) Do(f func()) {}
+		```
+	- 如果需要执行的函数 `f` 需要**传递参数就需要搭配闭包**来使用。
+	- 使用 `sync.Once` 改造的实例代码如下:
+		```
+		var icons map[string]image.Image
+
+		var loadIconsOnce sync.Once
+
+		func loadIcons() {
+			icons = map[string]image.Image{
+				"left":  loadIcon("left.png"),
+				"up":	 loadIcon("up.png"),
+				"rigit": loadIcon("right.png"),
+				"down":	 loadIcon("down.png"),
+			}
+		}
+
+		// Icon是并发安全的
+		func Icon(name string) image.Image {
+			loadIconsOnce.Do(loadIcons)
+			return icons[name]
+		}
+		```
+	- `sync.Once` 其实内部包含一个互斥锁和一个布尔值，互斥锁保证布尔值和数据的安全，而布尔值用来记录初始化是都完成。这样设计就能保证初始化操作的时候是并发安全的并且初始化操作也不会被执行多次。
+13. 55:30
