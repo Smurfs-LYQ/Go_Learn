@@ -10,6 +10,7 @@
 8. 并发控制与锁-互斥锁
 9. 并发控制与锁-读写锁
 10. sync.Once
+11. sync.Map
 
 #### <center>笔记</center>
 1. > 并发和并行的区别
@@ -306,4 +307,55 @@
 		}
 		```
 	- `sync.Once` 其实内部包含一个互斥锁和一个布尔值，互斥锁保证布尔值和数据的安全，而布尔值用来记录初始化是都完成。这样设计就能保证初始化操作的时候是并发安全的并且初始化操作也不会被执行多次。
-13. 55:30
+13. > sync.Map
+	- Go语言中内置的map不是并发安全的。请看下面实例: 
+		```
+		var m = make(map[string]int)
+
+		func get(key string) int {
+			return m[key]
+		}
+
+		func set(key string, value int) {
+			m[key] = value
+		}
+
+		func main() {
+			wg := sync.WaitGroup{}
+			for i := 0; i < 20; i++ {
+				wg.Add(1)
+				go func(n int) {
+					key := strconv.Itoa(n)
+					set(key, n)
+					fmt.Printf("k=%v,v=%v\n", key, get(key))
+					wg.Done()
+				}(i)
+			}
+			wg.Wait()
+		}
+		```
+	- 上面的代码开启少量几个 `goroutine` 的时候可能没什么问题，当并发多了之后执行上面的代码就会报 `fatal err: concurrent map writes` 错误。
+	- 像这种场景下就需要为map加锁来保证并发的安全性了，Go语言的 `sync` 包中提供了一个开箱即用的并发安全版map- `sync.Map`。开箱即用表示不用像内置的map一样使用make函数初始化就能直接使用。同时 `sync.Map` 内置了诸如 `Store`、`Load`、`LoadOrStore`、`Delete`、`Range`等操作方法。
+		```
+		var m = sync.Map{}
+
+		func main() {
+			wg := sync.WaitGroup{}
+
+			for i := 0; i < 20; i++ {
+				wg.Add(1)
+				go func(n int) {
+					key := strconv.Itoa(n)
+					m.Store(key, n)         // sync.Map 自带方法: 用于设置键值对 参数:键、值
+					value, _ := m.Load(key) // sync.Map 自带方法: 用于获取指定键的值 参数:键
+					fmt.Printf("k=%v,v=%v\n", key, value)
+					wg.Done()
+				}(i)
+			}
+			wg.Wait()
+		}
+		```
+
+
+作业:
+	利用channel和goroutine实现异步写日志

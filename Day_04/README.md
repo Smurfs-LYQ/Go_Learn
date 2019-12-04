@@ -121,15 +121,15 @@
 		}
 		```
 	- 定时器
-	- 使用 `time.Tick(时间间隔)` 来设置定时器。
-		```
-		func tickDemo() {
-			ticker := time.Tick(time.Second) // 定义一个1秒间隔的定时器
-			for i := range ticker {
-				fmt.Println(i) // 每秒都会执行的任务
-			}
-		}
-		```
+    	- 使用 `time.Tick(时间间隔)` 来设置定时器。
+    		```
+    		func tickDemo() {
+    			ticker := time.Tick(time.Second) // 定义一个1秒间隔的定时器
+    			for i := range ticker {
+    				fmt.Println(i) // 每秒都会执行的任务
+    			}
+    		}
+    		```
 		- 时间间隔
 			```
 			// Duration类型代表两个时间点之间经过的时间，以纳秒为单位。可表示的最长时间段大约290年。定义的时间间隔常量如下:

@@ -111,3 +111,21 @@ func main() {
 	fmt.Println(f4())
 }
 ```
+6. 为什么下面的代码输出 `真` ？
+```
+func main() {
+	f := func() bool {
+		return false
+	}
+
+	switch f(); {
+	case true:
+		fmt.Println("真")
+	case false:
+		fmt.Println("假")
+	}
+}
+```
+答: 
+	因为 `f ()`后面的分号的将代码给分隔开了，`f()` 的返回值没有被接收，代码的效果等同于 `switch _ = f(); {` 、`switch {`，而 `switch {` 的判断条件为空的情况下就会默认将判断条件设置为布尔类型并且默认值为 `true`。
+7. 

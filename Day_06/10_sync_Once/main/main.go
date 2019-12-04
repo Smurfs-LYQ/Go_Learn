@@ -1,30 +1,24 @@
 package main
 
-type T1 struct {
-	left  string
-	up    string
-	right string
-	down  string
+import (
+	"fmt"
+	"sync"
+)
+
+func T1(a int) {
+	fmt.Println(a)
 }
 
-var T2 map[string]T1
-
-func loadT2() {
-	T2["string"] = T1{
-		left:  "left.png",
-		up:    "up.png",
-		right: "right.png",
-		down:  "down.png",
+// 闭包
+func closer(x int) func() {
+	return func() {
+		T1(x)
 	}
-
-	// T2 = map[string]T1{
-	// 	left:  "left.png",
-	// 	up:    "up.png",
-	// 	right: "right.png",
-	// 	down:  "down.png",
-	// }
 }
+
+var onlyOnce sync.Once
 
 func main() {
-
+	T1 := closer(10)
+	onlyOnce.Do(T1)
 }

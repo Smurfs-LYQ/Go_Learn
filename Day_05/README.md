@@ -63,6 +63,7 @@
 			}
 			```
 		- Go语言的反射中对所有指针变量的 `种类(kind)` 都是 `ptr`，但需要注意的是指针变量而类型 `名称(Name)` 是 `空`。
+		- Go语言的反射中像数字、切片、Map、指针等类型的变量，它们的 `.Name()` 都是返回 `空`。
  	- **ValueOf**
      	- `reflect.ValueOf()` 返回的是 `reflect.Value` 类型，其中包含了原始值的值信息。`reflect.Value` 与原始值之间可以互相转换。
      	- `reflect.Value` 类型提供的获取原始值的方法如下:

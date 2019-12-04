@@ -1,24 +1,16 @@
 package main
 
-import (
-	"fmt"
-	"sync"
-)
-
-func T1(a int) {
-	fmt.Println(a)
-}
-
-// 闭包
-func closer(x int) func() {
-	return func() {
-		T1(x)
-	}
-}
-
-var onlyOnce sync.Once
+import "fmt"
 
 func main() {
-	T1 := closer(10)
-	onlyOnce.Do(T1)
+	f := func() bool {
+		return false
+	}
+
+	switch f(); {
+	case true:
+		fmt.Println("真")
+	case false:
+		fmt.Println("假")
+	}
 }
