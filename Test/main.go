@@ -3,14 +3,7 @@ package main
 import "fmt"
 
 func main() {
-	f := func() bool {
-		return false
-	}
-
-	switch f(); {
-	case true:
-		fmt.Println("真")
-	case false:
-		fmt.Println("假")
-	}
+	fmt.Println("错误信息test")
+	fmt.Errorf("错误提示%d\n", 123)
+	fmt.Println(123)
 }
