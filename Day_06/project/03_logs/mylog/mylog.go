@@ -19,5 +19,4 @@ type Mylogger interface {
 	Warning()
 	Error()
 	Fatel()
-	// Die()
 }
