@@ -2,6 +2,16 @@ package main
 
 import "fmt"
 
+const (
+	one int = 1 << iota
+	two
+	thr
+	fou
+)
+
 func main() {
-	panic(fmt.Errorf("错误提示%d\n", 123))
+	fmt.Println(one)
+	fmt.Println(two)
+	fmt.Println(thr)
+	fmt.Println(fou)
 }

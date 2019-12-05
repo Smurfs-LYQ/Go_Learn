@@ -24,7 +24,7 @@ func T2(ch chan string) {
 
 func One() {
 	go T1(ch1) // 往ch1这个通道中放T1开头的字符串
-	go T2(ch2) // 往ch2这个通道中放T1开头的字符串
+	go T2(ch2) // 往ch2这个通道中放T2开头的字符串
 
 	for {
 		select {
