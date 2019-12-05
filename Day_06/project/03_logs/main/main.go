@@ -7,6 +7,7 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // LogFileIni 设置日志文件信息
@@ -31,7 +32,7 @@ func NewLogFileIni(iniPath string, result interface{}) {
 	// 读取文件
 	file, err := ioutil.ReadFile(iniPath)
 	if err != nil {
-		panic(fmt.Errorf("文件打开失败, 失败原因: %v\n", err))
+		panic(fmt.Errorf("文件打开失败"))
 	}
 
 	res := strings.Split(strings.TrimSpace(string(file)), "\n")
@@ -69,5 +70,12 @@ func main() {
 	NewLogFileIni(iniPath, &logConfig)
 
 	logger = mylog.NewFilelog("debug", logConfig.FileName, logConfig.FilePath, logConfig.MaxSize)
-	logger.Debug()
+	for {
+		go logger.Debug("%s", "Debug日志")
+		go logger.Info("%s", "Info日志")
+		go logger.Warning("%s", "Warning日志")
+		go logger.Error("%s", "Error日志")
+		go logger.Fatel("%s", "Fatel日志")
+		time.Sleep(time.Second)
+	}
 }

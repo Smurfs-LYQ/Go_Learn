@@ -154,6 +154,5 @@ func (f *Filelog) Error(format string, args ...interface{}) {
 
 // Fatel Fatel级别错误
 func (f *Filelog) Fatel(format string, args ...interface{}) {
-	// fmt.Println(f)
 	f.log(FatelLevel, format, args...)
 }
