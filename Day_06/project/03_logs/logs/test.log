@@ -1,0 +1,5 @@
+[20191205192229.596] [asm_amd64.s:1357] [runtime.goexit] [Debug] [Debug日志]
+[20191205192229.596] [asm_amd64.s:1357] [runtime.goexit] [Fatel] [Fatel日志]
+[20191205192229.596] [asm_amd64.s:1357] [runtime.goexit] [Info] [Info日志]
+[20191205192229.596] [asm_amd64.s:1357] [runtime.goexit] [Warning] [Warning日志]
+[20191205192229.596] [asm_amd64.s:1357] [runtime.goexit] [Error] [Error日志]

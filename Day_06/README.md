@@ -11,6 +11,7 @@
 9. 并发控制与锁-读写锁
 10. sync.Once
 11. sync.Map
+12. 原子操作
 
 #### <center>笔记</center>
 1. > 进程、线程、协程
@@ -104,35 +105,46 @@
     	- 声明通道类型的格式如下:
 			```
 			var 变量 chan 元素类型
+			```
+  	```
+		
 		```
-    	- 举几个例子:
+	  	- 举几个例子:
 			```
 			var ch1 chan int	// 声明一个传递整型的通道
 			var ch2 chan bool	// 声明一个传递布尔型的通道
-			var ch3 chan []int	// 声明一个传递int切片的通道
-		```
+  		var ch3 chan []int	// 声明一个传递int切片的通道
+  	```
 	- **创建channel**
+	  	
+	  	
+	  	
+	  	
     	- 通道是引用类型，通道类型的零值是 `nil`。
     	- 因为通道是引用类型，所有声明通道后需要使用 `make` 函数初始化之后才能使用。
 			```
 			make(chan 元素类型, [缓冲大小])
 			缓冲大小是可选的
-		```
+  	```
 	- **channel操作**
-    	- 通道有发送(send)、接收(receive)和关闭(close)三种操作。发送和接收都是用 `<-` 符号。
-    	- 讲一个值发送到通道中
+	  	
+	  	
+	  	
+    	
+	  	- 通道有发送(send)、接收(receive)和关闭(close)三种操作。发送和接收都是用 `<-` 符号。
+	  	- 讲一个值发送到通道中
 			```
-			ch <- 10 // 把10发送到ch中
-		```
+  		ch <- 10 // 把10发送到ch中
+  	```
     	- 从通道中接收值
-			```
-			res := <- ch // 从ch中接收值并赋值给变量x
-			<- ch		 // 从ch中接收值，忽略结果
-		```
+  		```
+  		res := <- ch // 从ch中接收值并赋值给变量x
+  		<- ch		 // 从ch中接收值，忽略结果
+  	```
     	- 我们通过调用内置的 `close` 函数来关闭通道
-			```
-			close(ch)
-		```
+  		```
+  		close(ch)
+  	```
     	- 关于关闭通道需要注意的事情是，只有在通知接收方 `goroutine` 所有的数据都发送完毕的时候才需要关闭通道。通道是可以被垃圾回收机制回收的，它和关闭文件是不一样的，在结束操作之后关闭文件是必须要做的，但是关闭通道不是必须的。
     	- 关闭通道有以下特点:
          - 对一个关闭的通道再发送值会导致panic
@@ -140,7 +152,7 @@
          - 对一个关闭的通道进行接收会一直获取值，直到通道为空。
          - 对一个关闭的并且没有值的通道执行接收操作会得到对应类型的零值。
 6. > 无缓冲的通道和有缓冲的通道
-	- 无缓冲的通道又被称为阻塞的通道，只有在有人接收值得时候才能发送值。
+	- 无缓冲的通道又被称为同步(阻塞)的通道，只有在有人接收值得时候才能发送值。
 	- 只要通道的容量大于零，那么该通道就是有缓冲区的通道，通道的容量表示通道中能存放元素的数量。
 	- 我们可以使用内置的 `len()` 函数获取通道内元素的数量，使用 `cap()` 函数获取通道的容量。
 7. > 取值时，判断通道是否关闭
@@ -243,10 +255,28 @@
 			}
 			```
 		- 使用互斥锁能够保证同一时间有且只有一个 `goroutine` 进入临界区，其它的 `goroutine` 则在等待锁；当互斥锁释放后，等待的 `goroutine` 才可以获取锁进入临界区，多个 `goroutine` 同时等待一个锁时，唤醒的策略是随机的。
-  	- 读写互斥锁
+		- 操作
+    		- 声明互斥锁
+				```
+				var lock sync.Mutex
+				```
+    		- 操作
+        		- 加锁: lock.Lock()
+        		- 解锁: lock.Unlock()
+   	- 读写互斥锁
         	- 互斥锁是完全互斥的，但是当我们并发的去读取一个资源不涉及资源修改的时候是没有必要加锁的，这种场景下读写锁是更好的一种选择。读写锁使用 `sync` 包中 `RWMutex` 类型。
-                	- 读写锁分为两种: `读锁`和`写锁`。当一个 `goroutine` 获取读锁之后，其他的 `goroutine` 如果是获取读锁会继续获得锁，如果是获取写锁就会等待；当一个 `goroutine` 获取读写锁之后，其他的 `goroutine` 无论是获取读锁还是写锁都会等待。
-                   	- 读比写多的时候使用读写锁 能够提高性能
+          	- 读写锁分为两种: `读锁`和`写锁`。当一个 `goroutine` 获取读锁之后，其他的 `goroutine` 如果是获取读锁会继续获得锁，如果是获取写锁就会等待；当一个 `goroutine` 获取读写锁之后，其他的 `goroutine` 无论是获取读锁还是写锁都会等待。
+           	- 读比写多的时候使用读写锁 能够提高性能
+           	- 操作:
+             	- 声明读写锁
+					```
+					var rwLock sync.RWMutex
+			```
+             	- 操作
+					- 加读锁: rwLock.RLock()
+					- 解读锁: rwLock.RUnlock()
+					- 加写锁: rwLock.Lock()
+					- 解写锁: rwLock.Unlock()
 12. > sync.Once
 	- 延迟一个开销很大的初始化操作到真正用到它的时候再执行是一个很好的实践。因为预先初始化一个变量(比如在init函数中完成初始化)会增加程序的启动延时，而且有可能实际执行过程中的这个变量没有用上，那这个初始化操作就不是必须做的，举个例子:
 		```
@@ -355,7 +385,53 @@
 			wg.Wait()
 		}
 		```
+14. > 原子操作(内置整数支持的操作)
+	- 代码中加锁操作因为涉及内核态的上下文切换会比较耗时、代价比较高。针对基本数据类型我们还可以使用原子操作来保证并发安全，因为原子操作是Go语言提供的方法它在用户态就可以完成，因此性能比加锁更好。Go语言中原子操作由内置的标准库 `sync/atomic` 提供。
+	- **atomic**包
 
+		| 读取操作方法   												|
+		| ----------------------------------------------------------- |
+		| func LoadInt32(addr *int32) (val int32) 					  |
+		| func LoadInt64(addr *int64) (val int64) 					  |
+		| func LoadUint32(addr *uint32) (val uint32) 				  |
+		| func LoadUint64(addr *uint64) (val uint64) 				  |
+		| func LoadUintptr(addr *uintptr) (val uintptr) 			  |
+		| func LoadPointer(addr *unsafe.Pointer) (val unsage.Pointer) |
 
-作业:
-	利用channel和goroutine实现异步写日志
+		| 写入操作方法                                                  |
+		| ----------------------------------------------------------- |
+		| func StoreInt32(addr *int32, val int32)                     |
+		| func StoreInt64(addr *int64, val int64) 					  |
+		| func StoreUint32(addr *uint32, val uint32) 				  |
+		| func StoreUint64(addr *uint64, val uint64) 				  |
+		| func StoreUintptr(addr *uintptr, val uintptr) 			  |
+		| func StorePointer(addr *unsage.Pointer, val unsafe.Pointer) |
+
+		| 修改操作方法                                                  |
+		| ----------------------------------------------------------- |
+		| func AddInt32(addr *int32, delta int32) (new int32)         |
+		| func AddInt64(addr *int64, delta int64) (new int64)         |
+		| func AddUint32(addr *uint32, delta uint32) (new uint32)     |
+		| func AddUint64(addr *uint64, delta uint64) (new uint64)     |
+		| func AddUintptr(addr *uintptr, delta uintptr) (new uintptr) |
+
+		| 交换操作方法                                                  |
+		| ----------------------------------------------------------- |
+		| func SwapInt32(addr *int32, new int32) (old int32)          |
+		| func SwapInt64(addr *int64, new int64) (old int64)          |
+		| func SwapUint32(addr *uint32, new uint32) (old uint32)      |
+		| func SwapUint64(addr *uint64, new uint64) (old uint64)      |
+		| func SwapUintptr(addr *uintptr, new uintptr) (old uintptr)  |
+		| func SwapPointer(addr *unsafe.Pointer, new unsafe.Pointer) (old unsage.Pointer) |
+
+		| 比较并交换操作方法                                            				 |
+		| --------------------------------------------------------------------------- |
+		| func CompareAndSwapInt32(addr *int32, old, new int32) (swappend bool)       |
+		| func CompareAndSwapInt64(addr *int64, old, new int64) (swappend bool)       |
+		| func CompareAndSwapUint32(addr *uint32, old, new uint32) (swappend bool)    |
+		| func CompareAndSwapUint64(addr *uint64, old, new uint64) (swappend bool)    |
+		| func CompareAndSwapUintptr(addr *uintptr, old, new uintptr) (swappend bool) |
+		| func CompareAndSwapPointer(addr *unsafe.Pointer, old, new unsafe.Pointer) (swappend bool) |
+	
+	- `atomic` 包提供了底层的原子级内存操作，对于同步算法的实现很有用。这些函数必须谨慎地保证正确使用。除了某些特殊的底层应用，使用管道或者sync包的函数/类型实现同步更好
+15. 
