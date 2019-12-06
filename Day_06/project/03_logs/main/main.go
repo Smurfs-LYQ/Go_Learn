@@ -7,7 +7,6 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
-	"time"
 )
 
 // LogFileIni 设置日志文件信息
@@ -71,11 +70,11 @@ func main() {
 
 	logger = mylog.NewFilelog("debug", logConfig.FileName, logConfig.FilePath, logConfig.MaxSize)
 	for {
-		go logger.Debug("%s", "Debug日志")
-		go logger.Info("%s", "Info日志")
-		go logger.Warning("%s", "Warning日志")
-		go logger.Error("%s", "Error日志")
-		go logger.Fatel("%s", "Fatel日志")
-		time.Sleep(time.Second)
+		logger.Debug("%s", "Debug日志")
+		logger.Info("%s", "Info日志")
+		logger.Warning("%s", "Warning日志")
+		logger.Error("%s", "Error日志")
+		logger.Fatel("%s", "Fatel日志")
+		// time.Sleep(time.Second)
 	}
 }
