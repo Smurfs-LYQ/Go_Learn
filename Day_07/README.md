@@ -69,4 +69,18 @@
      - 其中参数 `t` 用于报告测试失败和附加的日志信息。`testing.T` 的拥有的方法有很多，详情请翻阅官方文档。
    
      - 
-2. > 
+2. > 深度判断
+
+   - 使用reflect包中的 `DeepEqual` 方法，可以做到先判断数据类型是否一致，再判断里面的元素是否都一致，返回一个bool值
+
+     ```go
+     	a := 123
+     	b := "123"
+     	if res := reflect.DeepEqual(a, b); res {
+     		fmt.Println("一样")
+     	} else {
+     		fmt.Println("不一样")
+     	}
+     ```
+
+3. 
