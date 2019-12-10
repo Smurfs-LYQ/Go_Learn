@@ -4,6 +4,8 @@
 2. 单元测试组
 3. 子测试
 4. 基准测试
+5. 性能比较函数
+6. 并行测试
 
 #### <center>笔记</center>
 1. > 单元测试
@@ -188,7 +190,7 @@
      }
      ```
 
-6. > 基准测试 (BenchmarkXxx)
+6. > 基准测试 (Benchmark)
 
    - 基准测试就是在一定的工作负载之下检测程序性能的一种方法。基准测试的基本格式如下:
 
@@ -210,7 +212,7 @@
      }
      ```
 
-     基准测试并不会默认执行，需要增加 `-bench` 参数，通过执行 `go test -bench=Split` 命令执行基准测试，`-bench=` 后面的参数就是函数名 `Benchmark` 后面跟的内容，输出结果如下:
+     基准测试并不会默认执行，需要增加 `-bench` 参数，通过执行 `go test -bench=Split` 命令执行基准测试，`-bench=` 后面的参数为正则表达式用于匹配函数名，输出结果如下:
 
      ```go
      $ go test -bench=Split
@@ -270,6 +272,147 @@
 
    - 上面的基准测试只能得到给定操作的绝对耗时，但是很多性能问题是发生在两个不同操作之间的相对耗时，比如同一个函数处理1000个元素的耗时与处理1万甚至100万个元素的耗时的差别是多少？再或者对于同一个任务使用哪种算法性能最佳？我们通常需要对两个不同算法的实现使用相同的输入来进行基准测试。
 
-8. > 
+   - 性能比较函数通常是一个带有参数的函数，被多个不同的Benchmark函数传入不同的值来调用。举个例子如下:
 
-   - 
+     ```go
+     func benchmark(b *testing.B, size int) { /* ... */ }
+     func Benchmark10(b *testing.B) { benchmark(b, 10) }
+     func Benchmark100(b *testing.B) { benchmark(b, 100) }
+     func Benchmark1000(b *testing.B) { benchmark(b, 1000) }
+     ```
+
+     例如我们编写了一个计算 **斐波那契数列** 的函数如下:
+
+     ```go
+     // fib.go
+     
+     // Fib 是一个计算第n个斐波那契数的函数
+     // 斐波那契数列: 后一个数是前两个数的和
+     func Fib(n int) int {
+     		if n < 2 {
+     				return n
+     		}
+     		return Fib(n-1) + Fib(n-2)
+     }
+     ```
+
+     我们编写的性能比较函数如下:
+
+     ```go
+     // fib_test.go
+     
+     func benchmarkFib(b *testing.B) {
+     		for i := 0; i < b.N; i++ {
+     				Fib(n)
+     		}
+     }
+     
+     func BenchmarkFib1(b *testing.B) { benchmarkFib(b, 1) }
+     func BenchmarkFib2(b *testing.B) { benchmarkFib(b, 2) }
+     func BenchmarkFib3(b *testing.B) { benchmarkFib(b, 3) }
+     func BenchmarkFib10(b *testing.B) { benchmarkFib(b, 10) }
+     func BenchmarkFib20(b *testing.B) { benchmarkFib(b, 20) }
+     func BenchmarkFib40(b *testing.B) { benchmarkFib(b, 40) }
+     ```
+
+     运行基准测试:
+
+     ```go
+     $ go test -bench=.
+     goos: darwin
+     goarch: amd64
+     pkg: Go_Learn/Day_07/05_test_performance/fib
+     BenchmarkFib1-16        508824984                2.25 ns/op
+     BenchmarkFib2-16        216067983                5.56 ns/op
+     BenchmarkFib3-16        126685104                9.37 ns/op
+     BenchmarkFib10-16        3424062               347 ns/op
+     BenchmarkFib20-16          27906             43381 ns/op
+     BenchmarkFib40-16              2         651956174 ns/op
+     PASS
+     ok      Go_Learn/Day_07/05_test_performance/fib 10.457s
+     ```
+
+     这里需要注意的是，默认情况下，每个基准测试至少运行**1秒**。如果在Benchmark函数返回时没有到1秒，则b.N的值会按1,2,5,10,20,50, ...增加，并且函数再次运行。
+
+     最终的BenchmarkFib40只运行了两次，每次运行的平均值只有不到一秒。像这种情况下我们应该使用 `-benchtime` 标志增加最小基准时间，以产生更准确的结果。例如:
+
+     ```go
+     goos: darwin
+     goarch: amd64
+     pkg: Go_Learn/Day_07/05_test_performance/fib
+     BenchmarkFib1-16        1000000000               2.25 ns/op
+     BenchmarkFib2-16        1000000000               5.49 ns/op
+     BenchmarkFib3-16        1000000000               9.35 ns/op
+     BenchmarkFib10-16       69106652               347 ns/op
+     BenchmarkFib20-16         555812             43716 ns/op
+     BenchmarkFib40-16             36         663695534 ns/op
+     PASS
+     ok      Go_Learn/Day_07/05_test_performance/fib 92.464s
+     ```
+
+     这一次 `BenchmarkFib40` 函数运行了36次，结果就会更准确一些。
+
+     使用性能比较函数做测试的时候一个容易犯的错误就是把 `b.N` 作为输入的大小，例如以下两个例子都是错误的:
+
+     ```go
+     // 错误示范1
+     func BenchmarkFibWrong1(b *testing.B) {
+     		for n := 0; b < b.N; n++ {
+     				Fib(n)
+     		}
+     }
+     
+     // 错误示范2
+     func BenchmarkFibWrong2(b *testing.B) {
+     		Fib(b.N)
+     }
+     ```
+
+8. > 重置时间
+
+   - `b.ResetTimer` 之前的处理不会放到执行时间里，也不会输出到报告中，所以可以在之前做一些不计划作为测试报告的操作。
+
+     ```go
+     func BenchmarkSplit(b *testing.B) {
+     		time.Sleep(5 * time.Second) // 假设需要做一些耗时的无关操作, 比如链接数据库
+     		b.ResetTimer() 						  // 重置计时器
+     		for i := 0; i < b.N; i++ {
+     				Split("1.2.3", ".")
+     		}
+     }
+     ```
+
+9. > 并行测试
+
+   - `func (b *B) runParallel(body func(*PB))` 会以并行的方式执行给定的基准测试。
+
+     `RunParallel` 会创建出多个 `goroutine`，并将 `b.N` 分配给这些 `goroutine` 执行，其中 `goroutine` 数量的默认值为 `GOMAXPROCS`。用户如果想要增加非CPU受限 (non-CPU-bound) 基准测试的并行性，那么可以在 `RunParallel` 之前调用 `SetParallelism`。`RunParallel` 通常会与 `-cpu` 标志一同使用。
+
+     ```go
+     func BenchmarkSplitParallel(b *testing.B) { // Parallel 用来这个函数为并行测试函数
+     		// b.SetParallelism(1) // 设置使用的CPU核心数
+     		b.RunParallel(func(pb *testing.PB) {
+     				for pb.Next() {
+     						Split("1,2,3", ",")
+     				}
+     		})
+     }
+     ```
+
+     执行一下基准测试:
+
+     ```go
+     $ go test -bench=.
+     goos: darwin
+     goarch: amd64
+     pkg: Go_Learn/Day_07/06_test_parallel/split
+     BenchmarkSplitParallel-16       31082677                40.0 ns/op
+     PASS
+     ok      Go_Learn/Day_07/06_test_parallel/split  1.289s
+     ```
+
+     还可以通过在测试命令后添加 `-cpu` 参数如 `go test -bench=. -cpu 1 ` 来指定使用的CPU核心数量
+
+10. > Setup与TearDown
+
+   - 测试程序有时需要在测试之前进行额外的设置 (setup) 或在测试之后进行拆卸 (teardown)。
