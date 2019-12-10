@@ -2,6 +2,7 @@
 
 1. 单元测试
 2. 单元测试组
+3. 子测试
 
 #### <center>笔记</center>
 1. > 单元测试
@@ -69,8 +70,80 @@
    
      - 其中参数 `t` 用于报告测试失败和附加的日志信息。`testing.T` 的拥有的方法有很多，详情请翻阅官方文档。
    
-     - 
-2. > 深度判断
+2. > 测试组
+
+   - 测试组就是将多个测试用例同时放入到一个测试函数中进行测试。
+
+   - 实例:
+
+     ```go
+     // 将多个测试用例放到一起组成 测试组
+     func TestSplitGroup(t *testing.T) {
+     	// 定义一个存放测试数据的结构体
+     	type test struct {
+     		str  string   // 字符串
+     		sep  string   // 切割字符
+     		want []string // 期望得到的值
+     	}
+     
+     	// 创建一个存放多个测试用例的map
+     	var tests = map[string]test{
+     		"normal": test{"1,2,3", ",", []string{"1", "2", "3"}},
+     		"none":   test{"1:2:3", ":", []string{"1", "2", "3"}},
+     		"multi":  test{"1:2:3", ":2:", []string{"1", "2", "3"}},
+     	}
+     
+     	// 循环调用测试用例
+     	for k, v := range tests {
+     		res := Split(v.str, v.sep) // 将测试用例中的数据放入到测试的函数中
+     		if !reflect.DeepEqual(res, v.want) {
+     			t.Errorf("测试用例: %v失败, 期望找到: %v, 实际得到: %v\n", k, v.want, res)
+     		}
+     	}
+     }
+     ```
+
+     
+
+3. > 子测试
+
+   - 测试用例比较多的时候，我们没办法一眼看出来具体是哪个测试用例失败了，这时我们可以向上一个示例一样直接将失败的测试用例打印出来，**或者使用Go1.7+中新增的`子测试`，我们可以按照如下方式使用 `t.Run` 执行子测试**
+
+   - 示例
+
+     ```go 
+     // 将多个测试用例放到一起组成 测试组
+     func TestSplit(t *testing.T) {
+     	// 定义一个存放测试数据的结构体
+     	type test struct {
+     		str  string   // 字符串
+     		sep  string   // 切割字符
+     		want []string // 期望得到的值
+     	}
+     
+     	// 创建一个存放多个测试用例的map
+     	var tests = map[string]test{
+     		"normal": test{"1,2,3", ",", []string{"1", "2", "3"}},
+     		"none":   test{"1:2:3", ":", []string{"1", "2", "3"}},
+     		"multi":  test{"1:2:3", ":2:", []string{"1", "2", "3"}},
+     	}
+     
+     	// 循环调用测试用例
+     	for k, v := range tests {
+         t.Run(k, func(t *testing.T) { // 使用t.Run()执行子测试 参数: 测试用例名字，测试用例执行的函数(函数变量或匿名函数)
+     			res := Split(v.str, v.sep)  // 将测试用例中的数据放入到测试的函数中
+     			if !reflect.DeepEqual(res, v.want) {
+     				t.Errorf("期望找到: %v, 实际得到: %v\n", v.want, res)
+     			}
+     		})
+     	}
+     }
+     ```
+
+   - 子测试还可以使用 `go test` 中的 `-run` 选项来运行**指定函数中的指定测试用例**。示例如下:
+   - 
+
+4. > 深度判断
 
    - 使用reflect包中的 `DeepEqual` 方法，可以做到先判断数据类型是否一致，再判断里面的元素是否都一致，返回一个bool值
 
@@ -84,4 +157,5 @@
      	}
      ```
 
-3. 
+5. 
+
