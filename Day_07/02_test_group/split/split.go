@@ -8,6 +8,9 @@ func Split(str, set string) (res []string) {
 	index := strings.Index(str, set)
 	for index >= 0 {
 		res = append(res, str[:index])
+		str = str[index+len(set):]
+		index = strings.Index(str, set)
 	}
+	res = append(res, str)
 	return
 }
