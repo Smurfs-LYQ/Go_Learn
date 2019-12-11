@@ -8,6 +8,7 @@
 6. 并行测试
 7. Setup 与 TearDown
 8. 子测试的Setup 与 TearDown
+9. 示例函数
 
 #### <center>笔记</center>
 1. > 单元测试
@@ -528,8 +529,34 @@
 
       示例函数示例
 
-    - 
+      下面的代码使我们为 `Split` 函数编写的一个示例函数: 
 
-13. > 
+      ```go
+      func ExampleSplit() {
+      	fmt.Println(Split("1,2,3", ","))
+      	// Output:
+      	// [1 2 3]
+      }
+      ```
+
+      为代码编写示例函数有如下三个用处:
+
+       - 示例函数能够作为文档直接使用，例如基于web的godoc中能把示例函数与对应的函数或包相关联。
+
+       - 示例函数只要包含了 `// Output:`  也是可以通过 `go test` 运行的可执行测试。
+
+         ```go
+         $ go test -run Example
+         PASS
+         ok      Go_Learn/Day_07/09_test_example/split   0.004s
+         ```
+
+       - 示例函数提供了可以直接运行的示例代码，可以直接在 `golang.org` 的 `godoc` 文档服务器上使用 `go Playground` 运行示例代码。
+
+13. > TCP编程
 
     - 
+   
+ 14. > 
+
+   - 
