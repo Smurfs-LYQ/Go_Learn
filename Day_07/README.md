@@ -6,6 +6,8 @@
 4. 基准测试
 5. 性能比较函数
 6. 并行测试
+7. Setup 与 TearDown
+8. 子测试的Setup 与 TearDown
 
 #### <center>笔记</center>
 1. > 单元测试
@@ -415,4 +417,119 @@
 
 10. > Setup与TearDown
 
-   - 测试程序有时需要在测试之前进行额外的设置 (setup) 或在测试之后进行拆卸 (teardown)。
+   - 测试程序有时需要在**测试之前进行额外的设置 (setup) **或 **在测试之后进行拆卸 (teardown)**
+
+   - TestMain
+
+     如果测试文件包含函数: `func TestMain(m *testing.M)` 那么生成的测试会先调用 `TestMain(m)`，然后再运行具体测试。`TestMain` 运行在住 `goroutine` 中，可以在调用 `m.Run` 前后做任何 **设置 (setup)** 和 **拆卸(tardown)**。退出测试的时候应该使用 `m.Run` 的返回值作为参数调用 `os.Exit`。
+
+     一个使用 `TestMain` 来设置Setup和TearDown的示例如下:
+
+     ```go
+     func TestMain(m *testing.M) {
+     		fmt.Println("write setup code here...") // 测试之前做的一些设置, 比如连接数据库
+     		// 如果 TestMain 使用了 flags, 这里应该加上 flag.Parse()
+     		retCode := m.Run()													// 执行测试
+     		fmt.Println("write teardown code here...")  // 测试之后做一些拆卸工作
+     		os.Exit(retCode)														// 退出测试
+     }
+     ```
+
+     需要注意的是：在调用 `TestMain` 时，`flag.Parse` 并没有被调用。所以，如果 `TestMain` 依赖于command-line 标志 (包括testing包的标记) ，则应该显示的调用 `flag.Parse`。
+
+11. > 子测试的Setup与Teardown
+
+    - 有时候我们可能需要为每个测试集设置 Setup 与 Teardown，也有可能需要为每个子测试设置 Setup 与 Teardown。下面我们定义两个函数工具，函数如下:
+
+      ```go
+      // 测试集的Setup与Teardown
+      func setupTestCase(t *testing.T) func(t *testing.T) {
+      		t.Log("如果需要在此执行: 测试之前的Setup")
+      		return func(t *testing.T) {
+      				t.Log("如果需要在此执行: 测试之后的Teardown")
+      		}
+      }
+      
+      // 子测试的Setup与Teardown
+      func setupSubTest(t *testing.T) func(t *testing.T) {
+      		t.Log("如果需要在此执行: 子测试之前的Setup")
+      		return func(t *testing.T) {
+      				t.Log("如果需要在此执行: 子测试之后的teardown")
+      		}
+      }
+      ```
+
+      使用方式如下:
+
+      ```go
+      func TestSplit(t *testing.T) {
+      		// 定义test结构体
+      		type test struct {
+      				str  string
+      				sep  string
+      				want []string
+      		}
+      
+      		// 测试用例使用map存储
+      		tests := map[string]test{
+      				"one": {str: "1,2,3", sep: ",", want: []string{"1", "2", "3"}},
+      				"two": {str: "1,2,3", sep: ",", want: []string{"1,2,3"}},
+      		}
+      
+      		teardownTestCase := setupTestCase(t) // 测试之前执行setup操作
+      		defer teardownTestCase(t)            // 测试之后执行teardown操作
+      
+          for name, tc := range tests {
+              t.Run(name, func(t *testing.T) { // 使用t.Run() 执行子测试
+                  teardownSubTest := setupSubTest(t) // 子测试之前执行setup操作
+                  defer teardownSubTest(t)           // 测试之后执行teardown操作
+                  got := Split(tc.str, tc.sep)
+                  if !reflect.DeepEqual(got, tc.want) {
+                    	t.Errorf("want: %#v, got:%#v\n", tc.want, got)
+                  }
+              })
+          }
+      }
+      ```
+
+      测试结果如下:
+
+      ```go
+      $ go test -v
+      === RUN   TestSplit
+      === RUN   TestSplit/one
+      === RUN   TestSplit/two
+      --- FAIL: TestSplit (0.00s)
+          split_test.go:10: 如果需要在此执行: 测试之前的Setup
+          --- PASS: TestSplit/one (0.00s)
+              split_test.go:18: 如果需要在此执行: 子测试之前的Setup
+              split_test.go:20: 如果需要在此执行: 子测试之后的Teardown
+          --- FAIL: TestSplit/two (0.00s)
+              split_test.go:18: 如果需要在此执行: 子测试之前的Setup
+              split_test.go:48: want: []string{"1,2,3"}, got:[]string{"1", "2", "3"}
+              split_test.go:20: 如果需要在此执行: 子测试之后的Teardown
+          split_test.go:12: 如果需要在此执行: 测试之后的Teardown
+      FAIL
+      exit status 1
+      FAIL    Go_Learn/Day_07/08_test_testmain_child/split    0.005s
+      ```
+
+12. > 示例函数
+
+    - 被 `go test` 特殊对待的第三种函数就是示例函数，它们的函数名以 `Example` 为前缀。它们既没有参数也没有返回值。
+
+      示例函数的格式
+
+      ```go
+      func ExampleName() {
+      		// ...
+      }
+      ```
+
+      示例函数示例
+
+    - 
+
+13. > 
+
+    - 
