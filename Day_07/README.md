@@ -10,6 +10,7 @@
 8. 子测试的Setup 与 TearDown
 9. 示例函数
 10. TCP编程-Socket编程
+11. UDP编程-Socket编程
 
 #### <center>笔记</center>
 1. > 单元测试
@@ -563,6 +564,53 @@
       `Socket` 是应用层与TCP/IP协议族通信的中间软件抽象层。在设计模式中，`Socket` 其实就是一个门面模式，它把复杂的TCP/IP协议族隐藏在`Socket`后面，对用户来说只需要调用Socket规定的相关函数，让 `Socket`去组织符合指定的协议数据然后进行通信。
 
       ![socket](https://www.liwenzhou.com/images/Go/socket/socket.png)
-    
-14. > 
+   
+14. > Go语言实现TCP通信
 
+   - **TCP协议**
+
+     TCP/IP (Transmission Control Protocol/Internet Protocol) 即传输控制协议/网间协议，是一种面向连接 (连接导向) 的、可靠的、基于字节流的传输层 (Transport layer) 通信协议，因为是面向连接的协议，数据像水流一样传输，会存在黏包问题。
+
+   - **TCP服务端**
+
+     一个TCP服务器端可以同时连接很多个客户端，因为Go语言中创建多个goroutine实现并发非常方便和高效，所以我们可以每建立一次连接就创建一个goroutine去处理。
+
+     TCP服务端程序的处理流程：
+
+     		1. 监听端口
+       		2. 接收客户端请求建立链接
+       		3. 创建goroutine处理链接
+
+   - **TCP客户端**
+
+     一个TCP客户端进行TCP通信的流程如下：
+
+     	1. 建立与服务端的链接
+      	2. 进行数据收发
+      	3. 关闭链接
+
+ 15. > TCP黏包
+
+   - 
+
+16. > Go语言实现UDP通信
+
+   - **UDP协议**
+
+     UDP协议 (User Datagram Protocol) 中文名称是用户数据报协议，是OSI (Open System Interconnection, 开放式系统互联) 参考模型中一种无连接的传输层协议，不需要建立链接就能直接进行数据发送和接收，属于不可靠、没有时序的通信，但是UDP协议的实时性比较好。
+
+   - **UDP服务端**
+
+     UDP服务端程序的处理流程：
+
+       1. 监听端口
+       2. 接收客户端请求建立链接
+       3. 创建goroutine处理链接
+
+   - **UDP客户端**
+
+     一个UDP客户端进行UDP通信的流程如下：
+
+      1. 建立与服务端的链接
+      2. 进行数据收发
+      3. 关闭链接
