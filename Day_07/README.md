@@ -9,6 +9,7 @@
 7. Setup 与 TearDown
 8. 子测试的Setup 与 TearDown
 9. 示例函数
+10. TCP编程-Socket编程
 
 #### <center>笔记</center>
 1. > 单元测试
@@ -553,10 +554,14 @@
 
        - 示例函数提供了可以直接运行的示例代码，可以直接在 `golang.org` 的 `godoc` 文档服务器上使用 `go Playground` 运行示例代码。
 
-13. > TCP编程
+13. > socket编程
 
-    - 
-   
- 14. > 
+    - Socket是BSD UNIX的进程通信机制，通常也被称作"套接字"，用于描述IP地址和端口，是一个通信链的句柄。Socket可以理解为TCP/IP网络的API，它定义了许多函数或例程，程序员可以用它们来开发TCP/IP网络上的应用程序。电脑上运行的应用程序通常通过"套接字"向网络发出请求或这应答网络请求。
 
-   - 
+      **socket图解**
+
+      `Socket` 是应用层与TCP/IP协议族通信的中间软件抽象层。在设计模式中，`Socket` 其实就是一个门面模式，它把复杂的TCP/IP协议族隐藏在`Socket`后面，对用户来说只需要调用Socket规定的相关函数，让 `Socket`去组织符合指定的协议数据然后进行通信。
+
+      ![socket](https://www.liwenzhou.com/images/Go/socket/socket.png)
+    
+14. > 
