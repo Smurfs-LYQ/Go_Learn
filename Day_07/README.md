@@ -442,7 +442,7 @@
 
 11. > 子测试的Setup与Teardown
 
-    - 有时候我们可能需要为每个测试集设置 Setup 与 Teardown，也有可能需要为每个子测试设置 Setup 与 Teardown。下面我们定义两个函数工具，函数如下:
+    - 有时候我们可能需要为每个测试集设置Setup与Teardown，也有可能需要为每个子测试设置Setup与Teardown。下面我们定义两个函数工具函数如下：
 
       ```go
       // 测试集的Setup与Teardown
@@ -567,50 +567,78 @@
    
 14. > Go语言实现TCP通信
 
-   - **TCP协议**
+    - **TCP协议**
 
-     TCP/IP (Transmission Control Protocol/Internet Protocol) 即传输控制协议/网间协议，是一种面向连接 (连接导向) 的、可靠的、基于字节流的传输层 (Transport layer) 通信协议，因为是面向连接的协议，数据像水流一样传输，会存在黏包问题。
+      TCP/IP (Transmission Control Protocol/Internet Protocol) 即传输控制协议/网间协议，是一种面向连接 (连接导向) 的、可靠的、基于字节流的传输层 (Transport layer) 通信协议，因为是面向连接的协议，数据像水流一样传输，会存在黏包问题。
 
-   - **TCP服务端**
+    - **TCP服务端**
 
-     一个TCP服务器端可以同时连接很多个客户端，因为Go语言中创建多个goroutine实现并发非常方便和高效，所以我们可以每建立一次连接就创建一个goroutine去处理。
+      一个TCP服务器端可以同时连接很多个客户端，因为Go语言中创建多个goroutine实现并发非常方便和高效，所以我们可以每建立一次连接就创建一个goroutine去处理。
 
-     TCP服务端程序的处理流程：
+      TCP服务端程序的处理流程：
 
-     		1. 监听端口
-       		2. 接收客户端请求建立链接
-       		3. 创建goroutine处理链接
+        1. 监听端口
+        2. 接收客户端请求建立链接
+        3. 创建goroutine处理链接
 
-   - **TCP客户端**
+      - **TCP客户端**
 
-     一个TCP客户端进行TCP通信的流程如下：
+        一个TCP客户端进行TCP通信的流程如下：
 
-     	1. 建立与服务端的链接
-      	2. 进行数据收发
-      	3. 关闭链接
+         1. 建立与服务端的链接 (拨号)
+         2. 进行数据收发
+         3. 关闭链接
 
- 15. > TCP黏包
+15. > TCP粘包
 
-   - 
+    - 什么是粘包
+
+      ```go
+      收到client发来的数据： Hello, Hello. How are you?Hello, Hello. How are you?Hello, Hello. How are you?Hello, Hello. How are you?Hello, Hello. How are you?
+      收到client发来的数据： Hello, Hello. How are you?Hello, Hello. How are you?Hello, Hello. How are you?Hello, Hello. How are you?Hello, Hello. How are you?Hello, Hello. How are you?Hello, Hello. How are you?Hello, Hello. How are you?
+      收到client发来的数据： Hello, Hello. How are you?Hello, Hello. How are you?
+      收到client发来的数据： Hello, Hello. How are you?Hello, Hello. How are you?Hello, Hello. How are you?
+      收到client发来的数据： Hello, Hello. How are you?Hello, Hello. How are you?
+      ```
+
+      比如说客户端分10次发送的数据，在服务端并没有成功的输出10次，而是多条数据"粘在了一起。
+
+    - 为什么会出现粘包
+
+      主要原因就是tcp数据传递模式是`流模式`，在保持长连接的时候可以进行多次的收和发。
+
+      ”粘包“可发生在发送端也可发生在接收端：
+
+       1. 由Nagle算法造成的发送端的粘包：Nagle算法是一种改善网络传输效率的算法。简单来说就是当我们提交一段数据给TCP发送时，TCP并不立刻发送此段数据，而是等待一小段时间看看在等待期间是否还有要发送的数据，若有则会一次把两段数据发送出去。
+       2. 接收端接收不及时造成的接收端粘包，TCP会把接收到的数据存在自己的缓冲区中，然后通知应用层取数据。当应用层由于某些原因不能及时的把TCP的数据取出来，就会造成TCP缓冲区中存放了几段数据。
+
+     - 解决办法
+
+       出现”粘包“的关键在于接收方不确定将要传输的数据包的大小，因此我们可以对数据包进行`封包`和`拆包`的操作。
+
+       封包：封包就是给一段数据加上包头，这样一来数据包就分为包头和包体两部分内容了(过滤非法包时封包会加入”包尾“内容)。包头部分的长度是固定的，并且它存储了包体的长度，根据包头长度固定以及包头中含有包体长度的变量就能正确的拆分出一个完整的数据包。
+
+       我们可以自己定义一个协议，比如数据包的前4个字节为包头，里面存储的是发送的数据的长度。
 
 16. > Go语言实现UDP通信
 
-   - **UDP协议**
+    - **UDP协议**
 
-     UDP协议 (User Datagram Protocol) 中文名称是用户数据报协议，是OSI (Open System Interconnection, 开放式系统互联) 参考模型中一种无连接的传输层协议，不需要建立链接就能直接进行数据发送和接收，属于不可靠、没有时序的通信，但是UDP协议的实时性比较好。
+      UDP协议 (User Datagram Protocol) 中文名称是用户数据报协议，是OSI (Open System Interconnection, 开放式系统互联) 参考模型中一种无连接的传输层协议，不需要建立链接就能直接进行数据发送和接收，属于不可靠、没有时序的通信，但是UDP协议的实时性比较好。
 
-   - **UDP服务端**
+    - **UDP服务端**
 
-     UDP服务端程序的处理流程：
+      UDP服务端程序的处理流程：
 
-       1. 监听端口
-       2. 接收客户端请求建立链接
-       3. 创建goroutine处理链接
+        1. 监听端口
+        2. 接收客户端请求建立链接
+        3. 创建goroutine处理链接
 
-   - **UDP客户端**
+    - **UDP客户端**
 
-     一个UDP客户端进行UDP通信的流程如下：
+      一个UDP客户端进行UDP通信的流程如下：
 
-      1. 建立与服务端的链接
-      2. 进行数据收发
-      3. 关闭链接
+       1. 建立与服务端的链接
+       2. 进行数据收发
+       3. 关闭链接
+
