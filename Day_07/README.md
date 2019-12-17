@@ -122,28 +122,28 @@
      ```go 
      // 将多个测试用例放到一起组成 测试组
      func TestSplit(t *testing.T) {
-     		// 定义一个存放测试数据的结构体
-     		type test struct {
-     				str  string   // 字符串
-     				sep  string   // 切割字符
-     				want []string // 期望得到的值
-     		}
+       // 定义一个存放测试数据的结构体
+       type test struct {
+         str  string   // 字符串
+         sep  string   // 切割字符
+         want []string // 期望得到的值
+       }
      
-     		// 创建一个存放多个测试用例的map
-     		var tests = map[string]test{
-     				"normal": test{"1,2,3", ",", []string{"1", "2", "3"}},
-     				"none":   test{"1:2:3", ":", []string{"1", "2", "3"}},
-     				"multi":  test{"1:2:3", ":2:", []string{"1", "2", "3"}},
-     		}
+       // 创建一个存放多个测试用例的map
+       var tests = map[string]test{
+         "normal": test{"1,2,3", ",", []string{"1", "2", "3"}},
+         "none":   test{"1:2:3", ":", []string{"1", "2", "3"}},
+         "multi":  test{"1:2:3", ":2:", []string{"1", "2", "3"}},
+       }
      
-     		// 循环调用测试用例
-     		for k, v := range tests {
-       	 	 t.Run(k, func(t *testing.T) { // 使用t.Run()执行子测试 参数: 测试用例名字，测试用例执行的函数(函数变量或匿名函数)
-     						res := Split(v.str, v.sep)  // 将测试用例中的数据放入到测试的函数中
-     						if !reflect.DeepEqual(res, v.want) {
-     								t.Errorf("期望找到: %v, 实际得到: %v\n", v.want, res)
-     						}
-     				})
+       // 循环调用测试用例
+       for k, v := range tests {
+         t.Run(k, func(t *testing.T) { // 使用t.Run()执行子测试 参数: 测试用例名字，测试用例执行的函数(函数变量或匿名函数)
+           res := Split(v.str, v.sep)  // 将测试用例中的数据放入到测试的函数中
+           if !reflect.DeepEqual(res, v.want) {
+             t.Errorf("期望找到: %v, 实际得到: %v\n", v.want, res)
+           }
+         })
      		}
      }
      ```
@@ -189,9 +189,9 @@
      a := 123
      b := "123"
      if res := reflect.DeepEqual(a, b); res {
-     		fmt.Println("一样")
+       fmt.Println("一样")
      } else {
-     		fmt.Println("不一样")
+       fmt.Println("不一样")
      }
      ```
 
@@ -201,7 +201,7 @@
 
      ```go
      func BenchmarkName(b *testing.B) {
-     		// ...
+       // ...
      }
      ```
 
@@ -211,9 +211,9 @@
 
      ```go
      func BenchmarkSplit(b *testing.B) {
-     		for i := 0; i < b.N; i++ {
-     				Split("1,2,3", ",")
-     		}
+       for i := 0; i < b.N; i++ {
+         Split("1,2,3", ",")
+       }
      }
      ```
 
@@ -247,15 +247,15 @@
 
      ```go
      func Split(str, sep string) (res []string) {
-     		res = make([]string, 0, strings.Count(str, sep)+1)
-     		index := strings.Index(str, sep)
-     		for index > -1 {
-     				res = append(res, str[:index])
-     				str = str[index+len(sep):]
-     				index = strings.Index(str, sep)
-     		}
-     		res = append(res, str)
-     		return
+       res = make([]string, 0, strings.Count(str, sep)+1)
+       index := strings.Index(str, sep)
+       for index > -1 {
+         res = append(res, str[:index])
+         str = str[index+len(sep):]
+         index = strings.Index(str, sep)
+       }
+       res = append(res, str)
+       return
      }
      ```
 
@@ -294,10 +294,10 @@
      // Fib 是一个计算第n个斐波那契数的函数
      // 斐波那契数列: 后一个数是前两个数的和
      func Fib(n int) int {
-     		if n < 2 {
-     				return n
-     		}
-     		return Fib(n-1) + Fib(n-2)
+       if n < 2 {
+         return n
+       }
+       return Fib(n-1) + Fib(n-2)
      }
      ```
 
@@ -307,9 +307,9 @@
      // fib_test.go
      
      func benchmarkFib(b *testing.B) {
-     		for i := 0; i < b.N; i++ {
-     				Fib(n)
-     		}
+       for i := 0; i < b.N; i++ {
+         Fib(n)
+       }
      }
      
      func BenchmarkFib1(b *testing.B) { benchmarkFib(b, 1) }
@@ -362,14 +362,14 @@
      ```go
      // 错误示范1
      func BenchmarkFibWrong1(b *testing.B) {
-     		for n := 0; b < b.N; n++ {
-     				Fib(n)
-     		}
+       for n := 0; b < b.N; n++ {
+         Fib(n)
+       }
      }
      
      // 错误示范2
      func BenchmarkFibWrong2(b *testing.B) {
-     		Fib(b.N)
+       Fib(b.N)
      }
      ```
 
@@ -379,11 +379,11 @@
 
      ```go
      func BenchmarkSplit(b *testing.B) {
-     		time.Sleep(5 * time.Second) // 假设需要做一些耗时的无关操作, 比如链接数据库
-     		b.ResetTimer() 						  // 重置计时器
-     		for i := 0; i < b.N; i++ {
-     				Split("1.2.3", ".")
-     		}
+       time.Sleep(5 * time.Second) // 假设需要做一些耗时的无关操作, 比如链接数据库
+       b.ResetTimer() 						  // 重置计时器
+       for i := 0; i < b.N; i++ {
+         Split("1.2.3", ".")
+       }
      }
      ```
 
@@ -395,12 +395,12 @@
 
      ```go
      func BenchmarkSplitParallel(b *testing.B) { // Parallel 用来这个函数为并行测试函数
-     		// b.SetParallelism(1) // 设置使用的CPU核心数
-     		b.RunParallel(func(pb *testing.PB) {
-     				for pb.Next() {
-     						Split("1,2,3", ",")
-     				}
-     		})
+       // b.SetParallelism(1) // 设置使用的CPU核心数
+       b.RunParallel(func(pb *testing.PB) {
+         for pb.Next() {
+           Split("1,2,3", ",")
+         }
+       })
      }
      ```
 
@@ -430,11 +430,11 @@
 
      ```go
      func TestMain(m *testing.M) {
-     		fmt.Println("write setup code here...") // 测试之前做的一些设置, 比如连接数据库
-     		// 如果 TestMain 使用了 flags, 这里应该加上 flag.Parse()
-     		retCode := m.Run()													// 执行测试
-     		fmt.Println("write teardown code here...")  // 测试之后做一些拆卸工作
-     		os.Exit(retCode)														// 退出测试
+       fmt.Println("write setup code here...") // 测试之前做的一些设置, 比如连接数据库
+       // 如果 TestMain 使用了 flags, 这里应该加上 flag.Parse()
+       retCode := m.Run()													// 执行测试
+       fmt.Println("write teardown code here...")  // 测试之后做一些拆卸工作
+       os.Exit(retCode)														// 退出测试
      }
      ```
 
@@ -447,18 +447,18 @@
       ```go
       // 测试集的Setup与Teardown
       func setupTestCase(t *testing.T) func(t *testing.T) {
-      		t.Log("如果需要在此执行: 测试之前的Setup")
-      		return func(t *testing.T) {
-      				t.Log("如果需要在此执行: 测试之后的Teardown")
-      		}
+        t.Log("如果需要在此执行: 测试之前的Setup")
+        return func(t *testing.T) {
+          t.Log("如果需要在此执行: 测试之后的Teardown")
+        }
       }
       
       // 子测试的Setup与Teardown
       func setupSubTest(t *testing.T) func(t *testing.T) {
-      		t.Log("如果需要在此执行: 子测试之前的Setup")
-      		return func(t *testing.T) {
-      				t.Log("如果需要在此执行: 子测试之后的teardown")
-      		}
+        t.Log("如果需要在此执行: 子测试之前的Setup")
+        return func(t *testing.T) {
+          t.Log("如果需要在此执行: 子测试之后的teardown")
+        }
       }
       ```
 
@@ -466,32 +466,32 @@
 
       ```go
       func TestSplit(t *testing.T) {
-      		// 定义test结构体
-      		type test struct {
-      				str  string
-      				sep  string
-      				want []string
-      		}
+        // 定义test结构体
+        type test struct {
+          str  string
+          sep  string
+          want []string
+        }
       
-      		// 测试用例使用map存储
-      		tests := map[string]test{
-      				"one": {str: "1,2,3", sep: ",", want: []string{"1", "2", "3"}},
-      				"two": {str: "1,2,3", sep: ",", want: []string{"1,2,3"}},
-      		}
+        // 测试用例使用map存储
+        tests := map[string]test{
+          "one": {str: "1,2,3", sep: ",", want: []string{"1", "2", "3"}},
+          "two": {str: "1,2,3", sep: ",", want: []string{"1,2,3"}},
+        }
       
-      		teardownTestCase := setupTestCase(t) // 测试之前执行setup操作
-      		defer teardownTestCase(t)            // 测试之后执行teardown操作
+        teardownTestCase := setupTestCase(t) // 测试之前执行setup操作
+        defer teardownTestCase(t)            // 测试之后执行teardown操作
       
-          for name, tc := range tests {
-              t.Run(name, func(t *testing.T) { // 使用t.Run() 执行子测试
-                  teardownSubTest := setupSubTest(t) // 子测试之前执行setup操作
-                  defer teardownSubTest(t)           // 测试之后执行teardown操作
-                  got := Split(tc.str, tc.sep)
-                  if !reflect.DeepEqual(got, tc.want) {
-                    	t.Errorf("want: %#v, got:%#v\n", tc.want, got)
-                  }
-              })
-          }
+        for name, tc := range tests {
+          t.Run(name, func(t *testing.T) { // 使用t.Run() 执行子测试
+            teardownSubTest := setupSubTest(t) // 子测试之前执行setup操作
+            defer teardownSubTest(t)           // 测试之后执行teardown操作
+            got := Split(tc.str, tc.sep)
+            if !reflect.DeepEqual(got, tc.want) {
+              t.Errorf("want: %#v, got:%#v\n", tc.want, got)
+            }
+          })
+        }
       }
       ```
 
@@ -525,7 +525,7 @@
 
       ```go
       func ExampleName() {
-      		// ...
+        // ...
       }
       ```
 
