@@ -24,7 +24,7 @@
     	- 大量使用反射的代码难以理解
     	- 反射的性能低下，给予反射实现的代码通常比正常代码运行速度慢一到两个数量级
 2. > reflect包
- 	- 在Go语言的反射机制中，**任何接口值都是由** `一个具体类型` 和 `具体类型的值` 两部分组成的。在Go语言中反射的相关功能由内置的reflect包提供，任何接口值在反射中都可以理解为由 `reflect.Type` 和 `reflect.Value` 两部分组成，并且reflect包提供了 `reflect.TypeOf` 和 `reflect.ValueOf` 两个函数来获取任意对象的Value和Type。
+ 	- 在Go语言的反射机制中，**任何接口值**都是由 `一个具体类型` 和 `具体类型的值` 两部分组成的。在Go语言中反射的相关功能由内置的reflect包提供，任何接口值在反射中都可以理解为由 `reflect.Type` 和 `reflect.Value` 两部分组成，并且reflect包提供了 `reflect.TypeOf` 和 `reflect.ValueOf` 两个函数来获取任意对象的Value和Type。
  	- **TypeOf**
      	- 在Go语言中，使用 `reflect.TypeOf` 函数可以获取任意值得类型对象(reflect.Type)，程序通过类型对象可以访问任意值的类型信息。
 			```
@@ -109,7 +109,7 @@
 			}
 			```
 		- 通过反射设置变量的值
-        		- 想要在函数中通过反射修改变量的值，需要注意函数参数传递的是**值拷贝**，必须传递变量地址才能修改变量值。而反射中使用专有的 `Elem()` 方法来获取指针对应的值
+          		- 想要在函数中通过反射修改变量的值，需要注意函数参数传递的是**值拷贝**，必须传递变量地址才能修改变量值。而反射中使用专有的 `Elem()` 方法来获取指针对应的值
 				```
 				// 通过反射修改值
 				func reflectElem(x interface{}) {
@@ -135,16 +135,20 @@
 					fmt.Println(a)
 				}
 				```
-    		- isNil()
-			```
-			func (v Value) IsNil() bool
-			```
-        		- `IsNil()` 判断v持有的值是否为nil。v持有的值的分类必须是通道、函数、接口、映射、指针、切片之一；否则IsNil函数会导致panic。
-    		- isValid()
-			```
-			func (v Value) IsValid() bool
-			```
-			- `IsValid()` 返回v是否持有一个值。如果v是Value零值会返回假，此时v除了IsValid、String、Kind之外的方法都会导致panic。
+        
+		- isNil()
+		
+		  ```
+          func (v Value) IsNil() bool
+        ```
+		  - `IsNil()` 判断v持有的值是否为nil。v持有的值的分类必须是通道、函数、接口、映射、指针、切片之一；否则IsNil函数会导致panic。
+		
+		- isValid()
+		
+		  ```
+		  func (v Value) IsValid() bool
+		  ```
+		  - `IsValid()` 返回v是否持有一个值。如果v是Value零值会返回假，此时v除了IsValid、String、Kind之外的方法都会导致panic。
 3. > 结构体反射
 	- **与结构体相关的方法**
 	- 任意值通过 `reflect.TypeOf()` 获得反射对象信息后，如果它的类型是结构体，可以通过反射值对象( `reflect.Type` )的 `NumField()` 和 `Field()` 方法获得结构体成员的详细信息。
