@@ -182,4 +182,3 @@
 4. > strconv
 	
 	- strconv包实现了基本数据类型与其字符串表示的转换，主要有以下常用函数: `Atoi()`、`Itoa()`、parse系列、format系列、append系列
-5. 
