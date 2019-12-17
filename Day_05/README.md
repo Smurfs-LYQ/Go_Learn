@@ -139,7 +139,7 @@
 			```
 			func (v Value) IsNil() bool
 			```
-        		- `IsNil()` 导致v持有的值是否为nil。v持有的值的分类必须是通道、函数、接口、映射、指针、切片之一；否则IsNil函数会导致panic。
+        		- `IsNil()` 判断v持有的值是否为nil。v持有的值的分类必须是通道、函数、接口、映射、指针、切片之一；否则IsNil函数会导致panic。
     		- isValid()
 			```
 			func (v Value) IsValid() bool
