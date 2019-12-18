@@ -12,7 +12,9 @@ func Encode(message string) ([]byte, error) {
 	var length = int32(len(message))
 	var pkg = new(bytes.Buffer)
 	// 写入信息头
-	err := binary.Write(pkg, binary.LittleEndian, length)
+	// 大端和小端 详细介绍请见: https://zhuanlan.zhihu.com/p/36149865
+	// 按照小端的顺序将length写入到pkg中
+	err := binary.Write(pkg, binary.LittleEndian, length) // 参数: 1. 往哪里写  2. 规则  3. 写什么内容
 	if err != nil {
 		return nil, err
 	}
