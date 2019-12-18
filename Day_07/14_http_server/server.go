@@ -23,8 +23,8 @@ func sayHello(w http.ResponseWriter, r *http.Request) {
 */
 func main() {
 	http.HandleFunc("/", sayHello) // 注册路由: 当你访问 / 这个路径的时候就执行sayHello函数
-	// err := http.ListenAndServe(":9090", nil) // 建立监听
-	err := http.ListenAndServe("127.0.0.1:9090", nil) // 建立监听
+	// err := http.ListenAndServe(":9090", nil) // 建立监听(启动服务)
+	err := http.ListenAndServe("127.0.0.1:9090", nil) // 建立监听(启动服务)
 	if err != nil {
 		fmt.Println("服务启动失败, err: ", err)
 		return

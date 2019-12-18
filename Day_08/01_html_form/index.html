@@ -10,7 +10,8 @@
     <div style="text-align: center;">
         <h1>获取用户输入</h1>
 
-        <form action="" method="GET" >
+        <!-- <form action="/index" method="GET" > -->
+        <form action="/index" method="GET"> <!--提交到127.0.0.1:8080/index中-->
             <label for="username">用户名: </label> <!--作用: 可以再点击用户名的时候跳转到id等于username的input中-->
             <input type="text" id="username" name="username" placeholder="请输入用户名">
             <br/>
@@ -22,7 +23,7 @@
             <input type="radio" name="sex" value="0"> 女
             <br>
             <label>头像:</label>
-            <input type="file" name="photo">
+            <input type="file" name="photo" accept="image/">
             <br>
             <button type="submit">提交</button>
         </form>
