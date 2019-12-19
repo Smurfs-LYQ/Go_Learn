@@ -15,7 +15,7 @@ func demo(w http.ResponseWriter, r *http.Request) {
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
-	// w: 代表了跟返回相关的所有内容
+	// w: 代表了跟响应相关的所有内容
 	// r: 代表了跟请求相关的所有内容
 
 	// r.Method 可以返回请求的方法 (POST/GET)
