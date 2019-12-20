@@ -15,7 +15,7 @@ import (
 func index(w http.ResponseWriter, r *http.Request) {
 	res, err := ioutil.ReadFile("./one.html")
 	if err != nil {
-		panic(fmt.Sprintf("加载页面失败, err:", err))
+		panic(fmt.Sprintf("页面加载失败, err:", err))
 	}
 	w.Write(res)
 }

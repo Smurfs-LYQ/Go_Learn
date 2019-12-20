@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
+	"time"
 )
 
 const (
@@ -12,6 +14,7 @@ const (
 )
 
 func main() {
+	rand.Seed(time.Now().UnixNano())
 	fmt.Println(one)
 	fmt.Println(two)
 	fmt.Println(thr)
@@ -22,4 +25,5 @@ func main() {
 	fmt.Printf("%c[%d;%d;%dm%s%c[0m\n", 0x1B, 41, 33, 5, "test", 0x1B)
 	fmt.Printf("%c[%d;%d;%dm%s%c[0m\n", 0x1B, 41, 33, 7, "test", 0x1B)
 	fmt.Printf("%c[%d;%d;%dm%s%c[0m\n", 0x1B, 41, 33, 8, "test", 0x1B)
+	fmt.Println(rand.Intn(2))
 }

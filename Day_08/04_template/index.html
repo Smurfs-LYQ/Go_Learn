@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    {{/* 这是注释 */}}
+    <span>直接打印值</span>
+    <ul>
+        <li>姓名: {{.UserName}}</li>
+        <li>年龄: {{.Age}}</li>
+        <li>性别: {{.Sex}}</li>
+    </ul>
+
+    <span>通过变量打印值</span>
+    <ul>
+        {{ $user := . }}
+        <li>姓名: {{ $user.UserName }}</li>
+        <li>年龄: {{ $user.Age }}</li>
+        {{ $sex := .Sex }}
+        <li>性别: {{ $sex }}</li>
+    </ul>
+
+    <span>条件判断</span>
+    <ul>
+        <li>{{if eq .Sex 1}} 男 {{end}}</li>
+        <li>{{if ne .Sex 0}} 男 {{else}} 女 {{end}} </li>
+        <li>{{if eq .Sex 1}} 男 {{else if eq .Sex 0}} 女 {{else}} 未知 {{end}}</li>
+    </ul>
+</body>
+
+</html>

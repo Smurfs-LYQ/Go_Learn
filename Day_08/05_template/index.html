@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>序号</th>
+                <th>名称</th>
+                <th>年龄</th>
+                <th>性别</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{range $key, $val := .}}
+            <tr>
+                <td>{{$key}}</td>
+                <td>{{$val.MotoName}}</td>
+                <td>{{$val.Age}}</td>
+                <td>{{if eq $val.Sex 1}} 男 {{else}} 女 {{end}}</td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+</body>
+</html>
