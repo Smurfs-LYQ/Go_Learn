@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>预定义函数</title>
+</head>
+<body>
+    {{with $list := .}}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>名称</th>
+                    <th>发动机类型</th>
+                    <th>排气量</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range $key, $val := $list}}
+                <tr>
+                    <td>{{$key}}</td>
+                    <td>{{$val.Name}}</td>
+                    <td>{{$val.Engine}}</td>
+                    <td>{{$val.Displacement}}</td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+        <p>预定义函数示例</p>
+
+        <!-- len -->
+        <p>一共有 {{len $list}} 台车</p>
+
+        <!-- index -->
+        {{with index . 1}}
+            <p>
+                <!-- printf -->
+                {{printf "车名: %s 发动机类型: %s 排量: %d" .Name .Engine .Displacement}}
+            </p>
+        {{end}}
+    {{end}}
+</body>
+</html>

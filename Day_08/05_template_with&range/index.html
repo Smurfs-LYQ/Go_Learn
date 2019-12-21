@@ -7,6 +7,7 @@
     <title>Document</title>
 </head>
 <body>
+    {{with $list := .}} <!-- 当 . 的值不为空时，将其赋值给$list，并之下with区域的代码。如果 . 的值为空，则不将不执行with区域内的代码 -->
     <table border="1">
         <thead>
             <tr>
@@ -17,7 +18,7 @@
             </tr>
         </thead>
         <tbody>
-            {{range $key, $val := .}}
+            {{range $key, $val := $list}}
             <tr>
                 <td>{{$key}}</td>
                 <td>{{$val.MotoName}}</td>
@@ -27,5 +28,6 @@
             {{end}}
         </tbody>
     </table>
+    {{end}}
 </body>
 </html>
