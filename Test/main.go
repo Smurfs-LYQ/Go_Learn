@@ -1,29 +1,14 @@
 package main
 
-import (
-	"fmt"
-	"math/rand"
-	"time"
-)
+import "net/http"
 
-const (
-	one int = 1 << iota
-	two
-	thr
-	fou
-)
+import "fmt"
 
 func main() {
-	rand.Seed(time.Now().UnixNano())
-	fmt.Println(one)
-	fmt.Println(two)
-	fmt.Println(thr)
-	fmt.Println(fou)
-	fmt.Printf("%c[%d;%d;%dm%s%c[0m\n", 0x1B, 41, 33, 0, "test", 0x1B)
-	fmt.Printf("%c[%d;%d;%dm%s%c[0m\n", 0x1B, 41, 33, 1, "test", 0x1B)
-	fmt.Printf("%c[%d;%d;%dm%s%c[0m\n", 0x1B, 41, 33, 4, "test", 0x1B)
-	fmt.Printf("%c[%d;%d;%dm%s%c[0m\n", 0x1B, 41, 33, 5, "test", 0x1B)
-	fmt.Printf("%c[%d;%d;%dm%s%c[0m\n", 0x1B, 41, 33, 7, "test", 0x1B)
-	fmt.Printf("%c[%d;%d;%dm%s%c[0m\n", 0x1B, 41, 33, 8, "test", 0x1B)
-	fmt.Println(rand.Intn(2))
+	resp, err := http.Get("https://www.baidu.com")
+	if err != nil {
+		fmt.Println("请求失败, err:", err)
+	}
+
+	fmt.Println(resp)
 }

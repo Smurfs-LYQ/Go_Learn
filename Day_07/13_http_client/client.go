@@ -25,7 +25,7 @@ func main() {
 	*/
 	// fmt.Fprintf(conn, "GET / HTTP/1.1\r\n\r\n")
 	// 向连接中写入数据
-	conn.Write([]byte("GET / HTTP/1.1\r\n\r\n"))
+	conn.Write([]byte("GET / HTTP/2.0\r\n\r\n"))
 	// 接收数据
 	var buf [1014]byte
 	for {
