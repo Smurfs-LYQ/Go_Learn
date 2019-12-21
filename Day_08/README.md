@@ -142,12 +142,33 @@
    
      ​	Go语言模板引擎的使用可以分为三部分:
    
-     ​			定义模板文件
+       1. 定义模板文件
    
-     		1. 定义模板文件
-       		2. 解析模板文件
-       		3. 模板渲染
+          - 编写页面文件，详见 **6. Go语言的模板引擎** 就在上面...
    
-   - **模板渲染** 本质上就是高级的字符串替换。
+       2. 解析模板文件
+   
+          - 上面定义好模板文件之后，可以使用下面的常用方法去解析模板文件，得到模板对象:
+   
+            ```go
+            func (t *Template) Parse(src string) (*Template, error)
+            func ParseFiles(filenames ...string) (*Template, error)
+            func ParseGlob(pattern string) (*Template, error)
+            ```
+   
+          - 当然，也可以使用 `func New(name string) *Template` 函数创建一个名为 `name` 的模板，然后对其调用上面的方法去解析模板字符串或模板文件。
+   
+       3. 模板渲染
+   
+          - 模板渲染简单来说就是使用数据去填充模板，本质上就是高级的字符串替换。
+   
+            ```go
+            func (t *Template) Execute(wr io.Writer, data interface{}) error
+            func (t *Template) ExecuteTemplate(wr io.Writer, name string, data interface{}) error
+            ```
+   
+     - 基本示例见: https://github.com/Smurfs-LYQ/Go_Learn/tree/master/Day_08/03_template_demo
+   
+   - 
    
    - 

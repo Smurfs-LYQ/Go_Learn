@@ -7,14 +7,14 @@ import (
 )
 
 func index(w http.ResponseWriter, r *http.Request) {
-	// 打开一个模板文件
+	// 解析指定文件生成模板对象
 	t, err := template.ParseFiles("./index.html")
 	if err != nil {
 		fmt.Println("文件加载失败, err:", err)
 		return
 	}
 
-	// 用数据去渲染模板
+	// 利用给定数据渲染模板，并将结果写入w
 	t.Execute(w, "我的世界")
 }
 
