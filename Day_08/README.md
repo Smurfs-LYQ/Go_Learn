@@ -167,7 +167,7 @@
             func (t *Template) ExecuteTemplate(wr io.Writer, name string, data interface{}) error
             ```
    
-     - 基本示例见: https://github.com/Smurfs-LYQ/Go_Learn/tree/master/Day_08/03_template_demo
+     - 基本示例见: [Github](https://github.com/Smurfs-LYQ/Go_Learn/tree/master/Day_08/03_template_demo)
    
    - 
    
