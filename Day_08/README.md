@@ -9,6 +9,7 @@
 7. template 自定义函数
 8. template 嵌套
 9. 链式操作
+10. template block
 
 #### <center>笔记</center>
 1. > Sonar
@@ -413,11 +414,65 @@
     	1. 在模板文件开头使用 `{{define 模板名}}` 语句显式的为模板命名。
      	2. 可以把模板文件存放在 `templates` 文件夹下面的不同目录中，然后使用 `template.ParseGlob("templates/**/*.html")` 解析模板。
 
- 11. > sdf 
+ 11. > 修改默认的标识符
 
+     Go标准库的模板引擎使用的花括号 `{{` 和 `}}` 作为标识，而许多前段框架（如 `Vue` 和 `AngularJS`）也使用`{{` 和 `}}`作为标识符，所以当我们同时使用Go语言模板引擎和以上前端框架时就会出现冲突，这个时候我们需要修改标识符，修改前端的或者修改Go语言的。
 
+     这里演示如何修改Go语言模板引擎默认的标识符:
 
+     ```go
+     // 创建一个模板对象，修改其模板标识符为 "{[" 和 "]}" ，并且渲染模板文件"./index.html"
+     template.New("test").Delims("{[", "]}").ParseFiles("./index.html")
+     ```
 
+12. > text/template 与 html/template 的区别
+
+    `html/template` 针对的是需要返回HTML内容的场景，在模板渲染过程中会对一些有风险的内容进行转义，以此来防范跨站脚本攻击。
+
+    例如: 
+
+    ```html
+    <!DOCTYPE html>
+    <html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Hello</title>
+    </head>
+    <body>
+        {{.}}
+    </body>
+    </html>
+    ```
+
+    这个时候传入一段JS代码并使用 `html/template` 去渲染该文件，会在页面上显示出转义后的JS内容。`<script>alert('嘿嘿嘿')</script>` 这就是 `html/template` 为我们做的事。
+
+    但是在某些场景下，我们如果相信用户输入的内容，不想转义的话，可以自行编写一个safe函数，手动返回一个 `template.HTML` 类型的内容。示例如下: 
+
+    ```go
+    func index(w http.ResponseWriter, r *http.Request) {
+    	tmpl, err := template.New("index.html").Funcs(template.FuncMap{
+    		"safe": func(s string) template.HTML {
+    			return template.HTML(s)
+    		},
+    	}).ParseFiles("./index.html")
+    	if err != nil {
+    		fmt.Println("创建模板失败, err:", err)
+    	}
+    	jsStr := "<script>alert('嘿嘿嘿')</script>"
+    	err = tmpl.Execute(w, jsStr)
+    	if err != nil {
+    		fmt.Println(err)
+    	}
+    }
+    ```
+
+    这里只需要在模板文件不需要转义的内容后面使用我们定义好的safe函数就可以了。
+
+    ```HTML
+    {{ . | safe }}
+    ```
 
 
 
