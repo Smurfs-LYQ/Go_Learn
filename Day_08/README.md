@@ -6,6 +6,9 @@
 4. template 变量和条件判断
 5. template with和range
 6. template 预定义函数
+7. template 自定义函数
+8. template 嵌套
+9. 链式操作
 
 #### <center>笔记</center>
 1. > Sonar
@@ -314,5 +317,34 @@
 
    - 自定义函数
 
-   - 
+   - 嵌套template
+   
+     
+   
+9. > 链式操作
 
+   - 每一次执行完方法之后返回操作的对象本身
+
+     ```go
+     type Moto struct {
+     	name string
+     }
+     
+     func (m Moto) start() Moto {
+     	fmt.Printf("%s 点火\n", m.name)
+     	return m
+     }
+     
+     func (m Moto) stop() Moto {
+     	fmt.Printf("%s 熄火\n", m.name)
+     	return m
+     }
+     
+     func main() {
+     	Ducati := Moto{"杜卡迪V4R"}
+     	Ducati.start().stop()
+     }
+     
+     ```
+
+     

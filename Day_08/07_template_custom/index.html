@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Template 自定义函数</title>
+</head>
+<body>
+    <h1>自定义函数</h1>
+    {{with $list := .}}
+        {{range $key, $val := $list}}
+            <!-- 调用自定义函数 -->
+            <p>{{$key}} {{Hello $val}}</p>    
+        {{end}}
+    {{end}}
+</body>
+</html>
