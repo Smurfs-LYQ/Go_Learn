@@ -24,7 +24,6 @@ func index(w http.ResponseWriter, r *http.Request) {
 	// template.New("对象名") 创建一个模板对象
 	// .Funcs(template.FuncMap{"传入模板中的函数名": 执行操作的函数名}) 给模板追加自定义函数
 	// .Parse 解析的页面
-	// 链式操作: 每一次执行完方法之后返回操作的对象本身
 	t, err := template.New("index").Funcs(template.FuncMap{"Hello": HelloFunc}).Parse(string(htmlByte))
 	if err != nil {
 		fmt.Println("页面加载失败, err:", err)

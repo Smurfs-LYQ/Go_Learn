@@ -317,9 +317,17 @@
 
    - 自定义函数
 
+     [示例代码](https://github.com/Smurfs-LYQ/Go_Learn/tree/master/Day_08/07_template_custom)
+   
+     **注意:**  自定义函数需要在页面解析之前加入到模板中。
+   
    - 嵌套template
    
-     
+     template中可以还可以嵌套其他的template。这个template可以是单独的文件，也可以是通过 `define` 定义的template。
+   
+     [示例代码](https://github.com/Smurfs-LYQ/Go_Learn/tree/master/Day_08/08_template_nest)
+   
+     **注意:** 在解析模板时，被嵌套的模板一定要在后面解析。
    
 9. > 链式操作
 
@@ -344,7 +352,92 @@
      	Ducati := Moto{"杜卡迪V4R"}
      	Ducati.start().stop()
      }
-     
      ```
 
-     
+10. > block
+
+    ```go
+    {{block "name" pipeline}} T1 {{end}}
+    ```
+
+    `block` 是定义模板 `{{define "name"}} T1 {{end}}` 和执行 `{{template "name" pipeline}}` 缩写，经典的用法是定义一组根模板，然后通过在其中重新定义块模板进行自定义。
+
+    示例:
+
+    定义一个根模板 `template/base.html`
+
+    ```html
+    <!DOCTYPE html>
+    <html lang="zh-CN">
+    <head>
+        <title>Go Templates</title>
+    </head>
+    <body>
+    <div class="container-fluid">
+        {{block "content" . }}{{end}}
+    </div>
+    </body>
+    </html>
+    ```
+
+    然后定义一个 `template/index.html`，"继承" `base.html`：
+
+    ```html
+    {{template "base.html"}}
+    
+    {{define "content"}}
+    	<div>Hello World</div>	
+    {{end}}
+    ```
+
+    然后使用 `template.ParseGlob` 按照正则匹配规则解析模板文件，然后通过 `ExecuteTemplate` 渲染指定的模板:
+
+    ```go
+    func index(w http.ResponseWriter, r *http.Request) {
+    	// 按照正则匹配规则解析模板文件
+      tmpl, err := template.ParseGlob("templates/*.html")
+      if err != nil {
+        fmt.Println("页面加载失败, err:", err)
+        return
+      }
+      err = tmpl.ExecuteTemplate(w, "index.html", nil)
+      if err != nil {
+        fmt.Println("渲染模板失败, err:", err)
+        return
+      }
+    }
+    ```
+
+    如果模板名称冲突了，例如不同业务线下都定义了一个 `index.html` 模板，我们可以通过下面两种方法来解决:
+
+    	1. 在模板文件开头使用 `{{define 模板名}}` 语句显式的为模板命名。
+     	2. 可以把模板文件存放在 `templates` 文件夹下面的不同目录中，然后使用 `template.ParseGlob("templates/**/*.html")` 解析模板。
+
+ 11. > sdf 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
