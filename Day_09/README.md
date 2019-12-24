@@ -1,6 +1,7 @@
 #### <center>Day_08</center>
 
 1. Go连接Mysql
+2. Go使用连接池方式连接MySQL
 
 #### <center>笔记</center>
 1. > 数据库讲解
@@ -56,8 +57,12 @@
 
      Open打开一个dirverName指定的数据库，dataSourceName指定数据源，一般至少包括数据库文件名和（可能的）连接信息
 
-     [示例代码]()
+     [示例代码](https://github.com/Smurfs-LYQ/Go_Learn/blob/master/Day_09/01_MySQL/main.go)
 
    - 初始化连接
+
+     Open函数可能只是验证其参数，而不创建与数据库的连接。如果要检查数据源的名称是否合法，应调用返回值的Ping的方法。
+
+     返回的DB可以安全的被多个goroutine同时使用，并会维护自身的闲置连接池。这样一来，Open函数只需调用一次。很少需要关闭DB。
 
 3. > 
