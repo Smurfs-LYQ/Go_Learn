@@ -4,6 +4,7 @@
 2. Go使用连接池方式连接MySQL
 
 #### <center>笔记</center>
+
 1. > 数据库讲解
   
     - 数据库分类:
@@ -46,7 +47,7 @@
       ```go
       func Open(driverName, dataSourceName string) (*DB, error)
       ```
-    
+   
       Open打开一个dirverName指定的数据库，dataSourceName指定数据源，一般至少包括数据库文件名和（可能的）连接信息
 
       [示例代码](https://github.com/Smurfs-LYQ/Go_Learn/blob/master/Day_09/01_MySQL/main.go)
@@ -68,7 +69,7 @@
       ```go
       func (db *DB) SetMaxOpenConns(n int)
       ```
-    
+   
       `SetMaxOpenConns` 设置与数据库建立连接的最大数目。如果n大于0且小于最大闲置连接数，会将最大闲置连接数减小到匹配最大开启连接数的限制。如果n<=0，不会限制最大开启连接数，默认为0（无限制）
 
     - **SetMaxIdleConns**
@@ -76,7 +77,7 @@
       ```go
       func (db *DB) SetMaxIdleConns(n int)
       ```
-    
+   
       SetMaxIdleConns设置连接池中最大闲置连接数。如果n大于最大开启连接数，则新的最大闲置连接数会减小到匹配最大开启连接数的限制。如果n<=0，不会保留闲置连接。
 
 3. > CRUD
@@ -224,5 +225,24 @@
         - MySQL服务端执行完整的SQL语句并将结果返回给客户端。
 
     - **为什么要预处理**
+      - 优化MySQL服务器重复执行SQL的方法，可以提升服务器性能，提升让服务器编译，一次编译多次执行，节省后续编译的成本。
+      - 避免SQL注入问题。
 
-5. > sd
+5. > Go实现MySQL预处理
+
+    - Go中的
+      ```go
+      func (db *DB) Prepare(query string) (*Stmt, error)
+      ```
+
+    - 
+6. > SQL中的占位符
+
+    | 数据库      | 占位符语法 |
+    | ---------- | ---------- |
+    | MySQL      | ?          |
+    | postGRESQL | $1, $2等   |
+    | SQLite     | ? 和 $1    |
+    | Oracle     | :name      |
+   
+7. > 
