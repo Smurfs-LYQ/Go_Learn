@@ -8,17 +8,17 @@
   
     - 数据库分类:
    
-      ​	关系型数据库:
+      关系型数据库:
    
-      ​		MySQL、postGRESQL、SQL Server、Oracle、SQLite
+      ​	MySQL、postGRESQL、SQL Server、Oracle、SQLite
    
-      ​	非关系型数据库:
+      非关系型数据库:
    
-      ​		MongoDB、Redis、Memcache、ETCD、TiDB
+      ​	MongoDB、Redis、Memcache、ETCD、TiDB
    
     - 关系型数据库（SQL）
    
-      ​	是指采用了**关系模型**来组织数据的数据库，使用行和列的形势存储数据，以便于用户理解，关系型数据库这一系列的行和列被称为表，一组表组成了一个数据库。
+      是指采用了**关系模型**来组织数据的数据库，使用行和列的形势存储数据，以便于用户理解，关系型数据库这一系列的行和列被称为表，一组表组成了一个数据库。
    
     - 非关系型数据库（NoSQL）
    
@@ -26,15 +26,15 @@
    
     - 常用引擎
    
-      ​	MyISAM：
+      MyISAM：
    
-      ​		不支持事务，只有表级锁，但是查询速度快
+      ​	不支持事务，只有表级锁，但是查询速度快
    
-      ​	InnoDB：
+      InnoDB：
    
-      ​		支持事务，支持行级锁
+      ​	支持事务，支持行级锁
    
-      ​	MySQL支持插件式引擎
+      MySQL支持插件式引擎
    
  2. > Go操作MySQL
 
