@@ -86,5 +86,13 @@
       ```
       计算处理时的增加(Create)、读取(Retrieve)、更新(Update)和删除(Delete)几个单词的首字母简写
       ```
-    - 
+
+    - **查询-单行查询**
+
+      单行查询 `db.QueryRow()` 执行一次查询，并期望返回最多一行结果(即Row)。QueryRow总是返回非nil的值，直到返回值的Scan方法被调用时，才会返回被延迟的错误。(如: 未找到结果)
+      ```go
+      func (db *DB) QueryRow(query string, args ...interface{}) *Row
+      ```
+
+    - **查询-多行查询**
 4. > 
