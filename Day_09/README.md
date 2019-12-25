@@ -45,13 +45,13 @@
     - 下载依赖
 
       ```go
-       go get -u github.com/go-sql-driver/mysql
-       // -u: update更新
+      go get -u github.com/go-sql-driver/mysql
+      // -u: update更新
       ```
     - 使用MySQL驱动
 
       ```go
-   func Open(driverName, dataSourceName string) (*DB, error)
+  func Open(driverName, dataSourceName string) (*DB, error)
       ```
     
        Open打开一个dirverName指定的数据库，dataSourceName指定数据源，一般至少包括数据库文件名和（可能的）连接信息
