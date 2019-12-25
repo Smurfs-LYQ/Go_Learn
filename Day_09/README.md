@@ -8,9 +8,9 @@
   
     - 数据库分类:
    
-       - 关系型数据库:
+      - 关系型数据库:
         - MySQL、postGRESQL、SQL Server、Oracle、SQLite
-       - 非关系型数据库:
+      - 非关系型数据库:
         - MongoDB、Redis、Memcache、ETCD、TiDB
       
     - 关系型数据库（SQL）
