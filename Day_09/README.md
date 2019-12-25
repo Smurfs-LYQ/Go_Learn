@@ -51,12 +51,12 @@
     - 使用MySQL驱动
 
       ```go
-  func Open(driverName, dataSourceName string) (*DB, error)
+      func Open(driverName, dataSourceName string) (*DB, error)
       ```
     
-       Open打开一个dirverName指定的数据库，dataSourceName指定数据源，一般至少包括数据库文件名和（可能的）连接信息
+      Open打开一个dirverName指定的数据库，dataSourceName指定数据源，一般至少包括数据库文件名和（可能的）连接信息
 
-       [示例代码](https://github.com/Smurfs-LYQ/Go_Learn/blob/master/Day_09/01_MySQL/main.go)
+      [示例代码](https://github.com/Smurfs-LYQ/Go_Learn/blob/master/Day_09/01_MySQL/main.go)
 
     - 初始化连接
 
