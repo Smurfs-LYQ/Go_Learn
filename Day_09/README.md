@@ -71,4 +71,22 @@
 
      其中 `sql.DB` 是一个数据库（操作）句柄，代表一个具有零到多个底层连接的连接池。它可以安全的被多个go程序同时使用。`database/sql` 包会自动创建和释放连接；它也会维护一个闲置连接的连接池。
 
+   - **SetMaxOpenConns**
+
+     ```go
+     func (db *DB) SetMaxOpenConns(n int)
+     ```
+
+     `SetMaxOpenConns` 设置与数据库建立连接的最大数目。如果n大于0且小于最大闲置连接数，会将最大闲置连接数减小到匹配最大开启连接数的限制。如果n<=0，不会限制最大开启连接数，默认为0（无限制）
+
+   - **SetMaxIdleConns**
+
+     ```go
+     func (db *DB) SetMaxIdleConns(n int)
+     ```
+
+     SetMaxIdleConns设置连接池中最大闲置连接数。如果n大于最大开启连接数，则新的最大闲置连接数会减小到匹配最大开启连接数的限制。如果n<=0，不会保留闲置连接。
+
+   - 
+
 3. > 
