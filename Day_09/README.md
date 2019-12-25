@@ -89,10 +89,140 @@
 
     - **查询-单行查询**
 
-      单行查询 `db.QueryRow()` 执行一次查询，并期望返回最多一行结果(即Row)。QueryRow总是返回非nil的值，直到返回值的Scan方法被调用时，才会返回被延迟的错误。(如: 未找到结果)
+      单行查询 `db.QueryRow()` 执行一次查询，并期望返回最多一行结果(即Row)。参数args表示query中的占位参数。QueryRow总是返回非nil的值，直到返回值的Scan方法被调用时，才会返回被延迟的错误。(如: 未找到结果)
       ```go
       func (db *DB) QueryRow(query string, args ...interface{}) *Row
       ```
+      具体示例代码:
+      ```go
+      func queryRowDemo() {
+        sql := "select id, name, age from uer where id=?"
+        var u user
+        // 非常重要: 确保QueryRow之后调用Scan方法，否则持有的数据库连接不会被释放
+        err := db.QueryRow(sql, 1).Scan(&u.id, &u.name, &u.age)
+        if err != nil {
+          fmt.Printf("scan failed, err:%v\n", err)
+          return
+        }
+        fmt.Println(u)
+      }
+      ```
 
     - **查询-多行查询**
-4. > 
+
+      多行查询 `db.Query()` 执行一次查询，返回多行结果(即Rows)，一般用于执行select命令。参数args表示query中的占位参数。
+      ```go
+      func (db *DB) Query(query string, args ...interface{}) (*Rows, error)
+      ```
+      具体示例代码:
+      ```go
+      func queryMultiRowDemo() {
+        sql := "select id, name, age from user where id >= ?"
+        rows, err := db.Query(sql, 0)
+        if err != nil {
+          fmt.Printf("query failed, err:%v\n", err)
+          return
+        }
+        // 非常重要：关闭rows释放持有的数据库链接
+        defer rows.Close()
+
+        // 循环读取结果集中的数据
+        for rows.Next() {
+          var u user
+          err := rows.Scan(&u.id, &u.name, &u.age)
+          if err != nil {
+            fmt.Printf("scan failed, err:%v\n", err)
+            return
+          }
+          fmt.Println(u)
+        }
+      }
+      ```
+
+    - **插入数据**
+
+      插入、更新和删除操作都是用方法。
+
+      ```go
+      func (db *DB) Exec(query string, args ...interface{}) (Result, error)
+      ```
+
+      Exec执行一次命令(包括查询、删除、更新、插入等)，返回的Result是对已执行的SQL命令的总结。参数args表示query中的占位参数。
+
+      具体插入数据示例代码如下:
+
+      ```go
+      func insertRowDemo() {
+        sql := "insert into user(name, age) values(?,?)"
+        ret, err := db.Exec(sql, "Smurfs", 18)
+        if err != nil {
+          fmt.Printf("insert failed, err:%v\n", err)
+          return
+        }
+        theID, err := ret.LastInsertId() // 新插入数据的id
+        if err != nil {
+          fmt.Printf("get lastinsert ID failed, err:%v\n", err)
+          return
+        }
+        fmt.Printf("insert success, the id is %d.\n", theID)
+      }
+      ```
+
+    - **更新数据**
+
+      具体更新数据示例代码如下:
+
+      ```go
+      func updateRowDemo() {
+        sql := "update user set age=? where id = ?"
+        ret, err := db.Exec(sql, 16, 1)
+        if err != nil {
+          fmt.Printf("update failed, err:%v\n", err)
+          return
+        }
+        n, err := ret.RowsAffected() // 操作影响的行数
+        if err != nil {
+          fmt.Printf("get RowsAffected failed, err:%v\n", err)
+          return
+        }
+        fmt.Printf("update success, affected rows:%d\n", n)
+      }
+      ```
+
+    - **删除数据**
+
+      具体删除数据的示例代码如下:
+
+      ```go
+      func deleteRowDemo() {
+        sql := "delete from user where id = ?"
+        ret, err := db.Exec(sql, 1)
+        if err != nil {
+          fmt.Printf("delete failed, err:%v\n", err)
+          return
+        }
+        n, err := ret.RowsAffected() // 操作影响的行数
+        if err != nil {
+          fmt.Printf("get RowsAffected failed, err:%v\n", err)
+          return
+        }
+        fmt.Printf("delete success, affected rows:%d\n", n)
+      }
+      ```
+
+4. > MySQL预处理
+
+    - **什么是预处理**
+      - 普通SQL语句执行过程:
+        - 客户端对SQL语句进行占位符替换得到完整的SQL语句。
+        - 客户端发送完整SQL语句到MySQL服务端。
+        - MySQL服务端执行完整的SQL语句并将结果返回给客户端。
+      - 预处理执行过程:
+        - 把SQL语句分为两部分，命令部分与数据部分。
+        - 先把命令部分发送给MySQL服务端，MySQL服务端进行SQL预处理。
+        - 然后把数据部分发送给MySQL服务端，MySQL服务端对SQL语句进行占位符替换。
+        - MySQL服务端执行完整的SQL语句并将结果返回给客户端。
+
+    - **为什么要预处理**
+
+5. > sd
