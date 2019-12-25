@@ -65,4 +65,10 @@
 
      返回的DB可以安全的被多个goroutine同时使用，并会维护自身的闲置连接池。这样一来，Open函数只需调用一次。很少需要关闭DB。
 
+     [示例代码_1](https://github.com/Smurfs-LYQ/Go_Learn/blob/master/Day_09/01_MySQL/main.go)
+
+     [示例代码_2](https://github.com/Smurfs-LYQ/Go_Learn/blob/master/Day_09/02_MySQL/main.go)
+
+     其中 `sql.DB` 是一个数据库（操作）句柄，代表一个具有零到多个底层连接的连接池。它可以安全的被多个go程序同时使用。`database/sql` 包会自动创建和释放连接；它也会维护一个闲置连接的连接池。
+
 3. > 

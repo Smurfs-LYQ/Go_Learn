@@ -10,7 +10,7 @@ import (
 // database/sql 连接MySQL示例代码
 
 func main() {
-	// 数据源名字 dataSourceName
+	// 数据源名字 DSN DataSourceName
 	// dsn:"user:password@tcp(ip:port)/databasename"
 	dsn := "root:smurfs@tcp(127.0.0.1:3306)/go_test"
 
