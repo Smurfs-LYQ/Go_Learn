@@ -34,7 +34,6 @@ type user struct {
 
 // 查询单行数据
 func queryRowDemo(sqlStr string) {
-	var user = user{}
 	/*
 		row := DB.QueryRow(sqlStr, 1)             // sql语句，对应sql语句的可变参数(如果没有可不填)
 		err = row.Scan(&user.id, &user.name, &user.age)		  // 需要将接收查询结果的变量传入
@@ -44,12 +43,14 @@ func queryRowDemo(sqlStr string) {
 		fmt.Println("查询失败, err:", err)
 		return
 	}
+
+	var user = user{}
+
 	fmt.Println(user)
 }
 
 // 查询多条数据
 func queryMultiDemo(sqlStr string) {
-	var user = user{}
 	rows, err := DB.Query(sqlStr, 1)
 	if err != nil {
 		fmt.Println("查询失败, err", err)
@@ -57,6 +58,8 @@ func queryMultiDemo(sqlStr string) {
 	}
 	// 函数结束释放rows, 如果不释放就会一直占取连接数
 	defer rows.Close()
+
+	var user = user{}
 
 	// 循环读取数据
 	for rows.Next() { // 一直拿取rows中的数据，只要rows中有数据，rows.Next()就会一直返回true
