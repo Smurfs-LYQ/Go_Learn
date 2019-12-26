@@ -246,12 +246,12 @@
 
     - 插入、更新和删除的操作与预处理十分类似 [示例demo](https://github.com/Smurfs-LYQ/Go_Learn/blob/master/Day_09/08_MySQL_Prepare_Exec/main.go)
 6. > SQL中的占位符
-
-    | 数据库      | 占位符语法 |
-    | ---------- | ---------- |
-    | MySQL      | ?          |
-    | postGRESQL | $1, $2等   |
-    | SQLite     | ? 和 $1    |
-    | Oracle     | :name      |
+    - 
+      | 数据库      | 占位符语法 |
+      | ---------- | ---------- |
+      | MySQL      | ?          |
+      | postGRESQL | $1, $2等   |
+      | SQLite     | ? 和 $1    |
+      | Oracle     | :name      |
    
 7. > 
