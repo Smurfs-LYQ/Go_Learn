@@ -235,11 +235,11 @@
       - 避免SQL注入问题。
 
 5. > Go实现MySQL预处理
-      ```go
-      func (db *DB) Prepare(query string) (*Stmt, error)
-      ```
+    ```go
+    func (db *DB) Prepare(query string) (*Stmt, error)
+    ```
 
-      `Prepare` 方法会先将sql语句发送给MySQL服务端，返回一个准备好的状态用于之后的查询和命令。返回值可以同时执行多个查询和命令
+    `Prepare` 方法会先将sql语句发送给MySQL服务端，返回一个准备好的状态用于之后的查询和命令。返回值可以同时执行多个查询和命令
     - 速度
 6. > SQL中的占位符
 
