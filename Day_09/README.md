@@ -14,28 +14,26 @@
 1. > 数据库讲解
   
     - 数据库分类:
-   
+
       - 关系型数据库:
         - MySQL、postGRESQL、SQL Server、Oracle、SQLite
       - 非关系型数据库:
         - MongoDB、Redis、Memcache、ETCD、TiDB
-      
+
     - 关系型数据库（SQL）
-   
+
       - 是指采用了**关系模型**来组织数据的数据库，使用行和列的形势存储数据，以便于用户理解，关系型数据库这一系列的行和列被称为表，一组表组成了一个数据库。
-   
+
     - 非关系型数据库（NoSQL）
-   
-      ​	
-   
+
     - 常用引擎
-   
+
       - MyISAM：
         - 不支持事务，只有表级锁，但是查询速度快
       - InnoDB：
         - 支持事务，支持行级锁
       - MySQL支持插件式引擎
-   
+
 2. > Go操作MySQL
 
     - 连接
@@ -48,12 +46,13 @@
       go get -u github.com/go-sql-driver/mysql
       // -u: update更新
       ```
+
     - 使用MySQL驱动
 
       ```go
       func Open(driverName, dataSourceName string) (*DB, error)
       ```
-   
+
       Open打开一个dirverName指定的数据库，dataSourceName指定数据源，一般至少包括数据库文件名和（可能的）连接信息
 
       [示例代码](https://github.com/Smurfs-LYQ/Go_Learn/blob/master/Day_09/01_MySQL/main.go)
@@ -75,7 +74,7 @@
       ```go
       func (db *DB) SetMaxOpenConns(n int)
       ```
-   
+
       `SetMaxOpenConns` 设置与数据库建立连接的最大数目。如果n大于0且小于最大闲置连接数，会将最大闲置连接数减小到匹配最大开启连接数的限制。如果n<=0，不会限制最大开启连接数，默认为0（无限制）
 
     - **SetMaxIdleConns**
@@ -83,24 +82,27 @@
       ```go
       func (db *DB) SetMaxIdleConns(n int)
       ```
-   
+
       SetMaxIdleConns设置连接池中最大闲置连接数。如果n大于最大开启连接数，则新的最大闲置连接数会减小到匹配最大开启连接数的限制。如果n<=0，不会保留闲置连接。
 
 3. > CRUD
 
     - CRUD 概念
 
-      ```
+      ```txt
       计算处理时的增加(Create)、读取(Retrieve)、更新(Update)和删除(Delete)几个单词的首字母简写
       ```
 
     - **查询-单行查询**
 
       单行查询 `db.QueryRow()` 执行一次查询，并期望返回最多一行结果(即Row)。参数args表示query中的占位参数。QueryRow总是返回非nil的值，直到返回值的Scan方法被调用时，才会返回被延迟的错误。(如: 未找到结果)
+
       ```go
       func (db *DB) QueryRow(query string, args ...interface{}) *Row
       ```
+
       具体示例代码:
+
       ```go
       func queryRowDemo() {
         sql := "select id, name, age from uer where id=?"
@@ -118,10 +120,13 @@
     - **查询-多行查询**
 
       多行查询 `db.Query()` 执行一次查询，返回多行结果(即Rows)，一般用于执行select命令。参数args表示query中的占位参数。
+
       ```go
       func (db *DB) Query(query string, args ...interface{}) (*Rows, error)
       ```
+
       具体示例代码:
+
       ```go
       func queryMultiRowDemo() {
         sql := "select id, name, age from user where id >= ?"
@@ -235,7 +240,7 @@
       - 避免SQL注入问题。
 
 5. > Go实现MySQL预处理
-    
+
     - `Prepare` 方法会先将sql语句发送给MySQL服务端，返回一个准备好的状态用于之后的查询和命令。返回值可以同时执行多个查询和命令。
 
       ```go
@@ -245,13 +250,53 @@
     - 查询操作的预处理 [示例demo](https://github.com/Smurfs-LYQ/Go_Learn/blob/master/Day_09/07_MySQL_Prepare_Query/main.go)
 
     - 插入、更新和删除的操作与预处理十分类似 [示例demo](https://github.com/Smurfs-LYQ/Go_Learn/blob/master/Day_09/08_MySQL_Prepare_Exec/main.go)
-6. > SQL中的占位符
-    - 
+
+6. > Go实现MySQL事务
+
+    - **什么是事务？**
+
+      事务: 一个最小的不可再分的工作单元；通常一个事务对应一个完整的业务
+
+      在MySQL中只有使用了 `Innodb` 数据库引擎的数据库或表才支持事务。事务处理可以用来维护数据库的完整性，保证成批的SQL语句要么全部执行，要么全部不执行。
+
+    - **事务的ACID**
+
+      通常事务必须满足4个条件 (ACID) :
+
+        - 原子性(Atomicity, 或称不可分割性)
+
+          ```txt
+            一个事务(transaction)中的所有操作，要么全部完成，要么全部不完成，不会结束在中间某个环节。事务在执行过程中发生错误，会被回滚(Rollback)到事务开始前的状态，就像这个事务从来没有执行过一样。
+          ```
+
+        - 一致性(Consistency)
+
+          ```txt
+            在事务开始之前和事务结束之后，数据库的完整性没有被破坏。这表示写入的资料必须完全符合所有的预设规则，这包含资料的准确度、串联性以及后续数据库可以自发性的完成预定的任务。
+          ```
+
+        - 隔离性(Isolation, 又称独立性)
+
+          ```txt
+            数据库有允许多个并发事务同时对其数据进行读写和修改的能力，隔离性可以防止多个事务并发执行时由于交叉执行而导致数据的不一致。事务隔离分为不同级别，包括读未提交(Read uncommitted)、读提交(read committed)、可重复读(repeatable read)和串行化(Serializable)。
+          ```
+
+        - 持久性(Durability)
+
+          ```txt
+          ```
+
+    - **事务相关方法**
+
+    - **事务demo**
+
+7. > SQL中的占位符
+    -
       | 数据库      | 占位符语法 |
       | ---------- | ---------- |
       | MySQL      | ?          |
       | postGRESQL | $1, $2等   |
       | SQLite     | ? 和 $1    |
       | Oracle     | :name      |
-   
-7. > 
+
+8. > 
