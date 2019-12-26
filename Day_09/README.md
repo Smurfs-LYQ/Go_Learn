@@ -2,6 +2,12 @@
 
 1. Go连接Mysql
 2. Go使用连接池方式连接MySQL
+3. 数据库查询操作
+4. 数据库插入操作
+5. 数据库更新操作
+6. 数据库删除操作
+7. 数据库预处理-Query()/QueryRow()
+8. 数据库预处理-Exec()
 
 #### <center>笔记</center>
 
@@ -229,13 +235,12 @@
       - 避免SQL注入问题。
 
 5. > Go实现MySQL预处理
-
-    - Go中的
       ```go
       func (db *DB) Prepare(query string) (*Stmt, error)
       ```
 
-    - 
+      `Prepare` 方法会先将sql语句发送给MySQL服务端，返回一个准备好的状态用于之后的查询和命令。返回值可以同时执行多个查询和命令
+    - 速度
 6. > SQL中的占位符
 
     | 数据库      | 占位符语法 |
