@@ -336,7 +336,8 @@
     - 插入、更新和删除 [示例demo](https://github.com/Smurfs-LYQ/Go_Learn/blob/master/Day_09/12_MySQL_sqlx_Exec/main.go)
       - sqlx中的exec方法与原生sql中的exec使用基本一致
 
-    - 事务操作
+    - 事务操作 [示例demo](https://github.com/Smurfs-LYQ/Go_Learn/blob/master/Day_09/13_MySQL_sqlx_Trans/main.go)
+      - 对于事务操作，我们可以使用 `sqlx` 中提供的 `db.Beginx()` 和 `db.MustExec()` 方法来简化错误处理过程。
 
 #### <center>注意事项</center>
 
