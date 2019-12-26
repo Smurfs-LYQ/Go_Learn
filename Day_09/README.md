@@ -237,9 +237,14 @@
 5. > Go实现MySQL预处理
     
     - `Prepare` 方法会先将sql语句发送给MySQL服务端，返回一个准备好的状态用于之后的查询和命令。返回值可以同时执行多个查询和命令。
+
       ```go
       func (db *DB) Prepare(query string) (*Stmt, error)
       ```
+
+    - 查询操作的预处理 [示例demo](https://github.com/Smurfs-LYQ/Go_Learn/blob/master/Day_09/07_MySQL_Prepare_Query/main.go)
+
+    - 插入、更新和删除的操作与预处理十分类似 [示例demo](https://github.com/Smurfs-LYQ/Go_Learn/blob/master/Day_09/08_MySQL_Prepare_Exec/main.go)
 6. > SQL中的占位符
 
     | 数据库      | 占位符语法 |
