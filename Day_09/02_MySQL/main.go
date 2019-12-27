@@ -24,6 +24,7 @@ func initDB(dsn string) (err error) {
 	// 尝试与数据库建立连接(校验dsn)
 	err = DB.Ping()
 	if err != nil {
+		DB.Close()
 		return err
 	}
 
@@ -32,7 +33,7 @@ func initDB(dsn string) (err error) {
 	// 设置最大空闲连接数 20个
 	DB.SetMaxIdleConns(5)
 
-	return nil
+	return
 }
 
 func main() {

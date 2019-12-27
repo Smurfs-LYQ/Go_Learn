@@ -8,6 +8,11 @@
 6. 数据库删除操作
 7. 数据库预处理-Query()/QueryRow()
 8. 数据库预处理-Exec()
+9. 数据库事务
+10. 数据库-第三方库 sqlx 连接数据库
+11. 数据库-第三方库 sqlx 查询
+12. 数据库-第三方库 sqlx 增、删、改
+13. 数据库-第三方库 sqlx 事务
 
 #### <center>笔记</center>
 
@@ -313,6 +318,26 @@
     - **事务demo** [github](https://github.com/Smurfs-LYQ/Go_Learn/blob/master/Day_09/09_MySQL_Trans/main.go)
 
 7. > sqlx使用
+
+    - 第三方库 `sqlx` 能简化操作，提高开发效率
+
+    - **安装**
+
+      ```go
+      go get github.com/jmoiron/sqlx
+      ```
+
+    - **基本使用**
+
+    - 连接数据库 [示例demo](https://github.com/Smurfs-LYQ/Go_Learn/blob/master/Day_09/10_MySQL_sqlx_Connect/main.go)
+
+    - 查询 [示例demo](https://github.com/Smurfs-LYQ/Go_Learn/blob/master/Day_09/11_MySQL_sqlx_Get/main.go)
+
+    - 插入、更新和删除 [示例demo](https://github.com/Smurfs-LYQ/Go_Learn/blob/master/Day_09/12_MySQL_sqlx_Exec/main.go)
+      - sqlx中的exec方法与原生sql中的exec使用基本一致
+
+    - 事务操作 [示例demo](https://github.com/Smurfs-LYQ/Go_Learn/blob/master/Day_09/13_MySQL_sqlx_Trans/main.go)
+      - 对于事务操作，我们可以使用 `sqlx` 中提供的 `db.Beginx()` 和 `db.MustExec()` 方法来简化错误处理过程。
 
 #### <center>注意事项</center>
 

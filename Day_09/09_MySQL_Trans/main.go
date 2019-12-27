@@ -18,10 +18,11 @@ func initDB(dsn string) (err error) {
 	// 尝试创建数据库连接，校验数据库信息
 	err = DB.Ping()
 	if err != nil {
+		DB.Close()
 		return err
 	}
 
-	return nil
+	return
 }
 
 // 事务demo

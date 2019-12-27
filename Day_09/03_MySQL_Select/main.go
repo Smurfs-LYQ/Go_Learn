@@ -20,10 +20,11 @@ func initDB(dsn string) (err error) {
 	// 尝试与数据库建立链接
 	err = DB.Ping()
 	if err != nil {
+		DB.Close()
 		return err
 	}
 
-	return nil
+	return
 }
 
 type user struct {
