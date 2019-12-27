@@ -310,7 +310,7 @@
           func (tx *Tx) Rollback() error
           ```
 
-    - **事务demo**
+    - **事务demo** [github](https://github.com/Smurfs-LYQ/Go_Learn/blob/master/Day_09/09_MySQL_Trans/main.go)
 
 7. > sqlx使用
 
