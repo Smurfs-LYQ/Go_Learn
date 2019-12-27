@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>用户注册</title>
+</head>
+<body>
+    <div style="text-align: center;">
+        <form action="/sign_in" method="POST">
+            <label for="username">用户名: </label>
+            <input type="text" name="username" id="username" placeholder="请输入用户名"><br><br>
+            <label for="password">密 &nbsp; 码:</label>
+            <input type="text" name="password" id="password" placeholder="请输入密码"><br><br>
+            <button type="submit">注册</button>
+            <br>
+            {{ . }}
+        </form>
+    </div>
+</body>
+</html>
