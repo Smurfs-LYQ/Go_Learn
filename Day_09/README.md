@@ -353,3 +353,31 @@
 
 2. > SQL注入
     - **任何时候都不应该自己拼接SQL语句！**
+
+      示例演示:
+
+      ```go
+      // sql注入示例
+      func sqlInjectDemo(name string) {
+        sqlStr := fmt.Sprintf("select id, name, age from user where name='%s'", name)
+        fmt.Printf("SQL:%s\n", sqlStr)
+
+        var users []user
+        err := db.Select(&users, sqlStr)
+        if err != nil {
+          fmt.Printf("exec failed, err:%v\n", err)
+          return
+        }
+        for _, u := range users {
+          fmt.Printf("user:%#v\n", u)
+        }
+      }
+      ```
+
+      此时一下输入字符串都可以引发SQL注入问题:
+
+      ```go
+      sqlInjectDemo("xxx' or 1=1#")
+      sqlInjectDemo("xxx' union select * from user #")
+      sqlInjectDemo("xxx' and (select count(*) from user) <10 #")
+      ```
