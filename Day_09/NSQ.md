@@ -30,7 +30,7 @@
 
        ![avatar](https://www.liwenzhou.com/images/Go/nsq/nsq3.png)
 
-- NSQ组件
+3. > NSQ组件
 
     - **nsqd**
 
@@ -219,3 +219,53 @@
         -version
             print version string
         ```
+
+4. > NSQ架构
+
+    - **NSQ工作模式**
+
+        ![avatar](https://www.liwenzhou.com/images/Go/nsq/nsq4.png)
+
+    - **Topic 和 Channel**
+
+        每个nsqd实例只在一次处理多个数据流。这些数据流称为 `topics`，一个 `topic` 具有1个或多个 `channels`。每个 `channel` 都会收到 `topic` 所有消息的副本，实际上下游的服务器是通过对应的 `channel` 来消费 `topic` 消息。
+
+        `topic` 和 `channel` 不是预先配置的。`topic` 在首次使用时创建，方法是将其发布到指定 `topic`，或者订阅指定 `topic` 上的 `channel`。`channel` 是通过订阅指定的 `channel` 在第一次使用时创建的。
+
+        `topic` 和 `channel` 都相互独立的缓冲数据，防止缓慢的消费者导致其它 `channel` 的挤压(同样使用于 `topic` 级别)。
+
+        `channel` 可以并且通常会连接多个客户端。假设所有连接的客户端都处于准备接受消息的状态，则每条消息将被传递到随机客户端。例如:
+
+        ![avatar](https://www.liwenzhou.com/images/Go/nsq/nsq5.gif)
+        
+        总而言之，消息是从 `topic -> channel` (每个channel接受该topic的所有消息的副本) 多播的，但是从 `channel -> consumers` 均匀分布 (每个消费者都接收channel的一部分消息)。
+
+    - **NSQ接受和发送消息流程**
+
+        ![avatar](https://www.liwenzhou.com/images/Go/nsq/nsq6.png)
+
+    - **NSQ特性**
+
+        - 消息默认不持久化，可以配置成持久化模式。nsq采用的方式是 `内存+硬盘` 模式，当内存到达一定程度时就会将数据持久化到硬盘。
+            - 如果将 `--mem-queue-size` 设置为0，所有的消息将会存储到磁盘。
+            - 服务器重启时也会将当时在内存中的消息持久化。
+        - 每条消息至少传递一次。
+        - 消息不保证有序。
+
+5. > Go操作NSQ
+
+    - 官方提供了Go语言版的客户端: [go-nsq](https://github.com/nsqio/go-nsq)，更多客户端支持请查看 [CLIENT LIBRARIES](https://nsq.io/clients/client_libraries.html)。
+
+    - 安装
+
+        ```go
+        go get -u github.com/nsqio/go-nsq
+        ```
+
+    - 生产者
+
+        生产者示例 [demo]()
+
+    - 消费者
+ 
+6. > 
