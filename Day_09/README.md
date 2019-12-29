@@ -13,6 +13,8 @@
 11. 数据库-第三方库 sqlx 查询
 12. 数据库-第三方库 sqlx 增、删、改
 13. 数据库-第三方库 sqlx 事务
+14. SQL注入
+15. Redis
 
 #### <center>笔记</center>
 
@@ -338,6 +340,42 @@
 
     - 事务操作 [示例demo](https://github.com/Smurfs-LYQ/Go_Learn/blob/master/Day_09/13_MySQL_sqlx_Trans/main.go)
       - 对于事务操作，我们可以使用 `sqlx` 中提供的 `db.Beginx()` 和 `db.MustExec()` 方法来简化错误处理过程。
+
+8. > Redis
+
+    - Redis支持的数据结构
+      - STRING（字符串）
+      - LIST（列表）
+      - SET（集合）
+      - HASH（哈希）
+      - ZSET（有序集合）
+
+    - Redis应用场景
+      - 缓存系统，减轻主数据库(MySQL)的压力
+      - 计数场景，比如微博、抖音中的关注数和粉丝数
+      - 热门排行榜，需要排序的场景特别适合使用ZSET
+      - 利用LIST可以实现队列的功能。
+
+    - Redis与Memcached比较
+      - Memcached中的值只支持简单的字符串，Redis支持更丰富的5中数据结构类型。
+      - Redis的性能比Memcached好很多。
+      - Redis支持RDB持久化和AOF持久化。
+      - Redis支持master/slave模式。
+9. > Go操作Redis
+
+    - 安装
+
+      Go语言中使用第三方库 https://github.com/go-redis/redis 连接Redis连接数据库并进行操作。
+
+      ```go
+      go get -u github.com/go-redis/redis
+      ```
+
+    - 连接 [demo]()
+
+    - 撒扥
+
+10. > 
 
 #### <center>注意事项</center>
 
