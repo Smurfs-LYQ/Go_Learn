@@ -16,6 +16,7 @@
 14. SQL注入
 15. Redis 连接
 16. Redis 增删查
+17. NSQ
 
 #### <center>笔记</center>
 
@@ -375,42 +376,6 @@
     - 连接 [demo](https://github.com/Smurfs-LYQ/Go_Learn/blob/master/Day_09/15_Redis/main.go)
 
     - 设置值 获取值 删除值 [demo](https://github.com/Smurfs-LYQ/Go_Learn/blob/master/Day_09/16_Redis_operation/main.go)
-
-10. > NSQ
-
-    - NSQ介绍
-
-      NSQ是Go语言编写的一个开源的实时分布式内存消息队列，性能十分优异。NSQ有以下优势:
-
-        - NSQ提倡分布式和分散的拓扑，没有单点故障，支持容错和高可用性，并提供可靠的消息交付保证。
-        - NSQ支持横向扩展，没有任何集中式代理。
-        - NSQ易于配置和部署，并且内置了管理界面。
-
-    - NSQ的应用场景
-
-      通常来说，消协队列都使用一下场景:
-
-        - 异步队列
-
-          参照下图利用消息队列把业务流程中的非关键流程异步化，从而显著降级业务请求的响应时间。
-
-          ![avatar](https://www.liwenzhou.com/images/Go/nsq/nsq1.png)
-
-        - 应用解耦
-
-          通过使用消息队列将不同的业务逻辑解耦，降低系统间的耦合，提高系统的健壮性。后续有其他业务要使用订单数据可直接订阅消息队列，提高系统的灵活性。
-
-          ![avatar](https://www.liwenzhou.com/images/Go/nsq/nsq2.png)
-
-        - 流量削峰
-
-          类似秒杀(大秒)等场景下，某一时间可能会产生大量的请求，使用消息队列能够为后续处理请求提供一定的缓冲区，保证后端服务的稳定性。
-
-          ![avatar](https://www.liwenzhou.com/images/Go/nsq/nsq3.png)
-
-    - NSQ组件
-
-11. > d
 
 #### <center>注意事项</center>
 
