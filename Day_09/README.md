@@ -14,7 +14,8 @@
 12. 数据库-第三方库 sqlx 增、删、改
 13. 数据库-第三方库 sqlx 事务
 14. SQL注入
-15. Redis
+15. Redis 连接
+16. Redis 增删查
 
 #### <center>笔记</center>
 
@@ -371,9 +372,9 @@
       go get -u github.com/go-redis/redis
       ```
 
-    - 连接 [demo]()
+    - 连接 [demo](https://github.com/Smurfs-LYQ/Go_Learn/blob/master/Day_09/15_Redis/main.go)
 
-    - 撒扥
+    - 设置值 获取值 删除值
 
 10. > 
 

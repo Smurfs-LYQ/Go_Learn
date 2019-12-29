@@ -13,9 +13,9 @@ var redisdb *redis.Client
 func initClient() (err error) {
 	// 创建一个新的连接
 	redisdb = redis.NewClient(&redis.Options{
-		Addr:     "127.0.0.1:6379",
-		Password: "", // 没有密码就不填
-		DB:       0,  // redis分16个库(0-15)，这一步是选择在哪个库里面做
+		Addr:     "127.0.0.1:6379", // 设置地址和端口
+		Password: "",               // 没有密码就不填
+		DB:       0,                // redis分16个库(0-15)，这一步是选择在哪个库里面做
 	})
 
 	_, err = redisdb.Ping().Result()
