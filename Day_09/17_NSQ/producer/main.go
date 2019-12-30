@@ -44,6 +44,7 @@ func main() {
 		if strings.ToUpper(data) == "Q" { // 输入Q退出
 			break
 		}
+
 		// 向指定的topic 'topic_demo' 发送数据
 		/*
 			如果没有这个topic，系统会自动创建

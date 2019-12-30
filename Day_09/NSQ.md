@@ -264,8 +264,8 @@
 
     - 生产者
 
-        生产者示例 [demo]()
+        生产者示例 [demo](https://github.com/Smurfs-LYQ/Go_Learn/blob/master/Day_09/17_NSQ/producer/main.go)
 
     - 消费者
- 
-6. > 
+
+        消费者示例 [demo](https://github.com/Smurfs-LYQ/Go_Learn/blob/master/Day_09/17_NSQ/consumer/main.go)

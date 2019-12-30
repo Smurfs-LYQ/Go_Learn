@@ -245,7 +245,7 @@
         - MySQL服务端执行完整的SQL语句并将结果返回给客户端。
 
     - **为什么要预处理**
-      - 优化MySQL服务器重复执行SQL的方法，可以提升服务器性能，提升让服务器编译，一次编译多次执行，节省后续编译的成本。
+      - 优化MySQL服务器重复执行SQL的方法，可以提升服务器性能，提前让服务器编译，一次编译多次执行，节省后续编译的成本。
       - 避免SQL注入问题。
 
 5. > Go实现MySQL预处理
@@ -373,7 +373,7 @@
       go get -u github.com/go-redis/redis
       ```
 
-    - 连接 [demo](https://github.com/Smurfs-LYQ/Go_Learn/blob/master/Day_09/15_Redis/main.go)
+    - 连接 [demo](https://github.com/Smurfs-LYQ/Go_Learn/blob/master/Day_09/15_Redis_connect/main.go)
 
     - 设置值 获取值 删除值 [demo](https://github.com/Smurfs-LYQ/Go_Learn/blob/master/Day_09/16_Redis_operation/main.go)
 

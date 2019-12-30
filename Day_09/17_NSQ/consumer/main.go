@@ -26,9 +26,9 @@ func (m *MyHandler) HandleMessage(msg *nsq.Message) (err error) {
 // 初始化消费者
 /*
 	参数:
-		topic名称
-		channel名称 消费者订阅了这个channel才会创建这个channel
-		节点地址，可以是lookupd地址也可以是nsqd地址
+		1. topic名称
+		2. channel名称 消费者订阅了这个channel才会创建这个channel
+		3. 节点地址，可以是lookupd地址也可以是nsqd地址
 */
 func InitConsumer(topic string, channel string, address string) (err error) {
 	config := nsq.NewConfig()                         // 创建一个配置信息变量
