@@ -15,14 +15,14 @@ type user struct {
 	Password string `db:"password"`
 }
 
-var DB *sqlx.DB
+var db *sqlx.DB
 
 func initDB() (err error) {
 	dsn := "root:smurfs@tcp(127.0.0.1:3306)/go_test"
 
-	DB, err = sqlx.Connect("mysql", dsn)
+	db, err = sqlx.Connect("mysql", dsn)
 	if err != nil {
-		DB.Close()
+		db.Close()
 	}
 
 	return
@@ -32,7 +32,7 @@ func mysql_login(name, pwd string) (state int) {
 	sql := "select id, name, password from user where name=?"
 
 	var u user
-	err := DB.Get(&u, sql, name)
+	err := db.Get(&u, sql, name)
 	if err != nil {
 		return 3 // 3 代表没有这个用户
 	}
@@ -47,14 +47,14 @@ func mysql_login(name, pwd string) (state int) {
 func mysql_sign(name, pwd string) (state int) {
 	sql := "select name from user where name=?"
 	var u user
-	err := DB.Get(&u, sql, name)
+	err := db.Get(&u, sql, name)
 	if err == nil {
 		return 3 // 用户名已存在
 	}
 
 	sql = "insert into user(name, password) values(?, ?)"
 
-	_, err = DB.Exec(sql, name, pwd)
+	_, err = db.Exec(sql, name, pwd)
 	if err != nil {
 		fmt.Println("插入数据失败, err:", err)
 		return 2 // 创建用户失败
