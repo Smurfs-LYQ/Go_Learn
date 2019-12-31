@@ -62,7 +62,7 @@
     - **GO111MODULE**
 
         要启用 `go module` 支持首先要设置环境变量 `GO111MODULE`，通过它可以开启或关闭模块支持，它有三个可选值：`off`、`on`、`auto`，默认值是 `auto`。
-        
+
         - `GO111MODULE=off` 禁用模块支持，编译时会从GOPATH和vendor文件中查找包。
         - `GO111MODULE=on` 启用模块支持，编译时会忽略GOPATH和vendor文件夹，只根据go.mod下载依赖。
         - `GO111MODULE=auto` 当项目在$GOPATH/src外切项目根目录有go.mod文件时，开启模块支持。
@@ -201,4 +201,3 @@
         - 执行 `go mod init` 项目名命令，在当前项目文件夹下创建一个 go.mod 文件。
         - 手动编辑 go.mod 中的require依赖项或执行 go get 自动发现、维护依赖。
 
-4. >
