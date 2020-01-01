@@ -1,6 +1,6 @@
 #### <center>Day_10</center>
 
-1. 数据类型
+1. Gin示例
 
 #### <center>笔记</center>
 
