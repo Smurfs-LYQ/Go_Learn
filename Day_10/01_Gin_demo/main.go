@@ -1,8 +1,8 @@
 package main
 
 import (
-	"net/http"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 func index(c *gin.Context) {
@@ -14,11 +14,12 @@ func index(c *gin.Context) {
 func main() {
 	// 创建一个默认的路由引擎
 	r := gin.Default()
-	// GET: 请求方式: /index: 请求地址
+	// GET: 请求方式
+	// /index: 请求地址  处理函数
 	// 当客户端以GET方式请求/index路径时，会执行后面的匿名函数
 	r.GET("./hello", func(c *gin.Context) {
 		// c.JSON: 返回JSON格式的数据
-		c.JSON(200, gin.H{
+		c.JSON(200, gin.H{ // 返回值: 1. 状态码 2. 返回信息(gin.H是一个map，map[string]interface{})
 			"msg": "hello world",
 		})
 	})
