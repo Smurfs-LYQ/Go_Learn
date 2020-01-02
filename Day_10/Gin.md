@@ -78,7 +78,7 @@
     |  POST  |  /update_book  |  更新书籍信息  |
     |  POST  |  /delete_book  |  删除书籍信息  |
 
-    同样的需求我们按照RESTful API设计如下:
+    同样的需求按照RESTful API设计如下:
 
     |   请求方法   |   URL   |   含义   |
     | ---- | ---- | ---- |
@@ -86,5 +86,38 @@
     |  POST |  /book  |  创建书籍信息  |
     |  PUT  |  /book  |  更新书籍信息  |
     | DELETE |  /book  |  删除书籍信息  |
+
+    Gin框架支持开发RESTful API的开发。
+
+    ```go
+    func main() {
+        r := gin.Default()
+        r.GET("/book", func(c *gin.Context){
+            c.JSON(200, gin.H{
+                "msg": "GET",
+            })
+        })
+
+        r.POST("/book", func(c *gin.Context){
+            c.JSON(200, gin.H{
+                "msg": "POST",
+            })
+        })
+
+        r.PUT("/book", func(c *gin.Context){
+            c.JSON(200, gin.H{
+                "msg": "PUT",
+            })
+        })
+
+        r.DELETE("/book", func(c *gin.Context{
+            c.JSON(200, gin.H{
+                "msg": "DELETE",
+            })
+        }))
+    }
+    ```
+
+    开发RESTful API的时候通常使用 Postman 来作为客户端的测试工具
 
 4. > 
