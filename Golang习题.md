@@ -1,4 +1,5 @@
 1. 把字符串的IP地址"192.168.19.200"转换成整数
+
 	```go
 	package main
 
@@ -30,10 +31,10 @@
 		fmt.Printf("convert string ip [%s] to int: %d\n", ip, ipInt)
 		fmt.Printf("convert int ip [%d] to string: %s\n", ipInt, InetNtoA(ipInt))
 	}
-
 	```
 
 2. 变量d输出什么
+
 	```go
 	var a = []int{1,2,3,4,5,6,7}
 	b := a[2:5]
@@ -49,6 +50,7 @@
 	```
 
 3. 查看下面的代码的输出结果
+
 	```go
 	var a = make([]int, 5, 10)
 	for i := 0; i < 10; i++ {
@@ -58,6 +60,7 @@
 	```
 
 4. "hou do you do"中每个单词出现的次数
+
 	```go
 	str := "how do you do"
 	var a = make(map[string]int, 3)
@@ -73,6 +76,7 @@
 	```
 
 5. defer经典面试题
+
 	```go
 	package main
 
@@ -117,6 +121,7 @@
 	```
 
 6. 为什么下面的代码输出 `真` ？
+
 	```go
 	func main() {
 		f := func() bool {
@@ -266,4 +271,201 @@
 		methodB from parent
 
 		注意methodA方法里是通过 p.MethodB 来调用的，也就是说他调用的是parent的MethodB
+	```
+
+11. 下面的代码有什么问题
+
+	```go
+	package main
+
+	import (
+		"fmt"
+		"strconv"
+		"sync"
+	)
+
+	type UserAges struct {
+		ages map[string]int
+		sync.Mutex
+	}
+
+	func (u *UserAges) Add(name string, age int) {
+		u.Lock()
+		defer u.Unlock()
+		u.ages[name] = age
+	}
+
+	func (u *UserAges) Get(name string) int {
+		if age, ok := u.ages[name]; ok {
+			return age
+		}
+		return -1
+	}
+
+	func main() {
+		u := UserAges{ages: map[string]int{}}
+		wg := sync.WaitGroup{}
+		for i := 0; i < 100; i++ {
+			wg.Add(1)
+			go func(i int) {
+				u.Add("u"+strconv.Itoa(i), i)
+				wg.Done()
+			}(i)
+		}
+		// time.Sleep(time.Second)
+		for i := 0; i < 100; i++ {
+			wg.Add(1)
+			go func(i int) {
+				fmt.Println(u.Get("u" + strconv.Itoa(i)))
+				wg.Done()
+			}(i)
+		}
+		wg.Wait()
+		fmt.Println("done")
+	}
+	```
+
+	```txt
+	答案
+		问题出在两个for循环中间没有设置时间间隔，有可能出现还没设置就已经读了的报错，
+	解决办法
+		把互斥锁改成读写锁，在读的时候加上读锁
+	```
+
+12. 下面代码输出什么
+
+	```go
+	package main
+
+	import (
+		"encoding/json"
+		"fmt"
+		"reflect"
+	)
+
+	func main() {
+		json_str := []byte(`{"age":1}`)
+		var value map[string]interface{}
+		json.Unmarshal(json_str, &value)
+		age := value["age"]
+		fmt.Println(reflect.TypeOf(age))
+	}
+	```
+
+	```txt
+	答案
+		float64
+	原因
+		源码中认为所有的数字都是float64
+	```
+
+13. 下面代码输出什么
+
+	```go
+	package main
+
+	import (
+		"fmt"
+		"sync"
+	)
+
+	func main() {
+		wg := sync.WaitGroup{}
+		wg.Add(200)
+
+		for i := 0; i < 10; i++ {
+			go func() {
+				fmt.Println("i ", i)
+				wg.Done()
+			}()
+		}
+
+		for i := 0; i < 10; i++ {
+			go func(i int) {
+				fmt.Println("j ", i)
+				wg.Done()
+			}(i)
+		}
+		wg.Wait()
+	}
+	```
+
+	```txt
+	答案
+		i的值不固定,但一般不会是0-9，j是0-9
+	原因
+		并发协程传参会乱的
+		这道题循环中的协程想要传参的话必须从匿名函数那个位置传入，像第一个循环直接调用可能会因为for执行的速度过快导致协程中的i被覆盖掉
+	```
+
+14. 下面的Max函数有什么问题
+
+	```go
+	package main
+
+	import "math"
+
+	import "fmt"
+
+	func max(a, b int64) int64 {
+		// math.Max的作用是对比这两个数值哪个是最大的
+		return int64(math.Max(float64(a), float64(b)))
+	}
+
+	func main() {
+		fmt.Println(max(1, 2))
+		fmt.Println(max(math.MaxInt64-2, math.MaxInt64-1), math.MaxInt64-1)
+	}
+	```
+
+	```txt
+	答案
+		Max有可能会导致数字溢出问题，
+	```
+
+15. 下面的迭代方法有什么问题
+
+	```go
+	package main
+
+	import (
+		"fmt"
+		"reflect"
+		"sync"
+	)
+
+	type threadSafeSet struct {
+		sync.RWMutex
+		s []interface{}
+	}
+
+	func (set *threadSafeSet) Iter() <-chan interface{} {
+		ch := make(chan interface{})
+
+		go func() {
+			set.RLock()
+			for _, val := range set.s {
+				ch <- val
+			}
+			close(ch)
+			set.RUnlock()
+		}()
+
+		return ch
+	}
+	```
+
+	```txt
+	答案
+		因为ch是无缓冲区的通道，而for循环又一直在往通道里面传值，所以这里会导致卡死
+	```
+
+16. 列举chan的几种用法
+
+	```txt
+	读写数据
+	有无缓冲
+	workpool限流模型
+	定时器
+	关闭通道
 	```
