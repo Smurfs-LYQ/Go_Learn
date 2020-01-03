@@ -197,7 +197,7 @@
         ```go
         func main() {
             r := gin.Default()
-            
+
             // 设置模板函数
             r.SetFuncMap(template.FuncMap{
                 "safe": func(str string) template.HTML{
@@ -412,7 +412,79 @@
     ```
 
 13. > 获取参数-获取querystring参数
+
+    `querystring` 指的是URL中 `?` 后面携带的参数，例如: `/user/search?username=Smurfs&address=北京`。获取请求的querystring参数的方法如下:
+
+    ```go
+    func main() {
+        r := gin.Default()
+
+        r.GET("/user/search", func(c *gin.Context) {
+            // 接收参数，有默认值
+            username := c.DefaultQuery("username", "Smurfs")
+            // 接收参数，无默认值
+            // username := c.Query("username")
+            address := c.Query("address")
+            // 输出json结果给调用方
+            c.JSON(http.StatusOK, gin.H{
+                "message": "ok",
+                "username": username,
+                "address": address,
+            })
+        })
+
+        r.Run()
+    }
+    ```
+
 14. > 获取参数-获取form参数
+
+    请求的数据通过form表单来提交，例如向 `/user/search` 发送一个POST请求，获取请求数据的方式如下:
+
+    ```go
+    func main() {
+        r := gin.Default()
+
+        r.POST("/user/search", func(c *gin.Context) {
+            // DefaultPostForm取不到值时会返回指定的默认值
+            // username := c.DefaultPostForm("username", "Smurfs")
+            username := c.PostForm("username")
+            address := c.PostForm("address")
+
+            // 输出json结果给调用方
+            c.JSON(http.StatusOK, gin.H{
+                "username": username,
+                "address":  address,
+            })
+        })
+
+        r.Run()
+    }
+    ```
+
 15. > 获取参数-获取path参数
+
+    请求的参数通过URL路径传递，例如: `/user/search/smurfs/北京`。获取请求URL路径中的参数的方式如下。
+
+    ```go
+    r := gin.Default()
+
+	r.GET("/user/search/:username/:address", func(c *gin.Context) {
+        // 提取路径参数
+		username := c.Param("username")
+		address := c.Param("address")
+		// 输出json结果给调用方
+		c.JSON(http.StatusOK, gin.H{
+			"username": username,
+			"address":  address,
+		})
+	})
+
+	r.Run()
+    ```
+
 16. > 获取参数-参数绑定
+
+    为了能够更方便的获取请求相关参数，提高开发效率，我们可以基于请求的 `Context-Type` 识别请求数据类型并利用反射机制自动提取请求中 `QueryString`、`form表单`、`JSON`、`XML` 等参数到结构体中。下面的示例代码演示了 `.ShouldBind()` 强大的功能，它能够基于请求自动提取 `JSON`、`form表单` 和 `QueryString` 类型的数据，并把值绑定到指定的结构体对象。
+
 17. > 文件上传—

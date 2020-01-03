@@ -1,6 +1,9 @@
 #### <center>Day_10</center>
 
 1. Gin示例
+2. Gin示例-HTML渲染
+3. Gin示例-JSON渲染
+4. Gin示例-获取参数
 
 #### <center>笔记</center>
 

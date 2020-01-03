@@ -49,7 +49,7 @@ func main() {
 	r.Static("/static", "./static")
 
 	// 加载模板文件
-	r.LoadHTMLGlob("templates/*")
+	r.LoadHTMLGlob("templates/**/*")
 
 	// 当客户端以GET方式请求 / 路径时，返回json格式的数据 200 和 {"msg":"hello"}
 	r.GET("/index", indexHandler)
