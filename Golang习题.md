@@ -469,3 +469,306 @@
 	定时器
 	关闭通道
 	```
+
+17. 在A和B处填入代码，使输出为foo
+
+	```go
+	package main
+
+	type S struct {
+		m string
+	}
+
+	func f() *S {
+		return _ //A
+	}
+
+	func main() {
+		p := _ //B
+		println(p.m)
+	}
+	```
+
+	```txt
+	答案
+		A: &S{"foo"} 或 &S{m:"foo"}
+		B: f()
+	```
+
+18. 下面代码输出是什么，若想输出012，怎么改
+
+	```go
+	package main
+
+	const N = 3
+
+	func main() {
+		m := make(map[int]*int)
+		for i := 0; i < N; i++ {
+			m[i] = &i
+		}
+		for _, v := range m {
+			println(*v)
+		}
+	}
+	```
+
+	```txt
+	答案
+		333
+		因为map创建的时候值设置的是指针类型，并且i执行最后一定要++到3的时候才会退出，而i的内存地址一直没有变过，所以结果输出的值都为3
+	修改成输出012
+		把代码中一些指针的操作都去掉，包括定义、取址和取值
+	```
+
+19. 代码输出什么？为什么？如何改会使得len(m)为10
+
+	```go
+	package main
+
+	import "sync"
+
+	const N = 10
+
+	func main() {
+		m := make(map[int]int)
+
+		wg := &sync.WaitGroup{}
+		mu := &sync.Mutex{}
+
+		wg.Add(N)
+		for i := 0; i < N; i++ {
+			go func() {
+				defer wg.Done()
+				mu.Lock()
+				m[i] = i
+				mu.Unlock()
+			}()
+		}
+		wg.Wait()
+		println(len(m))
+	}
+	```
+
+	```txt
+	答案
+		
+		数据是不固定的，不会超过10不会小于1，因为这段代码是通过goroutine调用的一个匿名函数，而因为这个匿名函数调用了外部环境的变量，所以这个匿名函数也是一个闭包，所有的goroutine都会因为闭包共享同样的变量。原因是因为它是循环使用goroutine执行的，但是调用i是直接通过for循环调用的，并没有将参数i传入到匿名函数中，所以很有可能goroutine执行到需要调用i的时候，i已经循环过去好几个了。
+	将i以参数的形式传入到匿名函数中长度就为10了
+	```
+
+20. 请描述golang语言的初始化顺序: 包，全局变量，全局常量，init函数、main函数
+
+	```txt
+	答案
+		1. 包
+		2. 全局常量
+		3. 全局变量
+		4. init函数
+		5. main函数
+	```
+
+21. 定义一个全局字符串变量，下面哪个是对的
+
+	```go
+	1. var str string
+	2. str := ""
+	3. str = ""
+	4. var str = ""
+	```
+
+	```txt
+	答案
+		1和4
+	```
+
+22. 描述下面代码输出
+
+	```go
+	package main
+
+	import "fmt"
+
+	type S1 struct {
+	}
+
+	func (s1 S1) f() {
+		fmt.Println("S1.f()")
+	}
+
+	func (s1 S1) g() {
+		fmt.Println("S1.g()")
+	}
+
+	type S2 struct {
+		S1
+	}
+
+	func (s2 S2) f() {
+		fmt.Println("S2.f()")
+	}
+
+	type I interface {
+		f()
+	}
+
+	func printType(i I) {
+		if s1, ok := i.(S1); ok {
+			s1.f()
+			s1.g()
+		}
+		if s2, ok := i.(S2); ok {
+			s2.f()
+			s2.g()
+		}
+	}
+
+	func main() {
+		printType(S1{})
+		printType(S2{})
+	}
+	```
+
+	```txt
+	答案
+		S1.f()
+		S1.g()
+		S2.f()
+		S1.g()
+	描述
+		s1, ok := i.(S1) 这个地方是类型断言，进入对于的if之后调用f()和g()方法，s1好理解，因为他自己f和g两个方法都有，s2自身之声明了一个f方法，自己有的优先调用自己的元素，g方法s2没有，所以调用了嵌套的s1的f方法
+	```
+
+23. 下面代码有什么问题，怎么修改
+
+	```go
+	package main
+
+	import (
+		"math/rand"
+		"sync"
+	)
+
+	const N = 10
+
+	func main() {
+		m := make(map[int]int)
+		wg := &sync.WaitGroup{}
+
+		wg.Add(N)
+		for i := 0; i < N; i++ {
+			go func() {
+				defer wg.Done()
+				m[rand.Int()] = rand.Int()
+			}()
+		}
+		wg.Wait()
+		println(len(m))
+	}
+	```
+
+	```txt
+	答案
+		多个goroutine同时操作一个map会出现并发问题，只需要在操作map的时候加上一个互斥锁就可以了
+		并且随机数也可能出现覆盖的问题
+	```
+
+24. 描述make和new的区别
+
+	```txt
+	new为指定的类型分配一片内存，初始化为0并且返回类型为指定类型指针的内存地址：这种方法 **返回一个指定类型，值为0的地址的指针**，它适用于值类型如数组和结构体；它相当于&T{}
+	make**返回一个指定类型的初始值**，他使用与3中内建的引用类型：slice、map和channel
+	new函数分配内存，make函数初始化
+	```
+
+25. 下面代码输出什么，如何让输出为true
+
+	```go
+	package main
+
+	import (
+		"fmt"
+	)
+
+	type S struct {
+		a, b, c string
+	}
+
+	func main() {
+		x := interface{} (&S{"a", "b", "c"})
+		y := interface{} (&S{"a", "b", "c"})
+		fmt.Println(x == y)
+	}
+	```
+
+	```txt
+	答案
+		默认输出false，因为程序拿的是地址，两个地址肯定是不相同的
+		如果想输出true把取址符删掉就可以了
+	```
+
+26. 下面代码的问题是什么，如何修改
+
+	```go
+	package main
+
+	type S struct {
+		name string
+	}
+
+	func main() {
+		m := map[string]S{"x": S{"one"}}
+		m["x"].name = "two"
+	}
+	```
+
+	```txt
+	答案
+		map里结构体无法直接寻址，必须取地
+		将 map[string]S 改成 map[string]&S
+	```
+
+27. 修改代码，使的status输出为200
+
+	```go
+	package main
+
+	import (
+		"encoding/json"
+		"fmt"
+	)
+
+	type Result struct {
+		status int
+	}
+
+	func main() {
+		var data = []byte(`{"status":200}`)
+		result := &Result{}
+		if err := json.Unmarshal(data, &result); err != nil {
+			fmt.Println("error", err)
+			return
+		}
+		fmt.Printf("result=%+v", result)
+	}
+	```
+
+	```txt
+	答案
+		这个题的问题出在Result结构体的status字段首字母是小写的(不对外开放)，这导致json包在调用这个结构体的时候没法找到status这个字段，所以没法进行反序列化。
+	```
+
+28. 描述golang中的stack和heap的区别，分别在什么情况下会分配到stack？又在何时分配到heap中
+
+	```txt
+	区别：
+    	1. heap是堆，stack是栈。
+    	2. 栈(stack) : 由编译器自动分配和释放内存，存变量名、函数名等各种名
+    	3. 堆(heap) : 在C里有程序员分配和释放内存，go是自动的，存栈中变量的值
+    	4. stack空间有限，heap的空间是很大的自由区。
+	分别在什么情况下会分配到stack？又在何时分配到heap中
+		比如说 a := 3
+		a 在stack里，3 在heap里
+	```
+
+29. 
