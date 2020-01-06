@@ -554,13 +554,66 @@
 
     - 文件上传前段页面代码:
 
-        [demo]()
+        [demo](https://github.com/Smurfs-LYQ/Go_Learn/blob/master/Day_10/09_Gin_file_upload/templates/index.html)
 
     - 后端gin框架代码
 
-        [demo]()
+        [demo](https://github.com/Smurfs-LYQ/Go_Learn/blob/master/Day_10/09_Gin_file_upload/main.go)
 
 18. > 中间件
+
+    - Gin框架允许开发者在处理请求的过程中，加入用户自己的钩子(Hook)函数。这个钩子函数就叫中间件，中间件适合处理一下公共的业务逻辑，比如登录检验、日志打印、耗时统计等。
+
+    - Gin中的中间件必须是一个 `gin.HandlerFunc` 类型。例如我们像下面的代码一样定义一个中间件。
+
+        ```go
+        // StatCost 是一个统计耗时请求耗时的中间件
+        func StatCost() gin.HandlerFunc {
+            return func(c *gin.Context) {
+                start := time.Now()
+                c.Set("name", "smurfs")
+                // 执行其他中间件
+                c.Next()
+                // 计算耗时
+                cost := time.Since(start)
+                log.Println(cost)
+            }
+        }
+        ```
+
+    - 然后注册中间件的时候，可以在全局注册
+
+        ```go
+        func main() {
+            // 新建一个没有任何默认中间件的路由
+            r := gin.New()
+            // 注册一个全局中间件
+            r.Use(StatCost())
+
+            r.GET("/test", func(c *gin.Context) {
+                name := c.MustGet("name").(string)
+                log.Println(name)
+                c.JSON(http.StatusOK, gin.H{
+                    "message": "Hello world!",
+                })
+            })
+            r.Run()
+        }
+        ```
+
+    - 也可以给某个路由单独注册中间件
+
+        ```go
+        // 给/test2路由单独注册中间件(可注册多个)
+        r.GET("/test2", StatCost(), func(c *gin.Context) {
+            name := c.MustGet("name").(string)
+            log.Println(name)
+            c.JSON(http.StatusOK, gin.H{
+                "message": "Hello world!",
+            })
+        })
+        ```
+
 19. > 重定向-HTTP重定向
 
     - HTTP重定向很容易。内部、外部重定向均支持

@@ -3,7 +3,13 @@
 1. Gin示例
 2. Gin示例-HTML渲染
 3. Gin示例-JSON渲染
-4. Gin示例-获取参数
+4. Gin示例-获取参数-Get
+5. Gin示例-获取参数-form表单提交
+6. Gin示例-获取参数-路径参数
+7. Gin示例-ShouldBind
+8. Gin示例-路由
+9. Gin示例-文件提交
+10. Gin示例-中间件
 
 #### <center>笔记</center>
 
