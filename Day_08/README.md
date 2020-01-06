@@ -2,7 +2,7 @@
 
 1. Go语言获取请求提交的数据(form)
 2. Go语言实现动态数据页面的示例
-3. template简单语法示例
+3. template 简单语法示例
 4. template 变量和条件判断
 5. template with和range
 6. template 预定义函数

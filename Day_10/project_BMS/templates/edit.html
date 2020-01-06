@@ -1,0 +1,28 @@
+{{define "templates/edit.html"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>修改书籍</title>
+</head>
+<body>
+    <form action="/book_edit" method="POST">
+        <label>书名: 
+            <input type="text" name="name" placeholder="{{.title}}">
+            <input type="hidden" name="bak_name" value="{{.title}}">
+        </label>
+        <br>
+        <label>价格: 
+            <input type="number" name="price" placeholder="{{.price}}">
+            <input type="hidden" name="bak_price" value="{{.price}}">
+        </label>
+        <br>
+        <input type="hidden" name="id" value="{{.id}}">
+        <button type="submit">提交</button>
+    </form>
+    <div>{{ .msg }}</div>
+</body>
+</html>
+{{end}}
