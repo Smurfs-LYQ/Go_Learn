@@ -487,4 +487,158 @@
 
     为了能够更方便的获取请求相关参数，提高开发效率，我们可以基于请求的 `Context-Type` 识别请求数据类型并利用反射机制自动提取请求中 `QueryString`、`form表单`、`JSON`、`XML` 等参数到结构体中。下面的示例代码演示了 `.ShouldBind()` 强大的功能，它能够基于请求自动提取 `JSON`、`form表单` 和 `QueryString` 类型的数据，并把值绑定到指定的结构体对象。
 
-17. > 文件上传—
+        ```go
+        // Binding from JSON
+        type Login struct {
+            User     string `form:"user" json:"user" binding:"required"`
+            Password string `form:"password" json:"password" binding:"required"`
+        }
+
+        func main() {
+            router := gin.Default()
+
+            // 绑定JSON的示例 ({"user": "q1mi", "password": "123456"})
+            router.POST("/loginJSON", func(c *gin.Context) {
+                var login Login
+
+                if err := c.ShouldBind(&login); err == nil {
+                    fmt.Printf("login info:%#v\n", login)
+                    c.JSON(http.StatusOK, gin.H{
+                        "user":     login.User,
+                        "password": login.Password,
+                    })
+                } else {
+                    c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+                }
+            })
+
+            // 绑定form表单示例 (user=q1mi&password=123456)
+            router.POST("/loginForm", func(c *gin.Context) {
+                var login Login
+                // ShouldBind()会根据请求的Content-Type自行选择绑定器
+                if err := c.ShouldBind(&login); err == nil {
+                    c.JSON(http.StatusOK, gin.H{
+                        "user":     login.User,
+                        "password": login.Password,
+                    })
+                } else {
+                    c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+                }
+            })
+
+            // 绑定QueryString示例 (/loginQuery?user=q1mi&password=123456)
+            router.GET("/loginForm", func(c *gin.Context) {
+                var login Login
+                // ShouldBind()会根据请求的Content-Type自行选择绑定器
+                if err := c.ShouldBind(&login); err == nil {
+                    c.JSON(http.StatusOK, gin.H{
+                        "user":     login.User,
+                        "password": login.Password,
+                    })
+                } else {
+                    c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+                }
+            })
+
+            // Listen and serve on 0.0.0.0:8080
+            router.Run(":8080")
+        }
+        ```
+
+    `ShouldBind` 会按照下面的顺序解析请求中的数据完成绑定:
+
+    - 如果是 `GET` 请求，只使用 `Form` 绑定引擎 (query)。
+    - 如果是 `POST` 请求，首先检查 `content-type` 是否为 `JSON` 或 `XML`，然后在使用 `FORM` (form-data)。
+
+17. > 文件上传—单文件上传
+18. > 文件上传—多文件上传
+19. > 中间件
+20. > 重定向-HTTP重定向
+
+    - HTTP重定向很容易。内部、外部重定向均支持
+
+        ```go
+        r.GET("/test", func(c *gin.Context) {
+            c.Redirect(http.StatusMovedPermanently, "http://www.baidu.com")
+        })
+        ```
+
+21. > 重定向-路由重定向
+
+    - 路由重定向，使用 `HandleContext`:
+
+        ```go
+        r.GET("/test", func(c *gin.Context) {
+            // 指定重定向的URL
+            c.Request.URL.Path = "/test2"
+            r.HandleContext(c)
+        })
+        r.GET("/test2", func(c *gin.Context) {
+            c.JSON(http.StatusOK, gin.H{"hello": "world"})
+        })
+        ```
+
+22. > Gin路由-普通路由
+
+    ```go
+    r.GET("/index", func(c *gin.Context) {...})
+    r.GET("/login", func(c *gin.Context) {...})
+    r.POST("/index", func(c *gin.Context) {...})
+    ```
+
+    此处，还有一个可以匹配所有请求方法的 `Any` 方法如下:
+
+    ```go
+    r.Any("/test", func(c *gin.Context) {...})
+    ```
+
+    为没有配置处理函数的路由添加处理程序，默认情况下它返回404代码，下面的代码为没有匹配到路由的请求都返回 `views/404.html` 页面。
+
+    ```go
+    r.NoRoute(func(c *gin.Context) {
+        c.HTML(http.StatusNotFound, "views/404.html", nil)
+    })
+    ```
+
+23. > Gin路由-路由组
+
+    我们可以将拥有共同URL前缀的路由划分为一个路由组。习惯性使用 `{}` 包裹同组的路由，这只是为了看着清晰，你用不用 `{}` 包裹功能上没什么区别。
+
+    ```go
+    func main() {
+        r := gin.Default()
+        userGroup := r.Group("/user")
+        {
+            userGroup.GET("/index", func(c *gin.Context) {...})
+            userGroup.GET("/login", func(c *gin.Context) {...})
+            userGroup.POST("/login", func(c *gin.Context) {...})
+        }
+        shopGroup := r.Group("/shop")
+        {
+            userGroup.GET("/index", func(c *gin.Context) {...})
+            userGroup.GET("/cart", func(c *gin.Context) {...})
+            userGroup.POST("/checkout", func(c *gin.Context) {...})
+        }
+        r.Run()
+    }
+    ```
+
+    ```txt
+    访问:
+        user组
+        127.0.0.1:8080/user/index GET方式请求
+        127.0.0.1:8080/user/login GET方式请求
+        127.0.0.1:8080/user/login POST方式请求
+
+        shop组
+        27.0.0.1:8080/user/index GET方式请求
+        127.0.0.1:8080/user/cart GET方式请求
+        127.0.0.1:8080/user/checkout POST方式请求
+    ```
+
+    通常我们将路由分组用在划分业务逻辑或划分API版本时。
+
+24. > Gin路由-路由原理
+
+    - Gin框架中的路由使用的是 [httprouter](https://github.com/julienschmidt/httprouter)这个库
+    - 其基本原理就是构造一个路由地址的前缀树。
