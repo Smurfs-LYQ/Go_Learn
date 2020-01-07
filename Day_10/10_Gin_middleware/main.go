@@ -31,9 +31,9 @@ func T1() gin.HandlerFunc {
 
 func userIndexHandler(c *gin.Context) {
 	// name, _ := c.Get("name")
-	name := c.MustGet("name")
+	name := c.MustGet("name").(string)
 	time.Sleep(time.Second)
-	c.JSON(http.StatusOK, gin.H{"msg": fmt.Sprintf("%s的用户主页\n", name.(string))})
+	c.JSON(http.StatusOK, gin.H{"msg": fmt.Sprintf("%s的用户主页\n", name)})
 }
 
 func userLoginHandler(c *gin.Context) {
