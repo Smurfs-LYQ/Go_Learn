@@ -55,6 +55,7 @@ func main() {
 			performQueries(q, p)
 			wg.Done()
 		}(query)
+		// time.Sleep(time.Millisecond * 100)
 	}
 
 	// 等待goroutine结束
@@ -73,6 +74,8 @@ func performQueries(query int, p *pool.Pool) {
 		log.Println(err)
 		return
 	}
+
+	// log.Printf("QID[%d] CID[%d]\n", query, conn.(*dbConnection).ID)
 
 	// 将该连接释放回池里
 	defer p.Release(conn)
