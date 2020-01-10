@@ -9,7 +9,7 @@ import (
 
 type Login struct {
 	User     string `form:"user" json:"user" binding:"required"`
-	Password string `form:"password" json:"password" binding:"required"`
+	Password string `form:"password" json:"password" binding:"required"` // binding:"required" 会让在没传入这个参数的时候报错
 }
 
 func main() {
