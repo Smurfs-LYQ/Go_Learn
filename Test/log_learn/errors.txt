@@ -1,0 +1,3 @@
+Error: 2020/01/11 13:40:53 main.go:37: Something has failed
+Error: 2020/01/11 13:45:47 main.go:36: Something has failed
+Error: 2020/01/11 14:10:37 main.go:36: Something has failed
