@@ -1,4 +1,4 @@
-#### <center>Day_08</center>
+#### <center>Day_09</center>
 
 1. Go连接Mysql
 2. Go使用连接池方式连接MySQL
