@@ -18,6 +18,7 @@ func user_cookie() gin.HandlerFunc {
 			c.Redirect(http.StatusMovedPermanently, "/login")
 		}
 		c.Set("username", name)
+		c.Next()
 	}
 }
 
@@ -38,7 +39,6 @@ func loginHandler(c *gin.Context) {
 				"msg": "用户名或密码错误",
 			})
 		}
-
 	} else {
 		c.HTML(http.StatusOK, "login.html", nil)
 	}
