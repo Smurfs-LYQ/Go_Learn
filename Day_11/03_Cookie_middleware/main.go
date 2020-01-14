@@ -47,7 +47,7 @@ func loginHandler(c *gin.Context) {
 func userIndexHandler(c *gin.Context) {
 	username, _ := c.Get("username")
 	c.HTML(http.StatusOK, "user.html", gin.H{
-		"username": username,
+		"username": username.(string),
 	})
 }
 
