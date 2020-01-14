@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -12,7 +11,7 @@ type User struct {
 	Password string `form:"password"`
 }
 
-func cookie() gin.HandlerFunc {
+func user_cookie() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		name, err := c.Cookie("username")
 		if err != nil {
@@ -25,22 +24,21 @@ func cookie() gin.HandlerFunc {
 func loginHandler(c *gin.Context) {
 	if c.Request.Method == "POST" {
 		var u User
-		err := c.ShouldBindHeader(&u)
+		err := c.ShouldBind(&u)
 		if err != nil {
-			fmt.Println(err)
 			c.HTML(http.StatusOK, "login.html", gin.H{
 				"msg": "用户名和密码不能为空",
 			})
 		}
-
 		if u.Username == "smurfs" && u.Password == "123" {
 			c.SetCookie("username", u.Username, 20, "/", "127.0.0.1", false, true)
-			c.Redirect(http.StatusOK, "/user/index")
+			c.Redirect(http.StatusFound, "/user/index")
 		} else {
 			c.HTML(http.StatusOK, "login.html", gin.H{
 				"msg": "用户名或密码错误",
 			})
 		}
+
 	} else {
 		c.HTML(http.StatusOK, "login.html", nil)
 	}
@@ -59,10 +57,9 @@ func main() {
 	r.LoadHTMLGlob("templates/*")
 
 	r.Any("/login", loginHandler)
-	userGroup := r.Group("/user", cookie())
+	userGroup := r.Group("/user", user_cookie())
 	{
 		userGroup.GET("/index", userIndexHandler)
-		// userGroup.GET("/book_list")
 	}
 
 	r.Run()
