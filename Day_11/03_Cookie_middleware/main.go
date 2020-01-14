@@ -45,7 +45,10 @@ func loginHandler(c *gin.Context) {
 }
 
 func userIndexHandler(c *gin.Context) {
-	username, _ := c.Get("username")
+	username, ok := c.Get("username")
+	if !ok {
+		c.Redirect(http.StatusMovedPermanently, "/login")
+	}
 	c.HTML(http.StatusOK, "user.html", gin.H{
 		"username": username.(string),
 	})
