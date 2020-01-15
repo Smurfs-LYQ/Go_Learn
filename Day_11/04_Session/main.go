@@ -2,9 +2,10 @@ package main
 
 import (
 	"Go_Learn/Day_11/04_Session/session"
-	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 type User struct {
@@ -21,6 +22,7 @@ func user_session() gin.HandlerFunc {
 		if err != nil {
 			log.Println(err)
 			c.Redirect(http.StatusMovedPermanently, "/login")
+			return
 		}
 
 		// 去session中判断，session中有没有对应的user session_data
@@ -36,9 +38,10 @@ func user_session() gin.HandlerFunc {
 			log.Println(err)
 			c.Redirect(http.StatusMovedPermanently, "/login")
 		}
-		c.Set("username", val.(string))
 
 		// 设置用户名
+		c.Set("username", val)
+
 		c.Next()
 	}
 }
@@ -67,8 +70,9 @@ func loginHandler(c *gin.Context) {
 
 		if u.Username == "smurfs" && u.Password == "123" {
 			// 创建Cookie
-			uuid := SessionMgr.AddSession() // 这里有问题
-			c.SetCookie("uuid", uuid, 30, "/", "127.0.0.1", false, true)
+			uuid := SessionMgr.AddSession()
+			SessionMgr.Session[uuid].AddSessionData("username", u.Username)
+			c.SetCookie("uuid", uuid, 3, "/", "127.0.0.1", false, true)
 
 			c.Redirect(http.StatusFound, "/user/index")
 		} else {
@@ -89,10 +93,7 @@ func main() {
 	r.LoadHTMLGlob("templates/*")
 
 	r.Any("/login", loginHandler)
-	userGroup := r.Group("/user", user_session())
-	{
-		userGroup.GET("/index", indexHandler)
-	}
+	r.GET("/user/index", user_session(), indexHandler)
 
 	r.Run()
 }

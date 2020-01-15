@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+const session_time int = 20
+
 // SessionData 表示提个具体的用户session数据
 type SessionData struct {
 	ID   string
@@ -40,7 +42,7 @@ func NewSessionMgr() *SessionMgr {
 // AddSession 添加session信息
 func (s *SessionMgr) AddSession() (key string) {
 	s.rwlock.RLock()
-	defer s.rwlock.Unlock()
+	defer s.rwlock.RUnlock()
 
 	rand.Seed(time.Now().UnixNano())
 	key = fmt.Sprintf("%d-%d", time.Now().UnixNano(), rand.Intn(10000))

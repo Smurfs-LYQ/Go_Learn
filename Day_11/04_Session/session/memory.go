@@ -1,10 +1,12 @@
 package session
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // AddSessionData 新增session数据
 func (s *SessionData) AddSessionData(key string, val interface{}) {
-	s.lock.Lock()
+	s.lock.RLock()
 	defer s.lock.RUnlock()
 
 	s.Data[key] = val
