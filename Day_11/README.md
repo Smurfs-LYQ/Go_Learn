@@ -17,12 +17,12 @@
             Value      string       // 值
             Path       string       // 路径
             Domain     string       // 域名
-            Expires    time.Time    // 超时时间(有缺陷，不推荐使用)
+            Expires    time.Time    // 超时时间(有缺陷，不推荐使用) 绝对时间
             RawExpires string
             // MaxAge=0表示未设置Max-Age属性
             // MaxAge<0表示立刻删除该cookie，等价于"Max-Age: 0"
             // MaxAge>0表示存在Max-Age属性，单位是秒
-            MaxAge   int            // 生命时长
+            MaxAge   int            // 生命时长 相对时间
             Secure   bool           // 是否启用安全测量
             HttpOnly bool           // 只允许HTTP进行访问，防止别人通过JS来获取Cookie
             Raw      string         // 
@@ -81,6 +81,14 @@
     }
     ```
 
-2. > 
+    - Cookie的缺点
 
-    - sdf
+        - 数据量最大4K
+
+        - 保存在客户端(浏览器)，不安全
+
+2. > Session
+
+    Cookie虽然在一定程度上解决了“保持状态”的需求，但是由于Cookie本身最大支持4096字节，以及Cookie本身保存在客户端，可能被拦截或窃取，因此就需要有一种新的东西，它能支持更多的字节，并且他保存在服务器，有较高的安全性。这就是 `Session`。
+
+    Session的存在必须依赖于Cookie，Cookie中保存了没个用户Session的唯一标识。

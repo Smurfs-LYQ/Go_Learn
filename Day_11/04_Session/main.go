@@ -21,22 +21,24 @@ func user_session() gin.HandlerFunc {
 		uuid, err := c.Cookie("uuid")
 		if err != nil {
 			log.Println(err)
-			c.Redirect(http.StatusMovedPermanently, "/login")
 			return
+			// c.Redirect(http.StatusMovedPermanently, "/login")
 		}
 
 		// 去session中判断，session中有没有对应的user session_data
 		session_data, err := SessionMgr.GetSession(uuid)
 		if err != nil {
 			log.Println(err)
-			c.Redirect(http.StatusMovedPermanently, "/login")
+			return
+			// c.Redirect(http.StatusMovedPermanently, "/login")
 		}
 
 		// 去session_data中判断是否有username
 		val, err := session_data.GetSessionData("username")
 		if err != nil {
 			log.Println(err)
-			c.Redirect(http.StatusMovedPermanently, "/login")
+			return
+			// c.Redirect(http.StatusMovedPermanently, "/login")
 		}
 
 		// 设置用户名
@@ -51,6 +53,7 @@ func indexHandler(c *gin.Context) {
 	if !ok {
 		log.Println("username获取失败")
 		c.Redirect(http.StatusMovedPermanently, "/login")
+		return
 	}
 	c.HTML(http.StatusOK, "user.html", gin.H{
 		"username": username,
@@ -94,6 +97,10 @@ func main() {
 
 	r.Any("/login", loginHandler)
 	r.GET("/user/index", user_session(), indexHandler)
+	// 没有匹配的路由都走这个
+	r.NoRoute(func(c *gin.Context) {
+		c.HTML(http.StatusNotFound, "404.html", nil)
+	})
 
 	r.Run()
 }
