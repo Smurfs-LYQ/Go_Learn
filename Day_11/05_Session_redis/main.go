@@ -1,38 +1,30 @@
 package main
 
 import (
+	"Go_Learn/Day_11/05_Session_redis/db"
+	"Go_Learn/Day_11/05_Session_redis/user"
 	"log"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-redis/redis"
 )
 
-var redisDB *redis.Client
-
-// InitRedis 启动redis
-func initRedis() error {
-	redisDB = redis.NewClient(&redis.Options{
-		Addr:     "127.0.0.1:6379",
-		Password: "",
-		DB:       0,
-	})
-
-	_, err := redisDB.Ping().Result()
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func main() {
-	err := initRedis()
+	err := db.InitRedis()
 	if err != nil {
 		log.Println("Redis启动失败, err:", err)
 		return
 	}
 
 	r := gin.Default()
+
+	r.LoadHTMLGlob("./templates")
+
+	r.Any("/login", user.Login)
+
+	r.NoRoute(func(c *gin.Context) {
+		c.HTML(http.StatusOK, "404.html", nil)
+	})
 
 	r.Run()
 }
