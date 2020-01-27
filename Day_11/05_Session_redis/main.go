@@ -18,9 +18,10 @@ func main() {
 
 	r := gin.Default()
 
-	r.LoadHTMLGlob("./templates")
+	r.LoadHTMLGlob("./templates/*")
 
 	r.Any("/login", user.Login)
+	r.GET("/user", user.User)
 
 	r.NoRoute(func(c *gin.Context) {
 		c.HTML(http.StatusOK, "404.html", nil)

@@ -9,8 +9,8 @@ import (
 	"time"
 )
 
-// 设置session生效时长
-const session_time int = 20
+// Session_time 设置session生效时长
+const Session_time int = 5
 
 // Session 表示提个具体的用户session数据
 type Session struct {
@@ -23,16 +23,37 @@ type Session struct {
 
 // InitSession 初始化Session对象
 func InitSession() *Session {
+	rand.Seed(time.Now().UnixNano())
 	return &Session{
 		ID:   fmt.Sprintf("%d-%d", time.Now().UnixNano(), rand.Intn(1000)),
 		Data: make(map[string]interface{}, 2),
 	}
 }
 
+// Sel_Session 从Redis中查询UUID
+func Sel_Session(id string) (*Session, error) {
+	res, err := db.RedisDB.Get(id).Result()
+	if err != nil {
+		fmt.Println("Sel_Session err:", err)
+		return nil, fmt.Errorf("reids not found")
+	}
+
+	sess := &Session{}
+
+	// 将返回值反序列化
+	err = json.Unmarshal([]byte(res), sess)
+	if err != nil {
+		fmt.Println("json Unmarshal err:", err)
+		return nil, fmt.Errorf("json Unmarshal err")
+	}
+
+	return sess, err
+}
+
 // Add 增加信息
 func (s *Session) Add(key string, val interface{}) {
 	s.lock.RLock()
-	defer s.lock.Unlock()
+	defer s.lock.RUnlock()
 
 	s.Data[key] = val
 }
