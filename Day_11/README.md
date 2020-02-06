@@ -2,6 +2,9 @@
 
 1. Logrus-第三方日志库
 2. Gin框架操作Cookie
+3. Gin框架-用户登录 写入cookie记录登录状态
+4. Gin框架-用户登录 缓存版本session
+5. Gin框架-用户登录 Redis版本session
 
 #### <center>笔记</center>
 
