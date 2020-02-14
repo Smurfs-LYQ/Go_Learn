@@ -8,7 +8,7 @@ import (
 
 // 基于sarama第三方库开发的kafka client
 
-func main() {
+func send() {
 	config := sarama.NewConfig()
 	config.Producer.RequiredAcks = sarama.WaitForAll          // 发送完数据需要leader和follow都确认
 	config.Producer.Partitioner = sarama.NewRandomPartitioner // 新选出一个partition
@@ -32,4 +32,8 @@ func main() {
 		return
 	}
 	fmt.Printf("pid:%v offset:%v\n", pid, offset)
+}
+
+func main() {
+	send()
 }

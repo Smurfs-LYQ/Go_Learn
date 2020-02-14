@@ -5,6 +5,8 @@
 3. Context - 客户端超时取消示例
 4. flag 标准库使用
 5. pprof 性能调优
+6. kafka 连接收发消息示例
+7. tail 示例
 
 #### <center>笔记</center>
 
