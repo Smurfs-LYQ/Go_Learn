@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-var pwd = "/Volumes/Data/go_1/"
+var pwd = "/Volumes/Data/go/"
 
 func main() {
 	str, err := ioutil.ReadFile("./a.txt")
