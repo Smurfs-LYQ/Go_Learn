@@ -56,17 +56,22 @@ func consumer() {
 			return
 		}
 		defer pc.AsyncClose()
+
+		for msg := range pc.Messages() {
+			fmt.Printf("Partition: %d Offset: %d Key: %v Value:%v\n", msg.Partition, msg.Offset, string(msg.Key), string(msg.Value))
+		}
+
 		// 异步从每个分区消费信息
-		go func(sarama.PartitionConsumer) {
-			for msg := range pc.Messages() {
-				fmt.Printf("Partition: %d Offset: %d Key: %v Value:%v", msg.Partition, msg.Offset, msg.Key, msg.Value)
-			}
-		}(pc)
+		// go func(sarama.PartitionConsumer) {
+		// 	for msg := range pc.Messages() {
+		// 		fmt.Printf("Partition: %d Offset: %d Key: %v Value:%v\n", msg.Partition, msg.Offset, string(msg.Key), string(msg.Value))
+		// 	}
+		// }(pc)
 	}
 }
 
 func main() {
-	producer()
+	// producer()
 
-	// consumer()
+	consumer()
 }
