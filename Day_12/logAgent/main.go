@@ -12,26 +12,26 @@ func run() {
 	// 获取信息
 	go taillog.Get_msg(log_ch)
 
-	/*
-	for {
-		select {
-		case msg := <-log_ch:
-			// 发送信息
-			err := kafka.Send("test", msg)
-			if err != nil {
-				fmt.Printf("信息发送失败, err:%v\n", err)
-			}
-		default:
-		}
-	}
-	*/
-
 	for msg := range log_ch {
 		err := kafka.Send("test", msg)
 		if err != nil {
 			fmt.Printf("信息发送失败，err:%v\n", err)
 		}
 	}
+
+	/*
+		for {
+			select {
+			case msg := <-log_ch:
+				// 发送信息
+				err := kafka.Send("test", msg)
+				if err != nil {
+					fmt.Printf("信息发送失败, err:%v\n", err)
+				}
+			default:
+			}
+		}
+	*/
 }
 
 func main() {
