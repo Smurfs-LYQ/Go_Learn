@@ -12,13 +12,6 @@ func run() {
 	// 获取信息
 	go taillog.Get_msg(log_ch)
 
-	for msg := range log_ch {
-		err := kafka.Send("test", msg)
-		if err != nil {
-			fmt.Printf("信息发送失败，err:%v\n", err)
-		}
-	}
-
 	/*
 		for {
 			select {
@@ -32,6 +25,13 @@ func run() {
 			}
 		}
 	*/
+
+	for msg := range log_ch {
+		err := kafka.Send("test", msg)
+		if err != nil {
+			fmt.Printf("信息发送失败，err:%v\n", err)
+		}
+	}
 }
 
 func main() {
