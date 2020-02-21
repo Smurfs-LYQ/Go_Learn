@@ -23,7 +23,6 @@ func Kafka_init(ip_list []string) (err error) {
 		return
 	}
 
-	fmt.Println("kafka连接成功")
 	return
 }
 

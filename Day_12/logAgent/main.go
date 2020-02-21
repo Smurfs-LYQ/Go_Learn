@@ -12,6 +12,7 @@ func run() {
 	// 获取信息
 	go taillog.Get_msg(log_ch)
 
+	/*
 	for {
 		select {
 		case msg := <-log_ch:
@@ -23,6 +24,14 @@ func run() {
 		default:
 		}
 	}
+	*/
+
+	for msg := range log_ch {
+		err := kafka.Send("test", msg)
+		if err != nil {
+			fmt.Printf("信息发送失败，err:%v\n", err)
+		}
+	}
 }
 
 func main() {
@@ -31,6 +40,8 @@ func main() {
 	if err != nil {
 		panic(fmt.Sprintf("kafka启动失败, err:%v\n", err))
 	}
+	fmt.Println("kafka连接成功")
+
 	defer kafka.Client.Close()
 	// 打开日志文件准备收集日志
 	err = taillog.Taillog_init("./logs/my.log")
