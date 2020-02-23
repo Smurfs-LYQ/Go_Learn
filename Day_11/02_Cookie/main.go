@@ -41,7 +41,7 @@ func loginHandler(c *gin.Context) {
 		if u.Username == "smurfs" && u.Password == "123" {
 			// 设置Cookie
 			// 参数：cookie名，cookie值，生命时长，路径，域名，是否启用安全策略，防止别人通过JS来获取cookie
-			c.SetCookie("username", "smurfs", 20, "/", "127.0.0.1", false, true)
+			c.SetCookie("username", "smurfs", 20, "/", "127.0.0.1", http.SameSiteDefaultMode, false, true)
 			c.Redirect(http.StatusFound, "/user")
 		} else {
 			c.HTML(http.StatusOK, "login.html", gin.H{

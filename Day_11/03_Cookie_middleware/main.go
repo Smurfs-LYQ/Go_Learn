@@ -32,7 +32,7 @@ func loginHandler(c *gin.Context) {
 			})
 		}
 		if u.Username == "smurfs" && u.Password == "123" {
-			c.SetCookie("username", u.Username, 20, "/", "127.0.0.1", false, true)
+			c.SetCookie("username", u.Username, 20, "/", "127.0.0.1", http.SameSiteDefaultMode, false, true)
 			c.Redirect(http.StatusFound, "/user/index")
 		} else {
 			c.HTML(http.StatusOK, "login.html", gin.H{

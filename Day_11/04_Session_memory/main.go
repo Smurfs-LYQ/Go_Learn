@@ -75,7 +75,7 @@ func loginHandler(c *gin.Context) {
 			// 创建Cookie
 			uuid := SessionMgr.AddSession()
 			SessionMgr.Session[uuid].AddSessionData("username", u.Username)
-			c.SetCookie("uuid", uuid, 3, "/", "127.0.0.1", false, true)
+			c.SetCookie("uuid", uuid, 3, "/", "127.0.0.1", http.SameSiteDefaultMode, false, true)
 
 			c.Redirect(http.StatusFound, "/user/index")
 		} else {

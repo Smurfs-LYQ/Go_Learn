@@ -47,7 +47,7 @@ func Login(c *gin.Context) {
 				})
 			}
 			// 将唯一ID保存到Cookie中
-			c.SetCookie("UUID", id, session.Session_time, "/", "127.0.0.1", false, true)
+			c.SetCookie("UUID", id, session.Session_time, "/", "127.0.0.1", http.SameSiteDefaultMode, false, true)
 
 			// 跳转到用户界面
 			c.Redirect(http.StatusFound, "/user")

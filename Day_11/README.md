@@ -74,7 +74,7 @@
                 cookie = "NotSet"
                 // 设置cookie
                 // 参数：cookie名，cookie值，生命时长，路径，域名，是否启用安全策略，防止别人通过JS来获取cookie
-                c.SetCookie("gin_cookie", "test", 3600, "/", "127.0.0.1", false, true)
+                c.SetCookie("gin_cookie", "test", 3600, "/", "127.0.0.1", http.SameSiteDefaultMode, false, true)
             }
 
             fmt.Printf("Cookie value: %s\n", cookie)
