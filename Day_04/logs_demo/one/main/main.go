@@ -1,7 +1,7 @@
 package main
 
 import (
-	"Go_Learn/Day_04/logs_demo/mylog"
+	"Go_Learn/Day_04/logs_demo/one/mylog"
 	"fmt"
 	"time"
 )

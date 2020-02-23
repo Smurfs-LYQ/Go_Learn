@@ -35,6 +35,8 @@ type user struct {
 
 // 查询单行数据
 func queryRowDemo(sqlStr string) {
+	var user = user{}
+
 	/*
 		row := DB.QueryRow(sqlStr, 1)             // sql语句，对应sql语句的可变参数(如果没有可不填)
 		err = row.Scan(&user.id, &user.name, &user.age)		  // 需要将接收查询结果的变量传入
@@ -44,8 +46,6 @@ func queryRowDemo(sqlStr string) {
 		fmt.Println("查询失败, err:", err)
 		return
 	}
-
-	var user = user{}
 
 	fmt.Println(user)
 }

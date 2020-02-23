@@ -2,7 +2,7 @@ package main
 
 import "fmt"
 
-// Project "Go_Learn/day_03/06_func/project"
+// Project "Go_learn/old/day_03/06_func/project"
 
 /*
 // No.1

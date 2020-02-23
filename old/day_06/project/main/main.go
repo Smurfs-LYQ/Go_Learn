@@ -1,7 +1,7 @@
 package main
 
 import (
-	"Go_Learn/day_06/project/one"
+	"Go_learn/old/day_06/project/one"
 )
 
 func main() {

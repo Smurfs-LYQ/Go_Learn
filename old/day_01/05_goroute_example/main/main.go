@@ -1,7 +1,7 @@
 package main
 
 import (
-	"Go_Learn/day_01/05_goroute_example/goroute"
+	"Go_learn/old/day_01/05_goroute_example/goroute"
 	"fmt"
 )
 

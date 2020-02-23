@@ -2,9 +2,9 @@ package main
 
 import (
 	// "fmt"
-	// one "Go_Learn/day_03/05_process/if_demo"
-	// two "Go_Learn/day_03/05_process/switch_demo"
-	thr "Go_Learn/day_03/05_process/for_demo"
+	// one "Go_learn/old/day_03/05_process/if_demo"
+	// two "Go_learn/old/day_03/05_process/switch_demo"
+	thr "Go_learn/old/day_03/05_process/for_demo"
 )
 
 func main() {

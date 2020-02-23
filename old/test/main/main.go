@@ -1,11 +1,11 @@
 package main
 
-//import "Go_Learn/test/one"
+//import "Go_learn/old/test/one"
 
-// func funcmui(x,y int)(sum int,error) {
-// 	sum := x+y
-// 	return sum,nil
-// }
+func funcMui(x, y int) (int, error) {
+	sum := x + y
+	return sum, nil
+}
 
 func main() {
 	//one.Do()

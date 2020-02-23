@@ -1,7 +1,7 @@
 package main
 
 import (
-	"Test/runner/runner"
+	"Go_Learn/Test/runner/runner"
 	"log"
 	"os"
 	"time"

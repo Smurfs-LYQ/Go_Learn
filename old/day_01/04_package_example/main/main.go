@@ -1,7 +1,7 @@
 package main
 
 import (
-	"Go_learn/day_01/04_package_example/calc" //引入项目中的calc包
+	"Go_learn/old/day_01/04_package_example/calc" //引入项目中的calc包
 	"fmt"
 )
 

@@ -2,9 +2,9 @@ package main
 
 import (
 	// one two可用
-	// "Go_Learn/day_02/02_package/add"
+	// "Go_learn/old/day_02/02_package/add"
 	//thr可用(设置包别名)
-	a "Go_Learn/day_02/02_package/add"
+	a "Go_learn/old/day_02/02_package/add"
 	"fmt"
 )
 

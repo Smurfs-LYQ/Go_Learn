@@ -1,7 +1,7 @@
 package plant
 
 import (
-	"Go_Learn/day_05/04_struct_plant/model"
+	"Go_learn/old/day_05/04_struct_plant/model"
 	"fmt"
 )
 

@@ -1,6 +1,6 @@
 package main
 
-import "Go_Learn/Day_06/06_channel_select/demo"
+import "Go_Learn/Day_06/06_channel-select/demo"
 
 // 多路复用
 

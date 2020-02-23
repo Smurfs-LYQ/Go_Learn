@@ -1,7 +1,7 @@
 package main
 
 import (
-	a "Go_Learn/day_02/03_init/one"
+	a "Go_learn/old/day_02/03_init/one"
 	"fmt"
 )
 

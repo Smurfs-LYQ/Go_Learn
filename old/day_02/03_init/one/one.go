@@ -2,7 +2,7 @@ package one
 
 import (
 	// 导入这个包但是并不会用到它，只是用它的初始化来打印字符串
-	_ "Go_Learn/day_02/03_init/test"
+	_ "Go_learn/old/day_02/03_init/test"
 )
 
 // Name 全局变量

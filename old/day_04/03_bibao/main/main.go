@@ -1,7 +1,7 @@
 package main
 
 import (
-	"Go_Learn/day_04/03_bibao/project"
+	"Go_learn/old/day_04/03_bibao/project"
 )
 
 // 闭包: 一个函数和与其相关的引用环境组合而成的实体
