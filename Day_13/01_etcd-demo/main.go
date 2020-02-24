@@ -22,8 +22,17 @@ func main() {
 
 	fmt.Println("connect to etcd success")
 
-	// get
+	// put
 	ctx, cannel := context.WithTimeout(context.Background(), time.Second)
+	_, err := cli.Put(ctx, "smurfs", "格格巫")
+	cancel()
+	if err != nil {
+		fmt.Printf("put to etcd faield, err: %v\n", err)
+		return
+	}
+
+	// get
+	ctx, cannel = context.WithTimeout(context.Background(), time.Second)
 	resp, err := cli.Get(ctx, "smurfs")
 	cannel()
 	if err != nil {
