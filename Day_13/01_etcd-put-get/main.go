@@ -23,8 +23,8 @@ func main() {
 	fmt.Println("connect to etcd success")
 
 	// put
-	ctx, cannel := context.WithTimeout(context.Background(), time.Second)
-	_, err := cli.Put(ctx, "smurfs", "格格巫")
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	_, err = cli.Put(ctx, "smurfs", "格格巫")
 	cancel()
 	if err != nil {
 		fmt.Printf("put to etcd faield, err: %v\n", err)
@@ -32,9 +32,9 @@ func main() {
 	}
 
 	// get
-	ctx, cannel = context.WithTimeout(context.Background(), time.Second)
+	ctx, cancel = context.WithTimeout(context.Background(), time.Second)
 	resp, err := cli.Get(ctx, "smurfs")
-	cannel()
+	cancel()
 	if err != nil {
 		fmt.Printf("get to etcd faield, err: %v\n", err)
 		return
@@ -42,4 +42,6 @@ func main() {
 	for k, v := range resp.Kvs {
 		fmt.Println(k, v)
 	}
+
+	// del del的用法和get和put大致相似
 }
