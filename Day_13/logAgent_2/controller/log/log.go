@@ -1,13 +1,8 @@
-package main
+package log
 
-import (
-	"fmt"
-	"time"
+import "github.com/hpcloud/tail"
 
-	"github.com/hpcloud/tail"
-)
-
-func main() {
+func ReadLog(file string) (tails *tail.Tail, err error) {
 	config := tail.Config{
 		ReOpen:    true,                                 // 如果日志文件被切割之后，会根据原文件名重新打开文件
 		Follow:    true,                                 // 与上面的参数配合，设定是否根据 "原文件名"
@@ -16,21 +11,10 @@ func main() {
 		Poll:      true,                                 // 使用轮循的方式
 	}
 
-	tails, err := tail.TailFile("logs/my.log", config)
+	tails, err = tail.TailFile(file, config)
 	if err != nil {
-		fmt.Println(err)
 		return
 	}
 
-	go func(tails *tail.Tail) {
-		for msg := range tails.Lines {
-			fmt.Println(msg.Text)
-		}
-	}(tails)
-	time.Sleep(5 * time.Second)
-	// tails.Stop()
-	fmt.Println("------------------------------")
-	// tails.Cleanup()
-	tails.Stop()
-	time.Sleep(10 * time.Second)
+	return
 }

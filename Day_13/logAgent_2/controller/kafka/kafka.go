@@ -1,6 +1,8 @@
 package kafka
 
-import "github.com/Shopify/sarama"
+import (
+	"github.com/Shopify/sarama"
+)
 
 var Client sarama.SyncProducer
 
@@ -17,5 +19,15 @@ func InitKafka(address []string) (err error) {
 		return nil
 	}
 
+	return
+}
+
+// SendToKafka 将数据发送到kafka中
+func SendToKafka(topic, msg string) (pid int32, offset int64, err error) {
+	message := &sarama.ProducerMessage{}
+	message.Topic = topic
+	message.Value = sarama.StringEncoder(msg)
+
+	pid, offset, err = Client.SendMessage(message)
 	return
 }
