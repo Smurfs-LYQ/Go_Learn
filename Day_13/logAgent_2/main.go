@@ -13,11 +13,6 @@ import (
 	"time"
 )
 
-type ETCDMsgMgr struct {
-	*model.ETCD_msg
-	Cancel context.CancelFunc
-}
-
 var config model.Config
 
 func main() {
@@ -54,7 +49,7 @@ func main() {
 		return
 	}
 
-	list := []ETCDMsgMgr{}
+	list := []model.ETCDMsgMgr{}
 
 	ctx, cancel := context.WithCancel(context.Background())
 	go run(ctx, &res)
