@@ -49,7 +49,7 @@ func consumer() {
 		fmt.Printf("fail to get list of partition:err%v\n", err)
 		return
 	}
-	fmt.Println(partitionList)
+
 	for partition := range partitionList { // 遍历所有发的分区
 		// 针对每个分区创建一个对应的分区消费者
 		pc, err := consumer.ConsumePartition("test", int32(partition), sarama.OffsetNewest)
@@ -73,7 +73,7 @@ func consumer() {
 }
 
 func main() {
-	producer()
+	// producer()
 
-	// consumer()
+	consumer()
 }

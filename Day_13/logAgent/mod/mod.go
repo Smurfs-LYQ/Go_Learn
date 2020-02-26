@@ -15,3 +15,8 @@ type ETCD struct {
 type LogFile struct {
 	Path string `ini:"log_path"`
 }
+
+type ETCD_msg struct {
+	Path  string `json:"logfile"`
+	Topic string `json:"topic"`
+}

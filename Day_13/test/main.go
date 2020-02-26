@@ -1,11 +1,7 @@
 package main
 
-import "time"
-
-func one() {
-	time.Sleep(time.Second * 1)
-}
+import "Go_Learn/Day_13/test/one"
 
 func main() {
-	one()
+	one.Two()
 }
