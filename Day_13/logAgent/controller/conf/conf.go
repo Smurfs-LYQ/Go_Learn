@@ -1,7 +1,7 @@
 package conf
 
 import (
-	"Go_Learn/Day_13/logAgent_2/model"
+	"Go_Learn/Day_13/logAgent/model"
 	"io/ioutil"
 	"reflect"
 	"strings"

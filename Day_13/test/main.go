@@ -2,24 +2,15 @@ package main
 
 import "fmt"
 
-type a struct {
-	name string
-}
-
 func main() {
-	one := map[string]*a{}
+	one := map[string]int{}
+	one["1"] = 1
+	one["2"] = 2
+	one["3"] = 3
 
-	one["1"] = &a{"1"}
+	for k, _ := range one {
+		delete(one, k)
+	}
 
-	// one["3"] = &a{"3"}
-
-	// if ok := one["4"]; ok != nil {
-	// 	fmt.Println(ok)
-	// }
-	aaa(one)
 	fmt.Println(one)
-}
-
-func aaa(one map[string]*a) {
-	one["2"] = &a{"2"}
 }

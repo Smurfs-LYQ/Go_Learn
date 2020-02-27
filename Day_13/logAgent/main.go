@@ -1,10 +1,11 @@
 package main
 
 import (
-	"Go_Learn/Day_13/logAgent/etcd"
-	"Go_Learn/Day_13/logAgent/log"
-	"Go_Learn/Day_13/logAgent/mod"
-	"Go_Learn/Day_13/logAgent/taillog"
+	"Go_Learn/Day_13/logAgent/controller/conf"
+	"Go_Learn/Day_13/logAgent/controller/etcd"
+	"Go_Learn/Day_13/logAgent/controller/kafka"
+	"Go_Learn/Day_13/logAgent/controller/log"
+	"Go_Learn/Day_13/logAgent/model"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -12,88 +13,120 @@ import (
 	"time"
 )
 
+var config model.Config
+
 func main() {
-	var config mod.Config
-
-	// 1. 打开配置文件，获取配置信息
-	err := log.InitLogs("conf/Config.ini", &config)
+	// 1. 初始化配置文件
+	err := conf.InitConf("conf/config.ini", &config)
 	if err != nil {
-		fmt.Println("初始化配置信息失败, err:", err)
+		fmt.Println("初始化配置文件失败, err:", err)
 		return
 	}
-	fmt.Println("初始化配置信息成功")
+	fmt.Println("配置文件初始化成功")
 
-	// 2. 初始化etcd
-	err = etcd.InitETCD(strings.Split(config.ETCD.IP, ","), time.Second*3)
+	// 2. 初始化ETCD连接
+	err = etcd.InitETCD(strings.Split(config.ETCD.Address, ","), time.Second*3)
 	if err != nil {
-		fmt.Println("连接ETCD失败, err:", err)
+		fmt.Println("ETCD初始化失败, err:", err)
 		return
 	}
-	fmt.Println("连接ETCD成功")
+	fmt.Println("ETCD初始化成功")
 	defer etcd.Cli.Close()
 
-	/*
-		// 3. 获取日志信息
-		err = taillog.InitTaillog(config.LogFile.Path)
-		if err != nil {
-			fmt.Println("获取日志信息服务启动失败, err:", err)
-			return
-		}
-		fmt.Println("获取日志信息服务启动成功")
-	*/
+	// 3. 初始化kafka连接
+	err = kafka.InitKafka(strings.Split(config.Kafka.Address, ","))
+	if err != nil {
+		fmt.Println("kafka初始化失败, err:", err)
+		return
+	}
+	fmt.Println("kafka初始化成功")
+	defer kafka.Client.Close()
 
-	/*
-		// 4. 发送到etcd
-		run()
-	*/
+	// 初始化ETCD信息列表
+	msg_list := map[string]*model.ETCDMsgMgr{}
 
-	// 4. 从etcd中获取数据
-	run()
-}
+	// 4. 从ETCD中获取数据
+	res, err := etcd.GetMsg("xxx")
+	if err != nil {
+		fmt.Println("获取信息失败, err:", err)
+		return
+	}
 
-func run() {
-	get()
-}
+	// 判断返回的信息中有没有值
+	if res != nil {
+		new(res, msg_list)
+	}
 
-func get() {
-	// ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
-	// res, err := etcd.Cli.Get(ctx, "xxx")
-	// cancel()
-	// if err != nil {
-	// 	fmt.Println("获取信息失败, err:", err)
-	// }
-
-	// for _, v := range res.Kvs {
-	// 	fmt.Println(string(v.Key), string(v.Value))
-	// }
-
+	// 4.1 并监控数据变化
 	rch := etcd.Cli.Watch(context.Background(), "xxx")
 	for wresp := range rch {
 		for _, ev := range wresp.Events {
-			fmt.Printf("Type:%v Key:%v Value:%v\n", ev.Type, string(ev.Kv.Key), string(ev.Kv.Value))
 			if fmt.Sprintf("%v", ev.Type) == "PUT" {
-				var etcd_msg mod.ETCD_msg
-				err := json.Unmarshal(ev.Kv.Value, &etcd_msg)
+				// 序列化
+				var msg model.ETCD_msg
+				err = json.Unmarshal(ev.Kv.Value, &msg)
 				if err != nil {
-					fmt.Println("反序列化失败, err:", err)
-					continue
+					fmt.Println("反序列化失败")
 				}
-				fmt.Println(etcd_msg)
+
+				// 判断列表中有没有这个topic
+				if res := msg_list[msg.Topic]; res != nil {
+					if res.ETCD_msg.LogFile != msg.LogFile {
+						// 关闭对应的goroutine
+						res.Cancel()
+
+						new(&msg, msg_list)
+
+						continue
+					}
+				} else {
+					new(&msg, msg_list)
+				}
+			} else if fmt.Sprintf("%v", ev.Type) == "DELETE" {
+				// 删除并停止所有gooutine
+				for k, v := range msg_list {
+					// 停止goroutine
+					v.Cancel()
+					// 从msg_list中删除对应的msg
+					delete(msg_list, k)
+				}
 			}
 		}
 	}
 }
 
-func send() {
-	var con int
-	for msg := range taillog.Tails.Lines {
-		ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
-		_, err := etcd.Cli.Put(ctx, fmt.Sprintf("log_%d", con), fmt.Sprintf("%v", msg.Text))
-		cancel()
-		if err != nil {
-			fmt.Println("信息发送到ETCD失败, err:", err)
+func new(msg *model.ETCD_msg, msg_list map[string]*model.ETCDMsgMgr) {
+	ctx, cancel := context.WithCancel(context.Background())
+	go run(ctx, msg)
+	msg_list[msg.Topic] = &model.ETCDMsgMgr{msg, cancel}
+}
+
+func run(ctx context.Context, conf *model.ETCD_msg) {
+	tails, err := log.ReadLog(conf.LogFile)
+	if err != nil {
+		fmt.Println("获取日志信息失败, err:", err)
+	}
+
+	for {
+		select {
+		case <-ctx.Done():
+			// 执行关闭操作
+			tails.Stop()
+			tails.Cleanup()
+
+			fmt.Printf("%s 已退出\n", conf.Topic)
+
+			return
+		case msg := <-tails.Lines:
+			// 5. 将数据发送到kafka中
+			pid, offset, err := kafka.SendToKafka(conf.Topic, msg.Text)
+			if err != nil {
+				fmt.Println("消息发送到kafka失败, err:", err)
+				continue
+			}
+			fmt.Printf("pid:%v offset:%v\n", pid, offset)
+		default:
+			time.Tick(time.Second)
 		}
-		fmt.Println("信息发送成功")
-		con++
 	}
 }
