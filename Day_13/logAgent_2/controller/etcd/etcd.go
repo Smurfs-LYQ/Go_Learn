@@ -24,7 +24,7 @@ func InitETCD(address []string, time time.Duration) (err error) {
 }
 
 // GetMsg 获取etcd中的信息
-func GetMsg(key string) (msg model.ETCD_msg, err error) {
+func GetMsg(key string) (msg *model.ETCD_msg, err error) {
 	ctx, concel := context.WithTimeout(context.Background(), time.Second*3)
 	res, err := Cli.Get(ctx, key)
 	concel()
@@ -33,9 +33,12 @@ func GetMsg(key string) (msg model.ETCD_msg, err error) {
 	}
 
 	for _, v := range res.Kvs {
-		err = json.Unmarshal(v.Value, &msg)
-		if err != nil {
-			return
+		// fmt.Println(v)
+		if v != nil {
+			err = json.Unmarshal(v.Value, &msg)
+			if err != nil {
+				return
+			}
 		}
 	}
 

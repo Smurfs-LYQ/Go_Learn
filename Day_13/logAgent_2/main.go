@@ -42,6 +42,9 @@ func main() {
 	fmt.Println("kafka初始化成功")
 	defer kafka.Client.Close()
 
+	// 初始化ETCD信息列表
+	msg_list := map[string]*model.ETCDMsgMgr{}
+
 	// 4. 从ETCD中获取数据
 	res, err := etcd.GetMsg("xxx")
 	if err != nil {
@@ -49,11 +52,10 @@ func main() {
 		return
 	}
 
-	list := []model.ETCDMsgMgr{}
-
-	ctx, cancel := context.WithCancel(context.Background())
-	go run(ctx, &res)
-	list = append(list, ETCDMsgMgr{&res, cancel})
+	// 判断返回的信息中有没有值
+	if res != nil {
+		new(res, msg_list)
+	}
 
 	// 4.1 并监控数据变化
 	rch := etcd.Cli.Watch(context.Background(), "xxx")
@@ -67,45 +69,31 @@ func main() {
 					fmt.Println("反序列化失败")
 				}
 
-				var status bool
+				// 判断列表中有没有这个topic
+				if res := msg_list[msg.Topic]; res != nil {
+					if res.ETCD_msg.LogFile != msg.LogFile {
+						// 关闭对应的goroutine
+						res.Cancel()
 
-				// 循环已经运行的发送信息列表
-				for k, v := range list {
-					// 判断收到信息的topic与列表中的topic是否一致
-					if msg.Topic == v.Topic {
-						// 如果信息发生变化则关闭之前的goroutine 重新开启一个
-						if v.LogFile != msg.LogFile {
-							v.Cancel()
-							// 从list中删除这个ETCDMsgMgr
-							list = append(list[:k], list[k+1:]...)
+						new(&msg, msg_list)
 
-							ctx, cancel := context.WithCancel(context.Background())
-							go run(ctx, &msg)
-							list = append(list, ETCDMsgMgr{&msg, cancel})
-						}
-						status = true
-						break
+						continue
 					}
 				}
 
-				// 如果列表中没有对应的信息，那就新启动一个goroutine
-				if !status {
-					ctx, cancel := context.WithCancel(context.Background())
-					go run(ctx, &msg)
-					list = append(list, ETCDMsgMgr{&msg, cancel})
-				}
+				new(&msg, msg_list)
 			} else if fmt.Sprintf("%v", ev.Type) == "DELETE" {
 				fmt.Printf("DELETE Key:%v\n", string(ev.Kv.Key))
-				// for _, v := range list {
-				// 	if v.Topic == key {
-				// 		v.Cancel()
-				// 		break
-				// 	}
-				// }
-				// fmt.Println(list)
+
 			}
 		}
 	}
+}
+
+func new(msg *model.ETCD_msg, msg_list map[string]*model.ETCDMsgMgr) {
+	ctx, cancel := context.WithCancel(context.Background())
+	go run(ctx, msg)
+	msg_list[msg.Topic] = &model.ETCDMsgMgr{msg, cancel}
 }
 
 func run(ctx context.Context, conf *model.ETCD_msg) {
@@ -123,6 +111,9 @@ func run(ctx context.Context, conf *model.ETCD_msg) {
 
 			return
 		case msg := <-tails.Lines:
+			// go func() {
+
+			// }()
 			// 5. 将数据发送到kafka中
 			pid, offset, err := kafka.SendToKafka(conf.Topic, msg.Text)
 			if err != nil {
@@ -130,6 +121,8 @@ func run(ctx context.Context, conf *model.ETCD_msg) {
 				continue
 			}
 			fmt.Printf("pid:%v offset:%v\n", pid, offset)
+		default:
+			time.Tick(time.Second)
 		}
 	}
 }
