@@ -79,12 +79,17 @@ func main() {
 
 						continue
 					}
+				} else {
+					new(&msg, msg_list)
 				}
-
-				new(&msg, msg_list)
 			} else if fmt.Sprintf("%v", ev.Type) == "DELETE" {
-				fmt.Printf("DELETE Key:%v\n", string(ev.Kv.Key))
-
+				// 删除并停止所有gooutine
+				for k, v := range msg_list {
+					// 停止goroutine
+					v.Cancel()
+					// 从msg_list中删除对应的msg
+					delete(msg_list, k)
+				}
 			}
 		}
 	}
@@ -109,11 +114,10 @@ func run(ctx context.Context, conf *model.ETCD_msg) {
 			tails.Stop()
 			tails.Cleanup()
 
+			fmt.Printf("%s 已退出\n", conf.Topic)
+
 			return
 		case msg := <-tails.Lines:
-			// go func() {
-
-			// }()
 			// 5. 将数据发送到kafka中
 			pid, offset, err := kafka.SendToKafka(conf.Topic, msg.Text)
 			if err != nil {
