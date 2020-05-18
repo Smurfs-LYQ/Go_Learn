@@ -70,7 +70,7 @@ func queryMultiDemo(sqlStr string) {
 }
 
 func main() {
-	dsn := "root:smurfs@tcp(127.0.0.1:3306)/go_test" // 用户名:密码@连接方式(IP:端口)/库名
+	dsn := "root:smurfs@tcp(127.0.0.1:3306)/test" // 用户名:密码@连接方式(IP:端口)/库名
 	err := initDB(dsn)
 	if err != nil {
 		fmt.Println("数据库链接失败", err)

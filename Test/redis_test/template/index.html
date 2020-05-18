@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文章首页</title>
+    <style type="text/css">
+        div{
+            width: 30%;
+            height: 70%;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- {{with $list := .}} -->
+    <div>
+        <table border="1" style="text-align: center;">
+            <tr>
+                <th>文章标题</th>
+                <th>文章作者</th>
+                <th>文章票数</th>
+                <th>文章发布时间</th>
+                <th>操作</th>
+            </tr>
+            {{ range $val := . }}
+            <tr>
+                <td>{{ $val.Title }}</td>
+                <td>{{ $val.Poster }}</td>
+                <td>{{ $val.Votes }}</td>
+                <td>{{ $val.Time }}</td>
+                <form action="/scrap" method="POST">
+                    <input type="hidden" name="ID" value="{{ $val.Url }}">
+                    <td><button type="submit">点赞</button></td>
+                </form>
+            </tr>
+            {{ end }}
+        </table>
+    </div>
+    <!-- {{end}} -->
+</body>
+</html>
