@@ -59,7 +59,6 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// rows, err := db.Query("select time from articles")
 	rows, err := db.Query("select title,id,writer,time,votes from articles")
 	if err != nil {
 		fmt.Println("查询失败, err:", err)
@@ -76,15 +75,25 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 		lists = append(lists, scrap)
 	}
 
+	var time_list = make([]*redis.Z, 0, 10)
+	var vote_list = make([]*redis.Z, 0, 10)
+
 	for k, v := range lists {
 		date, _ := strconv.Atoi(v.Time)
 		lists[k].Time = time.Unix(int64(date), 0).Format("2006-01-02 15:04:05")
-		redisdb.HSet(fmt.Sprintf("article:%d", v.Url), "title", v.Title)
-		redisdb.HSet(fmt.Sprintf("article:%d", v.Url), "link", v.Url)
-		redisdb.HSet(fmt.Sprintf("article:%d", v.Url), "poster", v.Poster)
-		redisdb.HSet(fmt.Sprintf("article:%d", v.Url), "time", v.Time)
-		redisdb.HSet(fmt.Sprintf("article:%d", v.Url), "votes", v.Votes)
+		name := fmt.Sprintf("article:%s", v.Url)
+		redisdb.HSet(name, "title", v.Title)
+		redisdb.HSet(name, "link", v.Url)
+		redisdb.HSet(name, "poster", v.Poster)
+		redisdb.HSet(name, "time", v.Time)
+		redisdb.HSet(name, "votes", v.Votes)
+
+		time_list = append(time_list, &redis.Z{Score: float64(date), Member: name})
+		vote_list = append(vote_list, &redis.Z{Score: float64(v.Votes), Member: name})
 	}
+
+	redisdb.ZAdd("time:", time_list...)
+	redisdb.ZAdd("source:", vote_list...)
 
 	t.Execute(w, lists)
 }
@@ -94,6 +103,10 @@ func scrapHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 
 	id := r.Form.Get("ID")
+
+	// 将投票的用户添加到已投票的集合中
+	// 对应增加统计文章票数的有序集合中的数值
+	// 修改数据库
 
 	fmt.Println(id)
 }
