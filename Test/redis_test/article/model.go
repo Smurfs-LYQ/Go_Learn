@@ -4,11 +4,11 @@ import "time"
 
 // Article 文章 redis表名 article:文章ID
 type Article struct {
-	Title  string // 标题
-	Url    string // 连接
-	Poster string // 作者
-	Time   string // 发布时间
-	Votes  int    // 票数
+	Title  string `json:title`// 标题
+	Url    string `json:link`// 连接
+	Poster string `poster`// 作者
+	Time   string `time`// 发布时间
+	Votes  string `votes`// 票数
 }
 
 // Time 文章发布时间 redis表名 time:
