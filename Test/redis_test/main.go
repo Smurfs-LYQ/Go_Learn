@@ -173,7 +173,7 @@ func index_redis() {
 			continue
 		}
 
-		name := fmt.Sprintf("article:%s", article.Url)
+		name := fmt.Sprintf("article:%v", article.Url)
 
 		// 检测指定文章是否存在
 		res := redisdb.Keys(name)
@@ -208,13 +208,58 @@ func scrapHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("点赞请求接入")
 	r.ParseForm()
 
-	id := r.Form.Get("ID")
+	article_id := r.Form.Get("ID")
+	uid := r.Form.Get("uid")
+	user_id := fmt.Sprintf("user:%v", uid)
+	voted := fmt.Sprintf("voted:%v", article_id)
+	member := fmt.Sprintf("article:%v", article_id)
+
+	// 检测用户是否已在已投票用户表中
+	user_res := redisdb.SIsMember(voted, user_id).Val()
+
+	if user_res {
+		// 已经投过票了
+		fmt.Printf("用户ID为: %v 的用户，已经为ID为: %v 投过票了\n", uid, article_id)
+		http.Redirect(w, r, "/", 302)
+		return
+	}
 
 	// 将投票的用户添加到已投票的集合中
-	// 对应增加统计文章票数的有序集合中的数值
-	// 修改数据库
+	redisdb.SAdd(voted, user_id)
+	// 对应增加统计文章票数的有序集合中的数值 两个表
+	//积分表
+	redisdb.ZIncrBy("source:", float64(1), member)
+	//文章表
+	redisdb.HIncrBy(member, "votes", 1)
 
-	fmt.Println(id)
+	// 修改数据库(结合事务管理)
+	tx, err := db.Begin() // 事务开始
+	if err != nil {
+		if tx != nil {
+			tx.Rollback() // 回滚
+		}
+		fmt.Println("事务开始失败, err:", err)
+		http.Redirect(w, r, "/", 302)
+		return
+	}
+
+	//执行修改数据库的操作
+	db_res, err := db.Exec("update articles set votes = votes+1 where id = ?", article_id)
+	if err != nil {
+		fmt.Println("数据库信息更新失败, err:", err)
+		tx.Rollback()
+		http.Redirect(w, r, "/", 302)
+		return
+	}
+
+	// 获取受影响的行数
+	num, err := db_res.RowsAffected()
+	if err != nil {
+		fmt.Println("获取受影响行数失败, err:", err)
+
+	} else {
+		fmt.Println("此次修改受影响的行数: ", num)
+	}
 
 	http.Redirect(w, r, "/", 302)
 }

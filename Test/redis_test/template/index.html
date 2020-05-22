@@ -25,12 +25,13 @@
             </tr>
             {{ range $val := . }}
             <tr>
-                <td>{{ $val.Title }}</td>
+                <td>{{ $val.Title }} {{ $val.Url }}</td>
                 <td>{{ $val.Poster }}</td>
                 <td>{{ $val.Votes }}</td>
                 <td>{{ $val.Time }}</td>
                 <form action="/scrap" method="POST">
-                    <input type="hidden" name="ID" value="{{ $val.Url }}">
+                    <input type="hidden" name="ID" value="{{$val.Url}}">
+                    <input type="hidden" name="uid" value="234">
                     <td><button type="submit">点赞</button></td>
                 </form>
             </tr>
