@@ -13,7 +13,7 @@
     </style>
 </head>
 <body>
-    <!-- {{with $list := .}} -->
+    {{with $list := .}}
     <div>
         <table border="1" style="text-align: center;">
             <tr>
@@ -29,15 +29,22 @@
                 <td>{{ $val.Poster }}</td>
                 <td>{{ $val.Votes }}</td>
                 <td>{{ $val.Time }}</td>
-                <form action="/scrap" method="POST">
-                    <input type="hidden" name="ID" value="{{$val.Url}}">
-                    <input type="hidden" name="uid" value="234">
-                    <td><button type="submit">点赞</button></td>
-                </form>
+                <td>
+                    <form action="/scrap" method="POST">
+                        <input type="hidden" name="ID" value="{{$val.Url}}">
+                        <input type="hidden" name="uid" value="123">
+                        <button type="submit">点赞</button>
+                    </form>
+                    <form action="/cancel_scrao" method="post">
+                        <input type="hidden" name="ID" value="{{$val.Url}}">
+                        <input type="hidden" name="uid" value="123">
+                        <button type="submit">取消点赞</button>
+                    </form>
+                </td>
             </tr>
             {{ end }}
         </table>
     </div>
-    <!-- {{end}} -->
+    {{end}}
 </body>
 </html>

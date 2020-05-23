@@ -2,14 +2,14 @@ package main
 
 import (
 	"Go_Learn/Test/redis_test/article"
-	"encoding/json"
-	"strconv"
-
 	"database/sql"
+	"encoding/json"
 	"fmt"
+	"html/template"
 	"net/http"
-	//"strconv"
-	"text/template"
+	"strconv"
+	"time"
+
 	//"time"
 
 	"github.com/go-redis/redis"
@@ -54,47 +54,101 @@ func initRedis() (err error) {
 	return
 }
 
+// 无排序无分组
+//func indexHandler(w http.ResponseWriter, r *http.Request) {
+//	/*
+//		1. 加载模板文件
+//		2. 检查redis中是否有缓存
+//			2-1. 如果有缓存直接加载到页面
+//				2-1-1. 跑一个goroutine去查询本地数据库检查数据redis是否有更新
+//				2-1-2. 如果输入有更新进行更新
+//			2-2. 如果没有缓存从MySQL中查询数据，并载入到首页
+//	*/
+//
+//	fmt.Println("首页-接入请求")
+//
+//	//1. 加载模板文件
+//	t, err := template.ParseFiles("./template/index.html")
+//	if err != nil {
+//		fmt.Println("文件加载失败, err:", err)
+//		return
+//	}
+//
+//	var model article.Article
+//	var articles =make([]article.Article, 0, 10)
+//
+//L1:
+//	//2. 检查redis中是否有缓存
+//	keys := redisdb.Keys("article:*")
+//	if cap(keys.Val()) > 0 {
+//		for _,v := range keys.Val() {
+//			val := redisdb.HGetAll(v)
+//			res, _ := json.Marshal(val.Val())
+//			json.Unmarshal(res, &model)
+//			articles = append(articles, model)
+//		}
+//	}
+//
+//	if len(articles) > 0 {
+//		//2-1. 跑一个goroutine去查询本地数据库检查数据redis是否有更新, 如果输入有更新进行更新
+//		go index_redis()
+//
+//		//2-2. 如果有缓存直接加载到页面
+//		t.Execute(w, articles)
+//	} else {
+//		//2-2. 如果没有缓存从MySQL中查询数据，并载入到首页
+//		index_redis()
+//
+//		goto L1
+//	}
+//}
+
+// 可以排序
 func indexHandler(w http.ResponseWriter, r *http.Request) {
-	/*
-		1. 加载模板文件
-		2. 检查redis中是否有缓存
-			2-1. 如果有缓存直接加载到页面
-				2-1-1. 跑一个goroutine去查询本地数据库检查数据redis是否有更新
-				2-1-2. 如果输入有更新进行更新
-			2-2. 如果没有缓存从MySQL中查询数据，并载入到首页
-	*/
+	fmt.Println("首页-接入请求-排序")
 
-	fmt.Println("首页-接入请求")
-
-	//1. 加载模板文件
+	//加载页面
 	t, err := template.ParseFiles("./template/index.html")
 	if err != nil {
-		fmt.Println("文件加载失败, err:", err)
+		fmt.Println("页面加载失败, err: ", err)
 		return
 	}
 
+	// 创建一个用于保存文章信息的切片
 	var model article.Article
-	var articles =make([]article.Article, 0, 10)
+	articles := make([]article.Article, 0, 10)
 L1:
-	//2. 检查redis中是否有缓存
+	// 检查redis是否有缓存
 	keys := redisdb.Keys("article:*")
 	if cap(keys.Val()) > 0 {
-		for _,v := range keys.Val() {
-			val := redisdb.HGetAll(v)
-			res, _ := json.Marshal(val.Val())
-			json.Unmarshal(res, &model)
+		// 通过排序获取所有的key
+		// 通过积分排序
+		res := redisdb.ZRevRange("source:", 0, -1)
+		// 通过时间排序
+		//res := redisdb.ZRevRange("time:", 0, -1)
+
+		for _,v := range res.Val() {
+			article_res := redisdb.HGetAll(v).Val()
+
+			// 将字符串时间戳转换格式化
+			// 1. 先将字符串转换成int64格式的
+			i, _ := strconv.ParseInt(article_res["time"], 10, 64)
+			// 2. 再将转换后的数字字符串转换成time格式
+			tm := time.Unix(i, 0)
+			// 赋值并格式化
+			article_res["time"] = tm.Format("2006-01-02 15:04:05")
+
+			article_res_json, _ := json.Marshal(article_res)
+			json.Unmarshal(article_res_json, &model)
 			articles = append(articles, model)
 		}
 	}
 
 	if len(articles) > 0 {
-		//2-1. 跑一个goroutine去查询本地数据库检查数据redis是否有更新, 如果输入有更新进行更新
 		go index_redis()
 
-		//2-2. 如果有缓存直接加载到页面
 		t.Execute(w, articles)
 	} else {
-		//2-2. 如果没有缓存从MySQL中查询数据，并载入到首页
 		index_redis()
 
 		goto L1
@@ -264,6 +318,25 @@ func scrapHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", 302)
 }
 
+// 取消点赞
+func cancel_scraoHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("取消点赞申请接入")
+	r.ParseForm()
+
+	article_id := r.Form.Get("ID")
+	user_id := r.Form.Get("uid")
+
+	fmt.Println(article_id, user_id)
+
+	// 将该用户id从voted:表中去除
+	// 减少source:表中对应文章的点赞分数
+	// 减少article:表中积分的点赞分数
+	// 修改数据库中的文章的点赞分数
+
+
+	http.Redirect(w, r, "/", 302)
+}
+
 func main() {
 	if err := initMySQL(); err != nil {
 		fmt.Println("MySQL连接失败, err:", err)
@@ -280,5 +353,6 @@ func main() {
 	fmt.Println("Redis连接成功")
 	http.HandleFunc("/", indexHandler)
 	http.HandleFunc("/scrap", scrapHandler)
+	http.HandleFunc("/cancel_scrao", cancel_scraoHandler)
 	http.ListenAndServe(":80", nil)
 }
