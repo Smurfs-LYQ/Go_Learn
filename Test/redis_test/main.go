@@ -326,14 +326,63 @@ func cancel_scraoHandler(w http.ResponseWriter, r *http.Request) {
 	article_id := r.Form.Get("ID")
 	user_id := r.Form.Get("uid")
 
-	fmt.Println(article_id, user_id)
+	redis_article := fmt.Sprintf("article:%v", article_id)
+	redis_voted := fmt.Sprintf("voted:%v", article_id)
+	redis_user_id := fmt.Sprintf("user:%v", user_id)
 
-	// 将该用户id从voted:表中去除
-	// 减少source:表中对应文章的点赞分数
+	//将该用户id从voted:表中去除
+	voted := redisdb.SRem(redis_voted, redis_user_id)
+	if voted.Val() != 1 {
+		fmt.Println("1-取消点赞失败, err:", voted.Err())
+		http.Redirect(w, r, "/", 302)
+		return
+	}
+
+	//减少source:表中对应文章的点赞分数
+	source := redisdb.ZIncrBy("source:", float64(-1), redis_article)
+	if source.Err() != nil {
+		fmt.Println("2-取消点赞失败, err:", source.Err())
+		http.Redirect(w, r, "/", 302)
+		return
+	}
+
 	// 减少article:表中积分的点赞分数
+	res := redisdb.HIncrBy(redis_article, "votes", -1)
+	if res.Err() != nil {
+		fmt.Println("3-取消点赞失败, err:", res.Err())
+		http.Redirect(w, r, "/", 302)
+		return
+	}
+
 	// 修改数据库中的文章的点赞分数
+	// 启动事务
+	tx, err := db.Begin()
+	if err != nil {
+		if tx != nil {
+			tx.Rollback() // 回滚
+		}
+		fmt.Println("事务开始失败, err:", err)
+		http.Redirect(w, r, "/", 302)
+		return
+	}
 
+	db_res, err := db.Exec("update articles set votes = votes-1 where id = ?", article_id)
+	if err != nil {
+		fmt.Println("数据库更新失败, err", err)
+		tx.Rollback()
+		http.Redirect(w, r , "/", 302)
+		return
+	}
 
+	num, err := db_res.RowsAffected()
+
+	http.Redirect(w, r, "/", 302)
+	if err != nil {
+		fmt.Println("获取受影响行数失败, err:", err)
+
+	} else {
+		fmt.Println("此次修改受影响的行数: ", num)
+	}
 	http.Redirect(w, r, "/", 302)
 }
 
