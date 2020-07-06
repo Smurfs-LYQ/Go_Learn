@@ -62,9 +62,9 @@ func flag_outher() {
 }
 
 func main() {
-	flag_demo_1()
+	//flag_demo_1()
 
 	//flag_demo_2()
 
-	//flag_outher()
+	flag_outher()
 }
