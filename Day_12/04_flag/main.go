@@ -17,6 +17,8 @@ func flag_demo_1() {
 	flag.Parse()
 
 	fmt.Println(*name, *age, *married)
+
+	// go run main.go -name 格格巫 -age 20
 }
 
 // flag_demo_2 flag.TypeVar()
@@ -60,9 +62,9 @@ func flag_outher() {
 }
 
 func main() {
-	// flag_demo_1()
+	flag_demo_1()
 
-	// flag_demo_2()
+	//flag_demo_2()
 
-	flag_outher()
+	//flag_outher()
 }

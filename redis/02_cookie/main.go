@@ -1,7 +1,7 @@
 package main
 
 import (
-	"Go_Learn/redis/02_demo/model"
+	"Go_Learn/redis/02_cookie/model"
 	"fmt"
 	"github.com/go-redis/redis"
 	"time"
@@ -41,8 +41,13 @@ func update_token(token string, user int, item ...int) {
 
 	if len(item) > 0 {
 		key := fmt.Sprintf("viewed:%v", token)
-		redisdb.ZAdd(key, &redis.Z{Score: date, Member: item[0]}) // 记录用户最近浏览过的商品
-		redisdb.ZRemRangeByRank(key, 0, -26) // 移除旧记录，只保留最近浏览的25个商品
+		//// 有序集合zset用法
+		//redisdb.ZAdd(key, &redis.Z{Score: date, Member: item[0]}) // 记录用户最近浏览过的商品
+		//redisdb.ZRemRangeByRank(key, 0, -26) // 移除旧记录，只保留最近浏览的25个商品
+
+		// 列表list用法
+		redisdb.RPush(key, item[0]) // 记录用户最近浏览过的商品 缺点: 没有记录浏览这个商品的时候的时间
+		redisdb.LTrim(key, 0, 25) // 移除就记录，只保留最近浏览的25个商品
 	}
 }
 
@@ -97,6 +102,4 @@ func main() {
 	go clean_sessions()
 
 	time.Sleep(time.Second)
-
-
 }
